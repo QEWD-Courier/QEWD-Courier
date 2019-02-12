@@ -28,8 +28,8 @@
 */
 
 var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-var getDiscoveryHeadingData = require('../utils/dds/getDiscoveryHeadingData');
-var mergeDiscoveryDataInWorker = require('../utils/dds/mergeDiscoveryDataInWorker');
+var getDiscoveryHeadingData = require('../../utils/dds/getDiscoveryHeadingData');
+var mergeDiscoveryDataInWorker = require('../../utils/dds/mergeDiscoveryDataInWorker');
 
 module.exports = function(message, jwt, forward, sendBack) {
 
