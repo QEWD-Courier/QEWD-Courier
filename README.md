@@ -72,6 +72,25 @@ You'll see three main folders:
               "password": "yyyyyy",
 
 
+4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the conductor (ie the QEWD-Up Orchestrator) and openid_connect (ie the OIDC Provider/Server) host and ports to match your setup, ie:
+
+        "phr": {
+          "microservices": {
+            "conductor": {
+              "host": "http://mango-cookie.ripple.foundation",
+              "port": 8080
+            },
+            "openid_connect": {
+              "host": "http://mango-cookie.ripple.foundation",
+              "port": 8000,
+
+You'll notice in this file that Two-Factor Authentication is disabled:
+
+        "use2FA": false,
+
+Which means that the settings for *twilio* and the *email_server* are ignored, so just leave them alone for now.  
+
+If, later on, you set *use2FA* to *true*, you'll need to set valid credentials for *twilio* and the *email_server*
 
 
 # Starting the QEWD-Courier MicroServices
