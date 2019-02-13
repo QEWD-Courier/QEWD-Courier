@@ -72,7 +72,7 @@ You'll see three main folders:
               "password": "yyyyyy",
 
 
-4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the *conductor* and *openid_connect* host and ports to match your *helm global_config.json* file's *oidc_client* settings for *orchestrator and *oidc_server* respectively, ie edit this section:
+4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the *conductor* and *openid_connect* host and ports to match your *helm global_config.json* file's *oidc_client* settings for *orchestrator* and *oidc_server* respectively, ie edit this section:
 
         "phr": {
           "microservices": {
