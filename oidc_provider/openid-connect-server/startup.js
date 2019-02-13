@@ -86,10 +86,11 @@ function onStarted() {
     });
   }
 
+  var _this = this;
   console.log('Wait a couple of seconds for oidc-provider to be available');
   setTimeout(function() {
     var oidcServer = require('qewd-openid-connect');
-    oidcServer.call(self, app, bodyParser, oidc_config);
+    oidcServer.call(_this, app, bodyParser, oidc_config);
   },2000);
 }
 
