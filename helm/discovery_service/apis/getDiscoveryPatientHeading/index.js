@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  13 February 2019
 
 */
 
@@ -35,6 +35,8 @@ var mapToDiscoveryNHSNo = require('../../utils/mapToDiscoveryNHSNo');
 
 var tools = require('../../../utils/tools');
 var headingMap = require('../../utils/headingMap');
+
+var dds_config = require('/opt/qewd/mapped/configuration/global_config.json').DDS;
 
 module.exports = function(args, finished) {
 
@@ -48,7 +50,9 @@ module.exports = function(args, finished) {
   var valid = tools.isPatientIdValid(patientId);
   if (valid.error) return finished(valid);
 
-  patientId = mapToDiscoveryNHSNo.call(this, patientId);
+  if (dds_config.mode !== 'live") {
+    patientId = mapToDiscoveryNHSNo.call(this, patientId);
+  }
 
   //patientId = 5558526785;
 

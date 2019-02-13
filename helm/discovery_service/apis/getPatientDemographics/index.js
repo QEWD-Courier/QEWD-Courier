@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  13 February 2019
 
 */
 
@@ -34,6 +34,8 @@ var getDemographics = require('../../utils/getDemographics');
 var mapToDiscoveryNHSNo = require('../../utils/mapToDiscoveryNHSNo');
 
 var tools = require('../../../utils/tools');
+
+var dds_config = require('/opt/qewd/mapped/configuration/global_config.json').DDS;
 
 module.exports = function(args, finished) {
 
@@ -50,7 +52,9 @@ module.exports = function(args, finished) {
   var valid = tools.isPatientIdValid(patientId);
   if (valid.error) return finished(valid);
 
-  patientId = mapToDiscoveryNHSNo.call(this, nhsNumber);
+  if (dds_config.mode !== 'live") {
+    patientId = mapToDiscoveryNHSNo.call(this, nhsNumber);
+  }
 
   var session = args.req.qewdSession;
   var cachedDemographics = session.data.$(['Demographics', 'by_nhsNumber', nhsNumber]);

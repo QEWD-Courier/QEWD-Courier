@@ -45,7 +45,8 @@
         "getPatientResources": "/api/fhir/resources",
         "getResource": "/api/fhir/reference"
       }
-    }
+    },
+    "mode": "test"
   },
   "openehr": {
     "servers": {
