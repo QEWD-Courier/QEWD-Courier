@@ -52,7 +52,7 @@ module.exports = function(args, finished) {
   var valid = tools.isPatientIdValid(patientId);
   if (valid.error) return finished(valid);
 
-  if (dds_config.mode !== 'live") {
+  if (dds_config.mode !== 'live') {
     patientId = mapToDiscoveryNHSNo.call(this, nhsNumber);
   }
 
