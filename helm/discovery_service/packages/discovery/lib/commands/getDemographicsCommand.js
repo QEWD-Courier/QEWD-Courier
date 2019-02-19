@@ -58,7 +58,7 @@ class GetDemographicsCommand extends BaseCommand {
       patientId = this.session.nhsNumber;
     }
 
-    patientId = 5900049116; //@TODO IMPORTANT TO REMOVE AFTER GOING TO LIVE !!!!!!!!!!!!!
+    patientId = 5558526785; //@TODO IMPORTANT TO REMOVE AFTER GOING TO LIVE !!!!!!!!!!!!!
 
     const patientValid = isPatientIdValid(patientId);
     if (!patientValid.ok) {
