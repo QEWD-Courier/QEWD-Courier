@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,30 +24,32 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  25 January 2019
 
 */
 
 'use strict';
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
-const { getResponseError } = require('../../errors');
+const { ExecutionContext, OpenEhrAdapter } = require('../lib/core');
 
-/**
- * GET /api/patients/:patientId/top3Things
- *
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getTop3ThingsSummary(args, finished) {
-  try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+const adapter = new OpenEhrAdapter();
 
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
+module.exports = {
+  init: function () {
+    adapter.ctx = new ExecutionContext(this);
 
-    finished(responseError);
+    return adapter;
+  },
+
+  request: function (params, userObj) {
+    adapter.request(params, userObj);
+  },
+
+  startSession: function (host, qewdSession, callback) {
+    adapter.startSession(host, qewdSession, callback);
+  },
+
+  stopSession: function (host, sessionId, qewdSession, callback = () => null) {
+    adapter.stopSession(host, sessionId, qewdSession, callback);
   }
 };

@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,30 +24,24 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  25 January 2019
 
 */
 
 'use strict';
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
-const { getResponseError } = require('../../errors');
+const { ExecutionContext, logger } = require('../lib/core');
 
-/**
- * GET /api/patients/:patientId/top3Things
- *
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getTop3ThingsSummary(args, finished) {
-  try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+function deleteSessionCaches(patientId, heading, host, callback = () => null) {
+  const ctx = new ExecutionContext(this);
+  const { cacheService } = ctx.services;
 
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
+  cacheService.delete(host, patientId, heading)
+    .then(() => callback())
+    .catch(err => {
+      logger.error('modules/deleteSessionCaches|err: ' + err.message);
+      logger.error('modules/deleteSessionCaches|stack: ' + err.stack);
+    });
+}
 
-    finished(responseError);
-  }
-};
+module.exports = deleteSessionCaches;

@@ -23,61 +23,30 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 February 2019
+  20 February 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
+'use strict';
 
-var fetchAndCacheHeading = require('../../utils/openehr/fetchAndCacheHeading');
-var getHeadingDetailFromCache = require('../../utils/openehr/getHeadingDetailFromCache');
-var tools = require('../../../utils/tools');
+const { GetPatientHeadingDetailCommand } = require('../../commands/patients');
+const { getResponseError } = require('../../errors');
 
-function getDetail(sourceId, session, finished) {
-  var results = getHeadingDetailFromCache.call(this, sourceId, session);
-  finished({
-    api: 'getPatientHeadingDetail',
-    use: 'results',
-    results: results
-  });
-}
+/**
+ * GET /api/patients/:patientId/:heading/:sourceId
+ *
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function getPatientHeadingDetail(args, finished) {
+  try {
+    const command = new GetPatientHeadingDetailCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
 
-module.exports = function(args, finished) {
+    finished(responseObj);
+  } catch (err) {
+    const responseError = getResponseError(err);
 
-  var patientId = args.patientId;
-
-  // override patientId for PHR Users - only allowed to see their own data
-
-  if (args.session.role === 'phrUser') patientId = args.session.nhsNumber;
-
-  var valid = tools.isPatientIdValid(patientId);
-  if (valid.error) return finished(valid);
-
-  var heading = args.heading;
-
-  if (!tools.isHeadingValid.call(this, heading)) {
-    console.log('*** ' + heading + ' has not yet been added to middle-tier processing');
-    return finished([]);
+    finished(responseError);
   }
-
-  var sourceId = args.sourceId;
-  if (!tools.isSourceIdValid(sourceId)) {
-    console.log('*** Invalid SourceId: ' + sourceId);
-    return finished([]);
-  }
-
-  var session = args.req.qewdSession;
-  var self = this;
-
-  fetchAndCacheHeading.call(this, patientId, heading, session, function(response) {
-    if (!response.ok) {
-      console.log('*** No results could be returned from the OpenEHR servers for heading ' + heading);
-      return finished([]);
-    }
-    else {
-      console.log('heading ' + heading + ' for ' + patientId + ' is cached');
-      getDetail.call(self, sourceId, session, finished);
-    }
-  });
-
 };

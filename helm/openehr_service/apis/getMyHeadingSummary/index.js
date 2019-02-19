@@ -27,21 +27,22 @@
 
 */
 
-'use strict';
+'use strict'
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
+const { GetPatientHeadingSummaryCommand } = require('../../commands/patients');
 const { getResponseError } = require('../../errors');
 
 /**
- * GET /api/patients/:patientId/top3Things
+ * GET /api/my/heading/:heading
  *
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function getTop3ThingsSummary(args, finished) {
+module.exports = async function getMyHeadingSummary(args, finished) {
   try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+    const query = args.req.query || {};
+    const command = new GetPatientHeadingSummaryCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.session.nhsNumber, args.heading, query);
 
     finished(responseObj);
   } catch (err) {

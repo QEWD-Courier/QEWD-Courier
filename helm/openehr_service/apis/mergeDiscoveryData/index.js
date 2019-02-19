@@ -27,21 +27,19 @@
 
 */
 
-'use strict';
-
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
+const { MergeDiscoveryDataCommand } = require('../../commands/discovery');
 const { getResponseError } = require('../../errors');
 
 /**
- * GET /api/patients/:patientId/top3Things
+ * GET /discovery/merge/:heading
  *
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function getTop3ThingsSummary(args, finished) {
+module.exports = async function mergeDiscoveryData(args, finished) {
   try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+    const command = new MergeDiscoveryDataCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.heading, args.req.data);
 
     finished(responseObj);
   } catch (err) {

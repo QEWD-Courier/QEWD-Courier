@@ -23,58 +23,30 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  20 February 2019
 
 */
 
-/*
+'use strict'
 
-Feeds summary
+const { RevertDiscoveryDataCommand } = require('../../commands/discovery');
+const { getResponseError } = require('../../errors');
 
-  GET /api/feeds
+/**
+ * DELETE /api/discovery/revert/:patientId/:heading
+ *
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function revertDiscoveryData(args, finished) {
+  try {
+    const command = new RevertDiscoveryDataCommand(args.req.ctx);
+    const responseObj = await command.execute(args.patientId, args.heading);
 
-*/
+    finished(responseObj);
+  } catch (err) {
+    const responseError = getResponseError(err);
 
-function getSummary(args, finished) {
-
-  var email = args.session.email;
-
-  var doc = this.db.use('PHRFeeds');
-  var feedsByEmailDoc = doc.$(['byEmail', email]);
-  var feedsBySourceId = doc.$('bySourceId');
-
-  var names = {};
-  var urls = {};
-  var results = [];
-
-  feedsByEmailDoc.forEachChild(function(sourceId) {
-    var data = feedsBySourceId.$(sourceId).getDocument();
-    if (names[data.name]) {
-      // duplicate - delete it
-      feedsByEmailDoc.$(sourceId).delete();
-      feedsBySourceId.$(sourceId).delete();
-      return;
-    }
-
-    if (urls[data.landingPageUrl]) {
-      // duplicate found - delete it
-      feedsByEmailDoc.$(sourceId).delete();
-      feedsBySourceId.$(sourceId).delete();
-      return;
-    }
-
-    names[data.name] = true;
-    urls[data.landingPageUrl] = true;
-
-    results.push({
-      name: data.name,
-      landingPageUrl: data.landingPageUrl,
-      rssFeedUrl: data.rssFeedUrl,
-      sourceId: sourceId
-    });
-  });
-
-  finished({feeds: results});
-}
-
-module.exports = getSummary;
+    finished(responseError);
+  }
+};

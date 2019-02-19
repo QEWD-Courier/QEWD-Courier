@@ -29,19 +29,19 @@
 
 'use strict';
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
+const { GetHeadingSummaryFieldsCommand } = require('../../commands/headings');
 const { getResponseError } = require('../../errors');
 
 /**
- * GET /api/patients/:patientId/top3Things
+ * GET /api/heading/:heading/fields/summary
  *
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function getTop3ThingsSummary(args, finished) {
+module.exports = async function getHeadingSummaryFields(args, finished) {
   try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+    const command = new GetHeadingSummaryFieldsCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.heading);
 
     finished(responseObj);
   } catch (err) {

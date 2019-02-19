@@ -27,21 +27,23 @@
 
 */
 
-'use strict';
+'use strict'
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
+const { PostPatientHeadingCommand } = require('../../commands/patients');
 const { getResponseError } = require('../../errors');
 
 /**
- * GET /api/patients/:patientId/top3Things
+ * POST /api/my/heading/:heading
  *
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function getTop3ThingsSummary(args, finished) {
+module.exports = async function postMyHeading(args, finished) {
   try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
+    const query = args.req.query || {};
+    const payload = args.req.body;
+    const command = new PostPatientHeadingCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.session.nhsNumber, args.heading, query, payload);
 
     finished(responseObj);
   } catch (err) {

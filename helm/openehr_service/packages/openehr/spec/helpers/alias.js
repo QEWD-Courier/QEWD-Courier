@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -29,24 +30,4 @@
 
 'use strict';
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
-const { getResponseError } = require('../../errors');
-
-/**
- * GET /api/patients/:patientId/top3Things
- *
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getTop3ThingsSummary(args, finished) {
-  try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
-
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-
-    finished(responseError);
-  }
-};
+require('module-alias/register');

@@ -29,24 +29,8 @@
 
 'use strict';
 
-const { GetTop3ThingsSummaryCommand } = require('../../commands/top3Things');
-const { getResponseError } = require('../../errors');
+const globalConfig = require('/opt/qewd/mapped/configuration/global_config.json');
 
-/**
- * GET /api/patients/:patientId/top3Things
- *
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getTop3ThingsSummary(args, finished) {
-  try {
-    const command = new GetTop3ThingsSummaryCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId);
-
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-
-    finished(responseError);
-  }
+module.exports = function () {
+  this.userDefined.global = globalConfig;
 };

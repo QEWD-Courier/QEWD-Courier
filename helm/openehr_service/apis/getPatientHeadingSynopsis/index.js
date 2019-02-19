@@ -23,94 +23,31 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  9 February 2019
+  20 February 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
+'use strict'
 
-var fetchAndCacheHeading = require('../../utils/openehr/fetchAndCacheHeading');
-var tools = require('../../../utils/tools');
-var getHeadingBySourceId = require('../../utils/openehr/getHeadingBySourceId');
-var getTop3ThingsSummary = require('../../utils/openehr/top3Things/getTop3ThingsSummarySync');
+const { GetPatientHeadingSynopsisCommand } = require('../../commands/patients');
+const { getResponseError } = require('../../errors');
 
-function getHeadingSynopsisFromCache(patientId, heading, noToDisplayInSynopsis, session, callback) {
-  var results = [];
-  var patientHeadingCache = session.data.$(['headings', 'byPatientId', patientId]);
-  var self = this;
+/**
+ * GET /api/patients/:patientId/synopsis/:heading
+ *
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function getPatientHeadingSynopsis(args, finished) {
+  try {
+    const query = args.req.query || {};
+    const command = new GetPatientHeadingSynopsisCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.patientId, args.heading, query);
 
-  var count = 0;
+    finished(responseObj);
+  } catch (err) {
+    const responseError = getResponseError(err);
 
-  var headingByDateCache = patientHeadingCache.$([heading, 'byDate']);
-
-  headingByDateCache.forEachChild({direction: 'reverse'}, function(date, dateNode) {
-    dateNode.forEachChild(function(sourceId) {
-      var summary = getHeadingBySourceId.call(self, sourceId, session, 'synopsis');
-      results.push(summary);
-      count++;
-      if (count === noToDisplayInSynopsis) return true;
-    });
-    if (count === noToDisplayInSynopsis) return true;
-  });
-  callback(results);
-}
-
-
-function patientHeadingSynopsis(args, finished) {
-
-  var patientId = args.patientId;
-
-  // override patientId for PHR Users - only allowed to see their own data
-
-  if (args.session.role === 'phrUser') patientId = args.session.nhsNumber;
-
-  var valid = tools.isPatientIdValid(patientId);
-  if (valid.error) return finished(valid);
-
-  var heading = args.heading;
-
-  if (!heading || heading === '') return finished({error: 'Heading missing or empty'});
-
-  var synopsis = [];
-  /*
-  if (heading === 'top3Things') {
-    var data = getTop3ThingsSummary.call(this, patientId);
-    if (data.length !== 0) {
-      var summary = data[0];
-      synopsis = [
-        {sourceId: summary.sourceId, text: summary.name1},
-        {sourceId: summary.sourceId, text: summary.name2},
-        {sourceId: summary.sourceId, text: summary.name3},
-      ];
-    }
-
-    return finished({
-      heading: heading,
-      synopsis: synopsis
-    });
+    finished(responseError);
   }
-  */
-
-  if (!tools.isHeadingValid.call(this, heading)) {
-    console.log('*** ' + heading + ' has not yet been added to middle-tier processing');
-    return finished([]);
-  }
-  
-  var noToDisplayInSynopsis = openehr_config.synopsis.maximum; 
-  if (args.req.query && args.req.query.maximum) noToDisplayInSynopsis = args.req.query.maximum;
-  var session = args.req.qewdSession; // QEWD Session
-  var self = this;
-
-  //cacheHeading.call(this, patientId, heading, session, function() {
-
-  fetchAndCacheHeading.call(self, patientId, heading, session, function(response) {
-    getHeadingSynopsisFromCache.call(self, patientId, heading, noToDisplayInSynopsis, session, function(results) {
-      finished({
-        heading: heading,
-        synopsis: results
-      });
-    });
-  });
-}
-
-module.exports = patientHeadingSynopsis;
+};

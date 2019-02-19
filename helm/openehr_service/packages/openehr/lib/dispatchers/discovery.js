@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  31 December 2018
+  20 February 2019
 
 */
 
@@ -47,9 +47,10 @@ class DiscoveryDispatcher {
    * @param  {string|int} patientId
    * @param  {string} heading
    * @param  {string} jwt
+   * @param  {Function} forward
    * @return {Promise.<Object>}
    */
-  async getDiscoveryData(patientId, heading, jwt) {
+  async getDiscoveryData(patientId, heading, jwt, forward) {
     logger.info('dispatchers/discoveryDispatcher|getDiscoveryData', { patientId, heading, jwt: typeof jwt });
 
     debug('jwt: %s', jwt);
@@ -66,20 +67,25 @@ class DiscoveryDispatcher {
 
       const message = {
         path: `/api/discovery/${patientId}/${heading}`,
-        method: 'GET',
-        headers: {
-          authorization: `Bearer ${jwt}`
-        }
+        method: 'GET'
       };
 
       debug('message: %j', message);
 
-      this.q.microServiceRouter.call(this.q, message, (responseObj) => {
+      const status = forward(message, jwt, (responseObj) => {
         debug('handle response from micro service: patientId = %s, heading = %s, responseObj = %j', patientId, heading, responseObj);
         if (responseObj.error) return reject(responseObj);
 
         return resolve(responseObj.message);
       });
+
+      if (status === false) {
+        reject({
+          message: {
+            error: `No such route as ${JSON.stringify(message)}`
+          }
+        });
+      }
     });
   }
 
@@ -100,7 +106,7 @@ class DiscoveryDispatcher {
     return new Promise((resolve, reject) => {
       const token = this.q.jwt.handlers.getProperty('uid', jwt);
       const messageObj = {
-        application: 'ripple-cdr-openehr',
+        application: 'openehr_service',
         type: 'restRequest',
         path: `/discovery/merge/${heading}`,
         pathTemplate: '/discovery/merge/:heading',
@@ -133,15 +139,16 @@ class DiscoveryDispatcher {
    * @param  {string|int} patientId
    * @param  {string} heading
    * @param  {string} jwt
+   * @param  {Function} forward
    * @return {Promise}
    */
-  async sync(patientId, heading, jwt) {
-    logger.info('dispatchers/discoveryDispatcher|sync', { patientId, heading, jwt: typeof jwt  });
+  async sync(patientId, heading, jwt, forward) {
+    logger.info('dispatchers/discoveryDispatcher|sync', { patientId, heading, jwt: typeof jwt });
 
     debug('jwt: %s', jwt);
 
     try {
-      const discoveryData = await this.getDiscoveryData(patientId, heading, jwt);
+      const discoveryData = await this.getDiscoveryData(patientId, heading, jwt, forward);
       await this.mergeDiscoveryData(heading, discoveryData, jwt);
     } catch (err) {
       logger.error('dispatchers/discoveryDispatcher|sync|err: ' + err.message);
@@ -156,14 +163,18 @@ class DiscoveryDispatcher {
    * @param  {string|int} patientId
    * @param  {string[]} headings
    * @param  {string} jwt
+   * @param  {Function} forward
    * @return {Promise}
    */
-  async syncAll(patientId, headings, jwt) {
-    logger.info('dispatchers/discoveryDispatcher|syncAll', { patientId, headings, jwt: typeof jwt  });
+  async syncAll(patientId, headings, jwt, forward) {
+    logger.info('dispatchers/discoveryDispatcher|syncAll', { patientId, headings, jwt: typeof jwt });
 
     debug('jwt: %s', jwt);
 
-    await P.each(headings, (heading) => this.sync(patientId, heading, jwt));
+    // handle each heading one at a time in sequence - this serialised processing
+    // prevents EtherCIS being overwhelmed with API requests
+
+    await P.each(headings, (heading) => this.sync(patientId, heading, jwt, forward));
     logger.info('discovery data loaded into EtherCIS');
   }
 }
