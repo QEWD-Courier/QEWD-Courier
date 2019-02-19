@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,72 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  25 January 2019
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const { lazyLoadAdapter } = require('../../lib/shared/utils');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+function getMethods(id, dir) {
+  const Target = require(`../../lib/${dir}/${id}`);
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+  return Reflect
+    .ownKeys(Target.prototype)
+    .filter(x => x !== 'constructor');
+}
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+function getMixins(id, dir) {
+  try {
+    const name = id.split(/(?=[A-Z])/g)[0];
+    const mixins = require(`../../lib/${dir}/mixins/${name}`);
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+    return mixins;
+  } catch (err) {
+    return {};
+  }
+}
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+function createSpyObj(baseName, methodNames) {
+  // methodNames must contain at least one method defined
+  // otherwise target be undefined
+  if (methodNames.length === 0) {
+    methodNames.push(Date.now().toString());
+  }
 
+  return jasmine.createSpyObj(baseName, methodNames);
+}
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
+class CacheRegistryMock {
+  constructor() {
+    this.freezed = false;
+  }
 
+  initialise(id) {
+    if (this.freezed) return;
 
-	console.log('beforeHandler in discovery_service invoked!');
+    const methods = getMethods(id, 'cache');
+    const spyObj = createSpyObj(id, methods);
 
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
+    const mixins = getMixins(id, 'cache');
+    Object.keys(mixins).forEach(key => {
+      const mixin = mixins[key]();
+      const mixinMethods = Reflect.ownKeys(mixin);
 
-};
+      spyObj[key] = createSpyObj(key, mixinMethods);
+    });
+
+    return spyObj;
+  }
+
+  freeze() {
+    this.freezed = true;
+  }
+
+  static create() {
+    return lazyLoadAdapter(new CacheRegistryMock());
+  }
+}
+
+module.exports = CacheRegistryMock;

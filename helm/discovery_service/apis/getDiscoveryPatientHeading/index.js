@@ -27,73 +27,24 @@
 
 */
 
-var authenticate = require('../../utils/authenticate');
-var getPatientsByNHSNumber = require('../../utils/getPatientsByNHSNumber');
-var getPatientResources = require('../../utils/getPatientResources');
-var getHeadingSummary = require('../../utils/getHeadingSummary');
-var mapToDiscoveryNHSNo = require('../../utils/mapToDiscoveryNHSNo');
+'use strict';
 
-var tools = require('../../../utils/tools');
-var headingMap = require('../../utils/headingMap');
+const { GetHeadingDetailCommand } = require('../../packages/discovery/lib/commands');
+const { getResponseError } = require('../../packages/discovery/lib/errors');
 
-var dds_config = require('/opt/qewd/mapped/configuration/global_config.json').DDS;
+/**
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function (args, finished) {
+	try {
+		const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
+		const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
 
-module.exports = function(args, finished) {
+		finished(responseObj);
+	} catch (err) {
+		const responseError = getResponseError(err);
 
-  var patientId = args.patientId;
-
-
-  // override patientId for PHR Users - only allowed to see their own data
-
-  if (args.session.role === 'phrUser') patientId = args.session.nhsNumber;
-
-  var valid = tools.isPatientIdValid(patientId);
-  if (valid.error) return finished(valid);
-
-  if (dds_config.mode !== 'live') {
-    patientId = mapToDiscoveryNHSNo.call(this, patientId);
-  }
-
-  //patientId = 5558526785;
-
-  var heading = args.heading;
-
-  if (!headingMap[heading]) {
-    return finished({
-      responseFrom: 'discovery_service',
-      results: []
-    });
-  }
-
-  var session = args.req.qewdSession;
-
-  var resourceRequired = headingMap[heading];
-
-  console.log('\n *** authenticating ***');
-  authenticate(session, function(error, token) {
-    if (error) {
-      return finished({error: error});
-    }
-    else {
-      console.log('\n *** getPatientsByNHSNumber - token = ' + token);
-      getPatientsByNHSNumber(patientId, token, session, function(error) {
-        if (error) {
-          return finished({error: error});
-        }
-        else {
-          getPatientResources(patientId, resourceRequired, token, session, function(error) {
-            if (error) {
-              return finished({error: error});
-            }
-
-            var results = getHeadingSummary(patientId, heading, 'pulsetile', session);
-            finished(results);
-
-          });
-        }
-      });
-    }
-  });
-
-  return;
+		finished(responseError);
+	}
 };

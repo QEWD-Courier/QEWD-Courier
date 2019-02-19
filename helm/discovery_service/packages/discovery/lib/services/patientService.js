@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,63 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  13 February 2018
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const { logger } = require('../core');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+class PatientService {
+  constructor(ctx) {
+    this.ctx = ctx;
+  }
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+  static create(ctx) {
+    return new PatientService(ctx);
+  }
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+  /**
+   * Gets patient bundle by NHS number
+   *
+   * @param  {int|string} nhsNumber
+   * @return {Object}
+   */
+  getPatientBundle(nhsNumber) {
+    logger.info('services/patientService|getPatientBundle', { nhsNumber });
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+    const { patientCache, patientBundleCache } = this.ctx.cache;
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+    const bundleCache = patientBundleCache.exists()
+      ? patientBundleCache
+      : patientCache;
 
+    const patientUuids = bundleCache.byNhsNumber.getAllPatientUuids(nhsNumber);
+    const patients = bundleCache.byPatientUuid.getByPatientUuids(patientUuids);
+    const entry = patients.map(x => ({
+      resource: x
+    }));
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
+    return {
+      resourceType: 'Bundle',
+      entry,
+    };
+  }
 
+  /**
+   * Updates patient bundle
+   *
+   * @return {void}
+   */
+  updatePatientBundle() {
+    logger.info('services/patientService|updatePatientBundle');
 
-	console.log('beforeHandler in discovery_service invoked!');
+    const { patientCache, patientBundleCache } = this.ctx.cache;
+    const data = patientCache.export();
 
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
+    patientBundleCache.import(data);
+  }
+}
 
-};
+module.exports = PatientService;

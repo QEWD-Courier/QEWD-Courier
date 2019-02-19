@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,44 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  13 February 2018
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const { logger } = require('../core');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+class CacheService {
+  constructor(ctx) {
+    this.ctx = ctx;
+  }
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+  static create(ctx) {
+    return new CacheService(ctx);
+  }
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+  /**
+   * Gets cached demographics
+   *
+   * @param  {int|string} nhsNumber
+   * @return {Object}
+   */
+  getDemographics(nhsNumber) {
+    logger.info('services/cacheService|getDemographics', { nhsNumber });
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+    try {
+      const { demographicCache } = this.ctx.cache;
+      const cachedObj = demographicCache.byNhsNumber.get(nhsNumber);
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+      return cachedObj;
+    } catch(err) {
+      logger.error('services/cacheService|getDemographics|err: ' + err.message);
+      logger.error('services/cacheService|getDemographics|stack: ' + err.stack);
 
+      return null;
+    }
+  }
+}
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
-
-
-	console.log('beforeHandler in discovery_service invoked!');
-
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
-
-};
+module.exports = CacheService;

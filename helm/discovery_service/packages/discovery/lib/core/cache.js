@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,38 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  12 January 2018
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const { lazyLoadAdapter } = require('../shared/utils');
+const QewdCacheAdapter = require('./adapter');
+const logger = require('./logger');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+class CacheRegistry {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.adapter = new QewdCacheAdapter(ctx.qewdSession);
+  }
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+  initialise(id) {
+    logger.info('core/cache|initialise', { id });
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+    const Cache = require(`../cache/${id}`);
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+    if (!Cache.create) {
+      throw new Error(`${id} cache class does not support lazy load initialisation.`);
+    }
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+    return Cache.create(this.adapter);
+  }
 
+  static create(ctx) {
+    return lazyLoadAdapter(new CacheRegistry(ctx));
+  }
+}
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
+module.exports = CacheRegistry;
 
-
-	console.log('beforeHandler in discovery_service invoked!');
-
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
-
-};

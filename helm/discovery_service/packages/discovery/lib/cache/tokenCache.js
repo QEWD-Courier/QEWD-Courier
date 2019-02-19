@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,61 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  11 February 2019
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const { logger } = require('../core');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+class TokenCache {
+  constructor(adapter) {
+    this.adapter = adapter;
+  }
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+  static create(adapter) {
+    return new TokenCache(adapter);
+  }
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+  /**
+   * Gets token
+   *
+   * @return {Object|null}
+   */
+  get() {
+    logger.info('cache/tokenCache|get');
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+    const key = ['discoveryToken'];
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+    return this.adapter.getObject(key);
+  }
 
+  /**
+   * Sets a token
+   *
+   * @param  {Object} data
+   * @return {void}
+   */
+  set(data) {
+    logger.info('cache/tokenCache|set', { data });
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
+    const key = ['discoveryToken'];
+    this.adapter.putObject(key, data);
+  }
 
+  /**
+   * Deletes a token
+   *
+   * @param  {string} host
+   * @return {void}
+   */
+  delete() {
+    logger.info('cache/tokenCache|delete');
 
-	console.log('beforeHandler in discovery_service invoked!');
+    const key = ['discoveryToken'];
+    this.adapter.delete(key);
+  }
+}
 
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
-
-};
+module.exports = TokenCache;

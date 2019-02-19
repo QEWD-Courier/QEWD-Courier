@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,66 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  11 February 2019
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the Discovery MicroService.
+const request = require('request');
+const { logger } = require('../core');
+const debug = require('debug')('ripple-cdr-discovery:services:resource-rest');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
+function requestAsync(options) {
+  return new Promise((resolve, reject) => {
+    request(options, (err, response, body) => {
+      if (err) return reject(err);
 
-  The QEWD function - this.qewdSessionByJWT - handles this
+      debug('body: %j', body);
 
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid"
-  claim/property in the JWT as the QEWD Session token identifier
+      return resolve(body);
+    });
+  });
+}
 
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
+/**
+ * Discovery API Auth REST service
+ */
+class AuthRestService {
+  constructor(ctx, hostConfig) {
+    this.ctx = ctx;
+    this.hostConfig = hostConfig;
+  }
 
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
+  static create(ctx) {
 
+    return new AuthRestService(ctx, ctx.serversConfig);
+  }
 
-*/
-const { ExecutionContext } = require('../packages/discovery/lib/core');
-module.exports = function (req, finished) {
+  /**
+   * Sends a request to get token
+   *
+   * @return {Promise.<Object>}
+   */
+  async authenticate() {
+    logger.info('services/authRestService|authenticate');
 
+    const options = {
+      url: `${this.hostConfig.auth.host + this.hostConfig.auth.path}`,
+      method: 'POST',
+      form: {
+        username: this.hostConfig.auth.username,
+        password: this.hostConfig.auth.password,
+        client_id: this.hostConfig.auth.client_id,
+        grant_type: this.hostConfig.auth.grant_type
+      },
+      json: true
+    };
 
-	console.log('beforeHandler in discovery_service invoked!');
+    debug('options: %j', options);
 
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
+    return requestAsync(options);
+  }
+}
 
-};
+module.exports = AuthRestService;
