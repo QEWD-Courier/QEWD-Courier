@@ -1,0 +1,9 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "vaccinationName": "other vaccination name",
+  "series": "other new series",
+  "comment": "some comment",
+  "vaccinationDateTime": 1517486400000
+}

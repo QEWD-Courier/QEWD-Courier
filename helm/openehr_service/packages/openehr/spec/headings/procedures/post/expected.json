@@ -1,0 +1,21 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "procedures_list/procedures/procedure:0/procedure_name|value": "some procedure name",
+  "procedures_list/procedures/procedure:0/procedure_notes": "some notes",
+  "procedures_list/procedures/procedure:0/ism_transition/current_state|value": "some other status",
+  "procedures_list/procedures/procedure:0/ism_transition/careflow_step|code": "at0043",
+  "procedures_list/procedures/procedure:0/procedure_name|terminology": "SNOMED-CT",
+  "procedures_list/procedures/procedure:0/procedure_name|code": "some procedure code",
+  "procedures_list/procedures/procedure:0/_other_participation:0|name": "Performer",
+  "procedures_list/procedures/procedure:0/_other_participation:0|function": "awesome performer",
+  "procedures_list/procedures/procedure:0/_provider|name": "wow original composition",
+  "procedures_list/procedures/procedure:0/_provider|id": "new original source",
+  "procedures_list/procedures/procedure:0/time": "2018-02-01T15:00:00Z"
+}

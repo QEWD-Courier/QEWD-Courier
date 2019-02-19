@@ -1,0 +1,13 @@
+{
+  "cause": "some cause",
+  "causeCode": "some cause code",
+  "causeTerminology": "some cause terminology",
+  "terminologyCode": "some cause code",
+  "reaction": "some reaction",
+  "author": "John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "originalComposition": "some original composition",
+  "originalSource": "some original source"
+}

@@ -1,0 +1,13 @@
+{
+  "medication_name": "some medication name",
+  "dose_amount": "some dose amounts",
+  "dose_directions": "some dose directions",
+  "dose_timing": "some timing in period",
+  "route": "another some route",
+  "start_date": "2018-01-01T12:00:00Z",
+  "medication_name_code": "some medication name code",
+  "medication_name_terminology": "some medication name terminology",
+  "author": "John Doe",
+  "date_created": "2018-02-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

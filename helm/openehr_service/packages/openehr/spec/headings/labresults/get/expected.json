@@ -1,0 +1,19 @@
+{
+  "testName": "some test name",
+  "sampleTaken": 1514808000000,
+  "status": "some status",
+  "conclusion": "some conclusion",
+  "testResults": [
+    {
+      "result": "John Doe",
+      "value": "some magnitude",
+      "unit": "some units",
+      "normalRange": "some lower magnitude - some upper magnitude",
+      "comment": "i dont know"
+    }
+  ],
+  "author": "John Doe Jr",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

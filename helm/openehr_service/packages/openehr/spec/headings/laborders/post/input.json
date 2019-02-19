@@ -1,0 +1,9 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "code": "some code",
+  "name": "John Doe",
+  "terminology": "some terminology",
+  "dateCreated": "2018-02-01T12:00:00Z"
+}

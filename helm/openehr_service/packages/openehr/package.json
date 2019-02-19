@@ -1,0 +1,48 @@
+{
+  "name": "ripple-cdr-openehr",
+  "version": "2.3.0",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint headings lib modules spec",
+    "test": "NODE_ENV=test jasmine --config=spec/support/jasmine.json",
+    "coverage": "nyc --reporter=html --reporter=text npm test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "headings/**/*.js",
+      "lib/**/*.js",
+      "modules/**/*.js"
+    ],
+    "exclude": [
+      "lib/jumper/**/*.js"
+    ]
+  },
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "fast-safe-stringify": "^2.0.6",
+    "moment-timezone": "^0.5.20",
+    "qewd-router": "^1.13.1",
+    "qewd-template": "^1.1.2",
+    "qewd-transform-json": "^1.10.0",
+    "request": "^2.87.0",
+    "valid-url": "^1.0.9",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "eslint": "^5.12.1",
+    "ewd-document-store": "^1.24.0",
+    "ewd-memory-globals": "^1.0.3",
+    "ewd-session": "^2.19.0",
+    "jasmine": "^3.3.1",
+    "jasmine-spec-reporter": "^4.1.1",
+    "jasmine-spy-matchers": "^2.2.0",
+    "jshint": "^2.9.7",
+    "mockery": "^2.1.0",
+    "nock": "^10.0.4",
+    "nyc": "^13.1.0"
+  }
+}

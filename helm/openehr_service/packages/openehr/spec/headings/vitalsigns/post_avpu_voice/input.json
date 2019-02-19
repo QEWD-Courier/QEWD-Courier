@@ -1,0 +1,11 @@
+{
+  "respirationRate": "some respiration rate",
+  "oxygenSupplemental": "other air mode",
+  "heartRate": 76,
+  "temperature": 38,
+  "levelOfConsciousness": "Voice",
+  "systolicBP": "some systolic bp",
+  "diastolicBP": "some diastolic BP",
+  "oxygenSaturation": "some oxygen saturation",
+  "newsScore": "some score"
+}

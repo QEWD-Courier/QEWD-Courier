@@ -1,0 +1,17 @@
+{
+  "referral_type": "some referral type",
+  "referral_reason": "some referral reason",
+  "clinical_summary": "some clinical reason",
+  "referralFrom": "sometime from",
+  "referralTo": "somewhere to",
+  "referral_ref": "some referral ref",
+  "outcome": "some outcome",
+  "dateOfState": "2018-02-01T12:00:00Z",
+  "state": "some state",
+  "stateCode": "some referral state code",
+  "careflow": "some careflow",
+  "service_name": "some service name",
+  "author": "Mr John Doe",
+  "date_created": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

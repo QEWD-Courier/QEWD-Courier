@@ -1,0 +1,10 @@
+{
+  "vaccinationName": "some vaccination name",
+  "comment": "some other comment",
+  "series": 112233,
+  "vaccinationDateTime": 1517486400000,
+  "author": "Mr John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

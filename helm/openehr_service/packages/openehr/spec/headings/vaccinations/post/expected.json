@@ -1,0 +1,15 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "immunisation_summary/immunisation_procedure:0/ism_transition/current_state|code": "532",
+  "immunisation_summary/immunisation_procedure:0/immunisation_name": "other vaccination name",
+  "immunisation_summary/immunisation_procedure:0/series_number": "other new series",
+  "immunisation_summary/immunisation_procedure:0/comment": "some comment",
+  "immunisation_summary/immunisation_procedure:0/time": "2018-02-01T12:00:00Z"
+}

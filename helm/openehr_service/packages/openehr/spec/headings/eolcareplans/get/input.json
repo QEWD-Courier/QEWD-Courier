@@ -1,0 +1,14 @@
+{
+  "author": "John Doe Jr",
+  "date_created": "2018-01-01T12:00:00Z",
+  "cpr_decision": "some cpr decision",
+  "cpr_date_of_decision": "2018-02-01T12:00:00Z",
+  "cpr_comment": "some cpr comment",
+  "priority_place_of_care": "some priority place of care",
+  "priority_place_of_death": "some priority place of death",
+  "priority_comment": "some priority comment",
+  "treatment_decision": "some treatment decision",
+  "treatment_date_of_decision": "2018-03-01T12:00:00Z",
+  "treatment_comment": "some treatment comment",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

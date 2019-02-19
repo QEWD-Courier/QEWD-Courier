@@ -1,0 +1,11 @@
+{
+  "name": "John Doe",
+  "medicationCode": "some medication name code",
+  "medicationTerminology": "some medication name terminology",
+  "doseDirections": "some dose directions",
+  "route": "another some route",
+  "doseAmount": "some dose amounts",
+  "doseTiming": "some timing in period",
+  "startDate": 1514808000000,
+  "startTime": 54000000
+}

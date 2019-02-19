@@ -1,0 +1,11 @@
+{
+  "phr": {
+    "microservices": {
+      "openid_connect": {
+        "host": "https://178.128.40.14",
+        "port": 443,
+        "path_prefix": "/oidc"
+      }
+    }
+  }
+}

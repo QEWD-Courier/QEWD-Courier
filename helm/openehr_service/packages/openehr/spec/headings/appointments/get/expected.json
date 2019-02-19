@@ -1,0 +1,11 @@
+{
+  "serviceTeam": "some service_team",
+  "dateOfAppointment": 1514754000000,
+  "timeOfAppointment": 50400000,
+  "location": "some location",
+  "status": "some status",
+  "author": "John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

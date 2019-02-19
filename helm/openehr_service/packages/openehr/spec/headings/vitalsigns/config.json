@@ -1,0 +1,15 @@
+{
+  "get": [
+    "avpu_alert",
+    "avpu_pain",
+    "avpu_unresponsive",
+    "avpu_voice"
+  ],
+  "post": [
+    "avpu_alert",
+    "avpu_pain",
+    "avpu_unresponsive",
+    "avpu_voice",
+    "defaults"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "referralType": "some referral type",
+  "referralReason": "some referral reason",
+  "referralSummary": "some clinical reason",
+  "referralFrom": "sometime from",
+  "referralTo": "somewhere to",
+  "referralRef": "some referral ref",
+  "referralOutcome": "some outcome",
+  "referralStateDate": 1517486400000,
+  "referralState": "some state",
+  "referralStateCode": "some referral state code",
+  "referralCareFlow": "some careflow",
+  "referralServiceName": "some service name",
+  "dateOfReferral": 1514808000000,
+  "author": "Mr John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

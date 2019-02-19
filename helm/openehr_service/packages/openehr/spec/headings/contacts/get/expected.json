@@ -1,0 +1,14 @@
+{
+  "name": "John Doe",
+  "relationship": "some relationship Role Type",
+  "relationshipType": "some relationship Category",
+  "relationshipCode": "some relationship Category Code",
+  "relationshipTerminology": "some relationship Category Terminology",
+  "contactInformation": "some contact Information",
+  "nextOfKin": "some next of kin",
+  "notes": "some notes",
+  "author": "John Doe Jr",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

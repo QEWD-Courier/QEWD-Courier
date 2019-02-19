@@ -1,0 +1,12 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "referralServiceName": "some referral service name",
+  "referralReason": "some referral reason",
+  "referralSummary": "some referral summary",
+  "referralStateDate": 1517486400000,
+  "referralFrom": "sometime referral from",
+  "referralRef": "some referral ref",
+  "referralTo": "somewhere referral to"
+}
