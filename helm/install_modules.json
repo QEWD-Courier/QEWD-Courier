@@ -3,5 +3,11 @@
   "qewd-template",
   "moment-timezone",
   "jsonschema",
-  "valid-url"
+  "valid-url",
+  "bluebird",
+  "fast-safe-stringify",
+  "qewd-router",
+  "qewd-transform-json",
+  "request",
+  "winston"
 ]
