@@ -126,14 +126,14 @@ You'll see three main folders:
 
 ## auth_service
 
-        sudo docker run -it --name auth_service --rm --net qewd-net -p 8081:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="auth_service" -v ~/qewd-courier/yottadb/auth_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name auth_service --rm --net qewd-net -p 8081:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="auth_service" -v ~/qewd-courier/yottaDB/auth_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
 ## openehr_service
 
-        sudo docker run -it --name openehr_service --rm --net qewd-net -p 8082:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="openehr_service" -v ~/qewd-courier/yottadb/openehr_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name openehr_service --rm --net qewd-net -p 8082:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="openehr_service" -v ~/qewd-courier/yottaDB/openehr_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
@@ -141,14 +141,14 @@ You'll see three main folders:
 
 ## discovery_service
 
-        sudo docker run -it --name discovery_service --rm --net qewd-net -p 8083:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="discovery_service" -v ~/qewd-courier/yottadb/discovery_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name discovery_service --rm --net qewd-net -p 8083:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="discovery_service" -v ~/qewd-courier/yottaDB/discovery_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
 ## OIDC Provider / Server
 
-        sudo docker run -it --rm --name oidc -p 8000:8080 -v ~/qewd-courier/oidc_provider/openid-connect-server:/opt/qewd/mapped -v ~/qewd-courier/oidc_provider/openid-connect-server/www:/opt/qewd/www -v ~/qewd-courier/oidc_provider/settings:/opt/qewd/mapped/settings -v ~/qewd-courier/yottadb/oidc_provider:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --rm --name oidc -p 8000:8080 -v ~/qewd-courier/oidc_provider/openid-connect-server:/opt/qewd/mapped -v ~/qewd-courier/oidc_provider/openid-connect-server/www:/opt/qewd/www -v ~/qewd-courier/oidc_provider/settings:/opt/qewd/mapped/settings -v ~/qewd-courier/yottaDB/oidc_provider:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 The first time you start the OIDC Provider container, it will configure the OIDC service using data held in the file *~/qewd-courier/oidc_provider/openid-connect-server/documents.json*.  This file is automatically deleted after it loads first time.
 
