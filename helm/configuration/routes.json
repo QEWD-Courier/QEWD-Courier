@@ -54,6 +54,12 @@
     "on_microservice": "auth_service"
   },
   {
+    "uri": "/api/logout",
+    "method": "GET",
+    "handler": "logout",
+    "on_microservice": "auth_service"
+  },
+  {
     "uri": "/api/application",
     "method": "GET",
     "handler": "getApplication"
