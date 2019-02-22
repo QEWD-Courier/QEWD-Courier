@@ -77,6 +77,18 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/api/patients/:patientId/top3Things",
+    "method": "POST",
+    "handler": "setPatientTop3Things",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/top3Things/:sourceId",
+    "method": "PUT",
+    "handler": "setPatientTop3Things",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/api/patients/:patientId/:heading",
     "method": "GET",
     "handler": "getPatientHeadingSummary",
