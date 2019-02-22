@@ -1,5 +1,5 @@
 var uuid = require('uuid/v4');
-var tools = require('../../utils/tools'); //@TODO How can I get tools from /helm/utils
+var tools = require('../../../utils/tools');
 
 function postTop3Things(args, finished) {
 
