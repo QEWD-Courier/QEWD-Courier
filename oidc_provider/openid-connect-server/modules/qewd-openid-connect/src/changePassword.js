@@ -37,13 +37,11 @@ module.exports = function(messageObj, session, send, finished) {
   var password = messageObj.params.password;
   if (!password || password === '') return finished({error: 'Missing or blank Password'});
 
-  // at least 1 upper case
-  // at least 1 lower case
-  // at least 1 number
-  // at least 7 characters long
-  var passwordPattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{7,})");
+  // at least 10 characters long
+	var passwordPattern = new RegExp("[A-Za-z0-9.,:!?;()]{10,}$");
 
-  if (!passwordPattern.test(password)) {
+
+	if (!passwordPattern.test(password)) {
     return finished({error: 'Your password does not meet the necessary requirements'});
   }
 
@@ -110,7 +108,7 @@ module.exports = function(messageObj, session, send, finished) {
   twoFaDoc.delete();
 
   // get rid of any expired 2fa codes while we're here
-  
+
   session.data.$('2fa').forEachChild(function(grant, node) {
     if (node.$('expiry').value < now) node.delete();
   });
