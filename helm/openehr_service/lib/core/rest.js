@@ -1,0 +1,58 @@
+/*
+
+ ----------------------------------------------------------------------------
+ |                                                                          |
+ | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | All rights reserved.                                                     |
+ |                                                                          |
+ | http://rippleosi.org                                                     |
+ | Email: code.custodian@rippleosi.org                                      |
+ |                                                                          |
+ | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ |                                                                          |
+ | Licensed under the Apache License, Version 2.0 (the "License");          |
+ | you may not use this file except in compliance with the License.         |
+ | You may obtain a copy of the License at                                  |
+ |                                                                          |
+ |     http://www.apache.org/licenses/LICENSE-2.0                           |
+ |                                                                          |
+ | Unless required by applicable law or agreed to in writing, software      |
+ | distributed under the License is distributed on an "AS IS" BASIS,        |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |
+ | See the License for the specific language governing permissions and      |
+ |  limitations under the License.                                          |
+ ----------------------------------------------------------------------------
+
+  1 March 2019
+
+*/
+
+'use strict';
+
+const EhrRestService = require('../services/ehrRestService');
+const { lazyLoadAdapter } = require('../shared/utils');
+const logger = require('./logger');
+
+class RestRegistry {
+  constructor(ctx) {
+    this.ctx = ctx;
+  }
+
+  initialise(host) {
+    logger.info('core/rest|initialise', { host });
+
+    const hostConfig = this.ctx.serversConfig[host];
+
+    if (!hostConfig) {
+      throw new Error(`Config for ${host} host is not defined.`);
+    }
+
+    return new EhrRestService(this.ctx, host, hostConfig);
+  }
+
+  static create(ctx) {
+    return lazyLoadAdapter(new RestRegistry(ctx));
+  }
+}
+
+module.exports = RestRegistry;

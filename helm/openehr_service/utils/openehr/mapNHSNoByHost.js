@@ -23,44 +23,23 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  1 March 2019
 
 */
 
-var openEHR = require('./openEHR');
+'use strict';
 
-module.exports = function(nhsNo, host, session, callback) {
-  var ehrId;
-  var nhsNoMap = this.db.use('RippleNHSNoMap', ['byNHSNo', nhsNo, host]);
-  var mapByEhrId = this.db.use('RippleNHSNoMap', ['byEhrId']);
+const { ExecutionContext, logger } = require('../../lib/core');
 
-  if (nhsNoMap.exists) {
-    ehrId = nhsNoMap.value;
-    if (callback) callback(ehrId);
-    return;
-  }
+function mapNhsNoByHost(patientId, host, ehrSession, callback) {
+  const ctx = new ExecutionContext(this);
+  const { patientService } = ctx.services;
 
-  var params = {
-    host: host,
-    //callback: callback,
-    url: '/rest/v1/ehr',
-    queryString: {
-      subjectId: nhsNo,
-      subjectNamespace: 'uk.nhs.nhs_number'
-    },
-    method: 'GET',
-    session: session.id
-  };
-  params.processBody = function(body, ehrId) {
-    if (body && body.ehrId) {
-      nhsNoMap.value = body.ehrId;
-      mapByEhrId.$([body.ehrId, host]).value = nhsNo;
-      ehrId = body.ehrId;
-      if (callback) callback(ehrId);
-    }
-    else {
-      if (callback) callback();
-    }
-  };
-  openEHR.request(params, ehrId);
-};
+  patientService.getEhrId(host, patientId)
+    .then(ehrId => callback(ehrId))
+    .catch(err => {
+      logger.error('utils/openehr/mapNhsNoByHost|err: ' + err.message);
+      logger.error('utils/openehr/mapNhsNoByHost|stack: ' + err.stack);
+    });
+}
+module.exports = mapNhsNoByHost;

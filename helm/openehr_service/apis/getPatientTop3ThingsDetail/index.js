@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
-'use strict'
+'use strict';
 
-const { GetTop3ThingsDetailCommand } = require('../../commands/top3Things');
-const { getResponseError } = require('../../errors');
+const { GetPatientTop3ThingsDetailCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
 /**
  * GET /api/patients/:patientId/top3Things/:sourceId
@@ -40,7 +40,7 @@ const { getResponseError } = require('../../errors');
  */
 module.exports = async function getPatientTop3ThingsDetail(args, finished) {
   try {
-    const command = new GetTop3ThingsDetailCommand(args.req.ctx, args.session);
+    const command = new GetPatientTop3ThingsDetailCommand(args.req.ctx, args.session);
     const responseObj = await command.execute(args.patientId);
 
     finished(responseObj);

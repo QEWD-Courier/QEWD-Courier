@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,16 +23,25 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
+'use strict';
+
 // var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-// var getDiscoveryHeadingData = require('../../utils/dds/getDiscoveryHeadingData');
-// var mergeDiscoveryDataInWorker = require('../../utils/dds/mergeDiscoveryDataInWorker');
+const { logger } = require('../../lib/core');
+const DiscoveryDispatcher = require('../../lib/dispatchers/discovery');
+const { ExtraHeading, Heading, RecordStatus } = require('../../lib/shared/enums');
 
-
-module.exports = function (message, jwt, forward, sendBack) {
+/**
+ * @param  {Object} message
+ * @param  {string} jwt
+ * @param  {Function} forward
+ * @param  {Function} sendBack
+ * @return {bool}
+ */
+module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-line no-unused-vars
   /*
 
     Handling the response from /api/openehr/check  (ie response from index.js in this folder)
@@ -59,17 +68,17 @@ module.exports = function (message, jwt, forward, sendBack) {
 
   */
 
+  logger.debug('message:', { message: JSON.stringify(message) });
   /*
     {
       "status": "loading_data" | "ready",
       "new_patient": true | false,
       "nhsNumber": {patientId},
       "path": "/api/openehr/check",
-      "ewd_application": "ripple-cdr-openehr",
+      "ewd_application": "openehr_service",
       "token": {jwt}
     }
   */
-  logger.debug('message:', { message });
 
   if (message.status === RecordStatus.READY) {
     // Write-back of DDS data to EtherCIS has been completed, so return the
@@ -84,17 +93,18 @@ module.exports = function (message, jwt, forward, sendBack) {
     return false;
   }
 
-  // TODO: openehr_config
-  logger.debug('synopsis headings:', { headings: this.userDefined.synopsis.headings });
+  const synopsisConfig = this.userDefined.globalConfig.openehr.synopsis;
+  logger.debug('synopsis headings:', { headings: synopsisConfig.headings });
 
   // this is the first poll request using /api/initialise by the user, so
   //  commence the DDS write-back to EtherCIS
 
   // add a special extra one to signal the end of processing
   // so the worker can switch the session record status to 'ready'
-  const headings = this.userDefined.synopsis.headings
-    .filter(x => x !== Heading.TOP_3_THINGS)
-    .concat(ExtraHeading.FINISHED);
+  const headings = [
+    ...synopsisConfig.headings.filter(x => x !== Heading.TOP_3_THINGS),
+    ExtraHeading.FINISHED
+  ];
 
    /*
     we're going to let all this stuff kick off in the background

@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
 'use strict';
 
-// const { ExecutionContext } = require('../packages/discovery/lib/core');
+const { ExecutionContext, logger } = require('../lib/core');
 
 /**
  * The beforeHandler module is invoked for EVERY incoming request handled by
@@ -53,12 +53,11 @@
  * @param  {Function} finished
  * @return {bool}
  */
-module.exports = function (req, finished) {
-  console.log('beforeHandler in openehr_service invoked!');
+module.exports = function (req, finished) { // eslint-disable-line no-unused-vars
+  logger.info('beforeHandler');
 
   req.qewdSession = this.qewdSessionByJWT.call(this, req);
   req.ctx = ExecutionContext.fromRequest(this, req);
 
   return true;
-
 };

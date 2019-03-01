@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
 'use strict';
 
-const { DeletePatientHeadingCommand } = require('../../commands/patients');
-const { getResponseError } = require('../../errors');
+const { DeletePatientHeadingCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
 /**
  * DELETE /api/feeds/:sourceId

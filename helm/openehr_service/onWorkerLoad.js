@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
@@ -32,5 +32,5 @@
 const globalConfig = require('/opt/qewd/mapped/configuration/global_config.json');
 
 module.exports = function () {
-  this.userDefined.global = globalConfig;
+  this.userDefined.globalConfig = globalConfig;
 };

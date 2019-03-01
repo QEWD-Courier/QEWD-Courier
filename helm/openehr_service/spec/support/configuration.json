@@ -1,0 +1,48 @@
+{
+  "oidc_client": {
+    "hosts": {
+      "oidc_server": "http://oidc.ripple.foundation:8000"
+    }
+  },
+  "openehr": {
+    "servers": {
+      "marand": {
+        "url": "https://test.operon.systems",
+        "username": "foo",
+        "password": "123456",
+        "platform": "marand"
+      },
+      "ethercis": {
+        "url": "http://178.62.71.220:8080",
+        "username": "bar",
+        "password": "quux",
+        "platform": "ethercis"
+      }
+    },
+    "sites": {
+      "ltht": {
+        "credentials": "5ebe2294ecd0e0f08eab7690d2a6ee69"
+      }
+    },
+    "defaultPostHost": "ethercis",
+    "synopsis": {
+      "headings": [
+        "procedures",
+        "vaccinations"
+      ],
+      "maximum": 2
+    },
+    "headings": {
+      "counts": true,
+      "procedures": true,
+      "proms-test": true,
+      "vaccinations": {
+        "template": {
+          "name": "IDCR - Immunisation summary.v0"
+        },
+        "synopsisField": "vaccinationName",
+        "summaryTableFields": ["vaccinationName", "dateCreated"]
+      }
+    }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "author": "{{composer.value}}",
-  "dateCreated": "=> rippleDateTime(start_time, true)",
-  "source": "{{host}}",
-  "sourceId": "=> getUid(uid, host)",
-  "patientId": "{{patientId}}"
-}

@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  20 February 2019
+  1 March 2019
 
 */
 
 'use strict';
 
-const { PutFeedCommand } = require('../../commands/feeds');
-const { getResponseError } = require('../../errors');
+const { PutFeedCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
 /**
  * PUT /api/feeds/:sourceId
