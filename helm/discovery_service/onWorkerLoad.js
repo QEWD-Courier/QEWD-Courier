@@ -1,4 +1,3 @@
-
 /*
  ----------------------------------------------------------------------------
  |                                                                          |
@@ -25,8 +24,8 @@
   13 February 2019
 */
 
-const global_config = require('/opt/qewd/mapped/configuration/global_config.json');
+const global_config = require('/opt/qewd/mapped/configuration/global_config.json')
 
 module.exports = async function (args, finished) {
-	this.userDefined.globalConfig = global_config.DDS;
-};
+  this.userDefined.globalConfig = global_config.DDS
+}

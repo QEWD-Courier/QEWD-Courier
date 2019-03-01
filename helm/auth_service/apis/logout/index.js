@@ -28,59 +28,56 @@
 
 */
 
-var request = require('request');
+var request = require('request')
 
-module.exports = function(args, finished) {
+module.exports = function (args, finished) {
 
+  var id_token = args.session.openid.id_token
+  var uri = this.oidc_client.config.end_session_endpoint
 
-	var id_token = args.session.openid.id_token;
-	var uri = this.oidc_client.config.end_session_endpoint;
+  if (!uri) return finished({
+    ok: false
+  })
 
-	if (!uri) return finished({
-		ok: false
-	});
+  if (this.oidc_client.config.logout_approach === 'client') {
 
-	if (this.oidc_client.config.logout_approach === 'client') {
+    uri = uri + '?id_token_hint=' + id_token
+    uri = uri + '&post_logout_redirect_uri=' + this.oidc_client.config.post_logout_redirect_uri
 
-		uri = uri + '?id_token_hint=' + id_token;
-		uri = uri + '&post_logout_redirect_uri=' + this.oidc_client.config.post_logout_redirect_uri;
+    return finished({
+      //redirectURL: 'http://www.mgateway.com:8089/session/end'
+      redirectURL: uri //@TODO Please check configuration/global_config/post_logout_redirect_uri , removed slash, because we have error with redirect url
+    })
+  }
 
-		return finished({
-			//redirectURL: 'http://www.mgateway.com:8089/session/end'
-			redirectURL: uri //@TODO Please check configuration/global_config/post_logout_redirect_uri , removed slash, because we have error with redirect url
-		});
-	}
+  if (args.session.openid && args.session.openid.id_token) {
 
+    var options = {
+      url: this.oidc_client.config.end_session_endpoint,
+      method: 'GET',
+      qs: {
+        id_token_hint: id_token,
+        //post_logout_redirect_uri: this.userDefined.auth.post_logout_redirect_uri
+      },
+      json: true
+    }
 
-	if (args.session.openid && args.session.openid.id_token) {
+    console.log('**** OpenId end session / logout: options - ' + JSON.stringify(options, null, 2))
 
-		var options = {
-			url: this.oidc_client.config.end_session_endpoint,
-			method: 'GET',
-			qs: {
-				id_token_hint: id_token,
-				//post_logout_redirect_uri: this.userDefined.auth.post_logout_redirect_uri
-			},
-			json: true
-		};
+    var self = this
 
-		console.log('**** OpenId end session / logout: options - ' + JSON.stringify(options, null, 2));
+    request(options, function (error, response, body) {
+      console.log('*** logout - response = ' + JSON.stringify(response))
 
-		var self = this;
-
-		request(options, function(error, response, body) {
-			console.log('*** logout - response = ' + JSON.stringify(response));
-
-
-			finished({
-				ok: true,
-				redirectURL: self.oidc_client.config.post_logout_redirect_uri,
-			});
-		});
-	}
-	else {
-		finished({
-			ok: false
-		});
-	}
-};
+      finished({
+        ok: true,
+        redirectURL: self.oidc_client.config.post_logout_redirect_uri,
+      })
+    })
+  }
+  else {
+    finished({
+      ok: false
+    })
+  }
+}
