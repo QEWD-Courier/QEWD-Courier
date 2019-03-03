@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isFeedPayloadValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:feeds:post');
+const debug = require('debug')('helm:openehr:commands:feeds:post');
 
 class PostFeedCommand {
   constructor(ctx, session) {

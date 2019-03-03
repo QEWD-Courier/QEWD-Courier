@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -37,7 +37,7 @@ const { NotFoundError, UnprocessableEntityError } = require('../errors');
 const { Heading, ResponseFormat } = require('../shared/enums');
 const { headingHelpers, getHeadingDefinition, getHeadingMap, getHeadingAql } = require('../shared/headings');
 const { buildSourceId, flatten } = require('../shared/utils');
-const debug = require('debug')('ripple-cdr-openehr:services:heading');
+const debug = require('debug')('helm:openehr:services:heading');
 
 const ok = () => ({ ok: true });
 const fail = (err) => ({ ok: false, error: err });

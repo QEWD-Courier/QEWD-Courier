@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 'use strict';
 
 const P = require('bluebird');
-const debug = require('debug')('ripple-cdr-openehr:commands:discovery:revert-all');
+const debug = require('debug')('helm:openehr:commands:discovery:revert-all');
 
 class RevertAllDiscoveryDataCommand {
   constructor(ctx) {

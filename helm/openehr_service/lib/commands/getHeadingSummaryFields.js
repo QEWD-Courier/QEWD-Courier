@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -33,7 +33,7 @@ const { BadRequestError, ForbiddenError } = require('../errors');
 const { Heading, UserMode } = require('../shared/enums');
 const { getHeadingDefinition } = require('../shared/headings');
 const { isHeadingValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:headings:get-summary-fields');
+const debug = require('debug')('helm:openehr:commands:headings:get-summary-fields');
 
 class GetHeadingSummaryFieldsCommand {
   constructor(ctx, session) {

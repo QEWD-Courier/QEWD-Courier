@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isPatientIdValid, isTop3ThingsPayloadValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:top3things:post');
+const debug = require('debug')('helm:openehr:commands:top3things:post');
 
 class PostTop3ThingsCommand {
   constructor(ctx, session) {

@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 'use strict';
 
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('ripple-cdr-openehr:commands:feeds:get-detail');
+const debug = require('debug')('helm:openehr:commands:feeds:get-detail');
 
 class GetFeedDetailCommand {
   constructor(ctx) {

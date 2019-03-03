@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 'use strict';
 
-const debug = require('debug')('ripple-cdr-openehr:commands:feeds:get-summary');
+const debug = require('debug')('helm:openehr:commands:feeds:get-summary');
 
 class GetFeedsSummaryCommand {
   constructor(ctx, session) {

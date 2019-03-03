@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { logger } = require('../core');
 const { EhrIdNotFoundError } = require('../errors');
-const debug = require('debug')('ripple-cdr-openehr:services:patient');
+const debug = require('debug')('helm:openehr:services:patient');
 
 class PatientService {
   constructor(ctx) {

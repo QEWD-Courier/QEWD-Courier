@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const P = require('bluebird');
 const { logger } = require('../core');
 const { buildSourceId } = require('../shared/utils');
-const debug = require('debug')('ripple-cdr-openehr:services:discovery');
+const debug = require('debug')('helm:openehr:services:discovery');
 
 class DiscoveryService {
   constructor(ctx) {

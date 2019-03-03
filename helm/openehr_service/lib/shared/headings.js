@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 const path = require('path');
 const fs = require('fs');
 const dateTime = require('./dateTime');
-const debug = require('debug')('ripple-cdr-openehr:shared:headings');
+const debug = require('debug')('helm:openehr:shared:headings');
 
 const headings = {};
 const aql = {};

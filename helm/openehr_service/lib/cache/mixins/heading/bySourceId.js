@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 'use strict';
 
 const { logger } = require('../../../core');
-const debug = require('debug')('ripple-cdr-openehr:cache:heading:bySourceId');
+const debug = require('debug')('helm:openehr:cache:heading:bySourceId');
 
 module.exports = (adapter) => {
   return {

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const config = require('../config');
 const { logger } = require('../core');
 const { EhrSessionError } = require('../errors');
-const debug = require('debug')('ripple-cdr-openehr:services:ehr-session');
+const debug = require('debug')('helm:openehr:services:ehr-session');
 
 class EhrSessionService {
   constructor(ctx) {

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isPatientIdValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:top3things:get-summary');
+const debug = require('debug')('helm:openehr:commands:top3things:get-summary');
 
 class GetTop3ThingsSummaryCommand {
   constructor(ctx, session) {

@@ -32,7 +32,7 @@
 const { BadRequestError, ForbiddenError } = require('../errors');
 const { parseAccessToken } = require('../shared/utils');
 const { isPatientIdValid, isSiteValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:top3things:get-hscn-detail');
+const debug = require('debug')('helm:openehr:commands:top3things:get-hscn-detail');
 
 class GetPatientTop3ThingsHscnDetailCommand {
   constructor(ctx) {

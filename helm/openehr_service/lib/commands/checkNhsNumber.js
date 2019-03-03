@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 const { BadRequestError } = require('../errors');
 const { RecordStatus } = require('../shared/enums');
 const { isPatientIdValid } = require('../shared/validation');
-const debug = require('debug')('ripple-cdr-openehr:commands:check-nhs-number');
+const debug = require('debug')('helm:openehr:commands:check-nhs-number');
 
 class CheckNhsNumberCommand {
   constructor(ctx, session) {

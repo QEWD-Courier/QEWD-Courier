@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const { BadRequestError } = require('../errors');
 const { isHeadingValid, isPatientIdValid, isSourceIdValid } = require('../shared/validation');
 const { Role, ResponseFormat } = require('../shared/enums');
-const debug = require('debug')('ripple-cdr-openehr:commands:patients:get-heading-detail');
+const debug = require('debug')('helm:openehr:commands:patients:get-heading-detail');
 
 class GetPatientHeadingDetailCommand {
   constructor(ctx, session) {
