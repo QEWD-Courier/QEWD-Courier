@@ -31,9 +31,7 @@
 'use strict';
 
 const mockery = require('mockery');
-const { ExecutionContext } = require('@lib/core');
-const { Heading } = require('@lib/shared/enums');
-const { ExecutionContextMock, MasterMock, Worker } = require('@tests/mocks');
+const { MasterMock } = require('@tests/mocks');
 
 describe('apis/onMsResponse', () => {
   let q;
@@ -41,7 +39,6 @@ describe('apis/onMsResponse', () => {
 
   let message;
   let jwt;
-  let send;
   let forward;
   let sendBack;
 

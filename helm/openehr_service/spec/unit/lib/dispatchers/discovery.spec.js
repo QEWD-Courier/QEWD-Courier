@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -65,8 +65,6 @@ describe('lib/dispatchers/discovery', () => {
       const expected = {
         foo: 'bar'
       };
-
-      q.microServiceRouter
 
       const patientId = 9999999000;
       const heading = 'problems';

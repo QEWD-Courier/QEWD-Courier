@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -35,7 +35,7 @@ const sessions = require('ewd-session');
 const globalConfig = require('../support/configuration.json');
 const { clone } = require('../helpers/utils');
 
-module.exports = function (config) {
+module.exports = function () {
   this.db = new DbGlobals();
   this.documentStore = new DocumentStore(this.db);
 

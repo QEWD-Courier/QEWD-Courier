@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
@@ -34,7 +34,7 @@ const { parseAccessToken } = require('../shared/utils');
 const { isPatientIdValid, isSiteValid } = require('../shared/validation');
 const debug = require('debug')('ripple-cdr-openehr:commands:top3things:get-hscn-detail');
 
-class GetTop3ThingsHscnDetailCommand {
+class GetPatientTop3ThingsHscnDetailCommand {
   constructor(ctx) {
     this.ctx = ctx;
   }
@@ -80,4 +80,4 @@ class GetTop3ThingsHscnDetailCommand {
   }
 }
 
-module.exports = GetTop3ThingsHscnDetailCommand;
+module.exports = GetPatientTop3ThingsHscnDetailCommand;

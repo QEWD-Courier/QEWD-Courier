@@ -23,15 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  3 March 2019
 
 */
 
 'use strict';
 
-const mockery = require('mockery');
 const { ExecutionContext } = require('@lib/core');
-const { CommandMock, Worker } = require('@tests/mocks');
+const { Worker } = require('@tests/mocks');
 const beforeHandler = require('@apis/beforeHandler');
 
 describe('apis/beforeHandler', () => {
@@ -54,18 +53,18 @@ describe('apis/beforeHandler', () => {
   it('should set req.qewdSession', async () => {
     beforeHandler.call(q, req, finished);
 
-    expect(q.qewdSessionByJWT).toHaveBeenCalledWithContext(q, req)
-    expect(req.qewdSession).toBe(qewdSession)
+    expect(q.qewdSessionByJWT).toHaveBeenCalledWithContext(q, req);
+    expect(req.qewdSession).toBe(qewdSession);
   });
 
   it('should set req.ctx', async () => {
     const ctxMock = {};
 
-    spyOn(ExecutionContext, 'fromRequest').and.returnValue(ctxMock)
+    spyOn(ExecutionContext, 'fromQewdSession').and.returnValue(ctxMock);
 
     beforeHandler.call(q, req, finished);
 
-    expect(ExecutionContext.fromRequest).toHaveBeenCalledWith(q, req)
-    expect(req.ctx).toBe(ctxMock)
+    expect(ExecutionContext.fromQewdSession).toHaveBeenCalledWith(q, qewdSession);
+    expect(req.ctx).toBe(ctxMock);
   });
 });

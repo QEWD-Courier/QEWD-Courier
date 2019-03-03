@@ -58,6 +58,11 @@
       }
     },
     "defaultPostHost": "ethercis",
+    "sites": {
+      "ltht": {
+        "credentials": "bHRodF9oZWxtOjU3NTE2N2ZjLTcwMWItNGFkYi05MWIwLWI0NTc5ZmY5ZGQ1Ng=="
+      }
+    },
     "synopsis": {
       "headings": [
         "allergies",
