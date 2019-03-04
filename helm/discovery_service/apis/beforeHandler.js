@@ -50,7 +50,7 @@
 
 
 */
-const {ExecutionContext} = require('../packages/discovery/lib/core');
+const { ExecutionContext } = require('../lib/core');
 module.exports = function (req, finished) {
   
   

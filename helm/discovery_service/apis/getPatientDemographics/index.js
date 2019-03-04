@@ -29,14 +29,14 @@
 
 'use strict';
 
-const { GetDemographicsCommand } = require('../../packages/discovery/lib/commands');
-const { getResponseErro } = require('../../packages/discovery/lib/errors');
+const { GetDemographicsCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
 /**
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function (args, finished) {
+module.exports = async function getPatientDemographics (args, finished) {
   try {
     const command = new GetDemographicsCommand(args.req.ctx, args.session);
     const responseObj = await command.execute(args.patientId);

@@ -46,6 +46,22 @@
         "getResource": "/api/fhir/reference"
       }
     },
+    "headings" : {
+      "medications": "MedicationStatement",
+      "allergies": "AllergyIntolerance",
+      "problems": "Condition",
+      "vaccinations": "Immunization"
+    },
+    "transformations": {
+      "pulsetile": {
+        "source": "openehr",
+        "destination": "pulsetile"
+      },
+      "defaults": {
+        "source": "discovery",
+        "destination": "openehr"
+      }
+    },
     "mode": "test"
   },
   "openehr": {
