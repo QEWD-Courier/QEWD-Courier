@@ -50,17 +50,14 @@
 
 
 */
-const { ExecutionContext } = require('../packages/discovery/lib/core');
+const {ExecutionContext} = require('../packages/discovery/lib/core');
 module.exports = function (req, finished) {
-
-
-	console.log('beforeHandler in discovery_service invoked!');
-
-	req.qewdSession = this.qewdSessionByJWT.call(this, req);
-	const authorised = this.jwt.handlers.validateRestRequest.call(this, req, finished);
-	if (authorised) {
-		req.ctx = ExecutionContext.fromRequest(this, req);
-	}
-	return true;
-
+  
+  
+  console.log('beforeHandler in discovery_service invoked!');
+  
+  req.qewdSession = this.qewdSessionByJWT.call(this, req);
+  req.ctx = ExecutionContext.fromRequest(this, req);
+  return true;
+  
 };

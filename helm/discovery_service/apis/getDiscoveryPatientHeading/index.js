@@ -37,14 +37,14 @@ const { getResponseError } = require('../../packages/discovery/lib/errors');
  * @param  {Function} finished
  */
 module.exports = async function (args, finished) {
-	try {
-		const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-		const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-
-		finished(responseObj);
-	} catch (err) {
-		const responseError = getResponseError(err);
-
-		finished(responseError);
-	}
+  try {
+    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
+    
+    finished(responseObj);
+  } catch (err) {
+    const responseError = getResponseError(err);
+    
+    finished(responseError);
+  }
 };
