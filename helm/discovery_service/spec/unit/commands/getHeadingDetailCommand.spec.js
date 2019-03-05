@@ -30,10 +30,10 @@
 
 'use strict';
 
-const { ExecutionContextMock } = require('../../mocks');
-const { GetHeadingDetailCommand } = require('../../../lib/commands');
-const { Role } = require('../../../lib/shared/enums');
-const { BadRequestError } = require('../../../lib/errors');
+const { ExecutionContextMock } = require('@tests/mocks');
+const { GetHeadingDetailCommand } = require('@lib/commands');
+const { Role } = require('@lib/shared/enums');
+const { BadRequestError } = require('@lib/errors');
 
 describe('ripple-cdr-lib/lib/commands/getHeadingDetailCommand', () => {
   let ctx;

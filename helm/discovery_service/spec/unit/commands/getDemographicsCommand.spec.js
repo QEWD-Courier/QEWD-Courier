@@ -30,10 +30,10 @@
 
 'use strict';
 
-const { ExecutionContextMock } = require('../../mocks');
-const { GetDemographicsCommand } = require('../../../lib/commands');
-const { Role } = require('../../../lib/shared/enums');
-const { BadRequestError } = require('../../../lib/errors');
+const { ExecutionContextMock } = require('@tests/mocks');
+const { GetDemographicsCommand } = require('@lib/commands');
+const { Role } = require('@lib/shared/enums');
+const { BadRequestError } = require('@lib/errors');
 
 describe('ripple-cdr-lib/lib/commands/getDemographicsCommand', () => {
   let ctx;
@@ -75,7 +75,7 @@ describe('ripple-cdr-lib/lib/commands/getDemographicsCommand', () => {
     ctx.services.freeze();
   });
 
-  xit('should throw patientId is invalid error', async () => {
+  it('should throw patientId is invalid error', async () => {
     //@TODO It breaks because I've hardcoded nhsNumber in GetDemographicsCommand L:61
     patientId = 'foo';
 

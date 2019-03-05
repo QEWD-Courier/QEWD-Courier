@@ -31,7 +31,7 @@
 'use strict';
 
 const mockery = require('mockery');
-const { ExecutionContextMock, CommandMock } = require('../../mocks');
+const { ExecutionContextMock, CommandMock } = require('@tests/mocks');
 
 xdescribe('ripple-cdr-lib/lib/handlers/getHeadingSummary', () => {
   let args;
@@ -69,8 +69,8 @@ xdescribe('ripple-cdr-lib/lib/handlers/getHeadingSummary', () => {
     GetHeadingSummaryCommand = jasmine.createSpy().and.returnValue(command);
     mockery.registerMock('../commands', { GetHeadingSummaryCommand });
 
-    delete require.cache[require.resolve('../../../lib/handlers/getHeadingSummary')];
-    handler = require('../../../lib/handlers/getHeadingSummary');
+    delete require.cache[require.resolve('@lib/handlers/getHeadingSummary')];
+    handler = require('@lib/handlers/getHeadingSummary');
   });
 
   afterEach(() => {

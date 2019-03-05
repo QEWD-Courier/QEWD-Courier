@@ -30,8 +30,8 @@
 
 'use strict';
 
-const { ExecutionContextMock } = require('../../mocks');
-const { ResourceCache } = require('../../../lib/cache');
+const { ExecutionContextMock } = require('@tests/mocks');
+const { ResourceCache } = require('@lib/cache');
 
 describe('ripple-cdr-lib/lib/cache/resourceCache', () => {
   let ctx;

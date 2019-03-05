@@ -31,7 +31,7 @@
 'use strict';
 
 const mockery = require('mockery');
-const { ExecutionContextMock, CommandMock } = require('../../mocks');
+const { ExecutionContextMock, CommandMock } = require('@tests/mocks');
 
 xdescribe('ripple-cdr-lib/lib/handlers/getDemographics', () => {
   let args;
@@ -67,8 +67,8 @@ xdescribe('ripple-cdr-lib/lib/handlers/getDemographics', () => {
     GetDemographicsCommand = jasmine.createSpy().and.returnValue(command);
     mockery.registerMock('../commands', { GetDemographicsCommand });
 
-    delete require.cache[require.resolve('../../../../../apis/getPatientDemographics/index')];
-    handler = require('../../../../../apis/getPatientDemographics/index');
+    delete require.cache[require.resolve('@apis/getPatientDemographics/index')];
+    handler = require('@apis/getPatientDemographics/index');
   });
 
   afterEach(() => {

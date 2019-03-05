@@ -1,9 +1,8 @@
 /*
 
  ----------------------------------------------------------------------------
- | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
+ | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -24,10 +23,21 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 February 2019
+  1 March 2019
 
 */
 
 'use strict';
 
+require('module-alias/register');
 require('jasmine-spy-matchers');
+
+const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+
+jasmine.getEnv().clearReporters();
+jasmine.getEnv().addReporter(new SpecReporter({
+  spec: {
+    displayPending: true,
+    displayStacktrace: true
+  }
+}));

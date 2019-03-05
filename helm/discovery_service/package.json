@@ -12,9 +12,15 @@
     "coverage": "nyc --reporter=html --reporter=text jasmine --config=spec/support/jasmine.json",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
+  "_moduleAliases": {
+    "@apis": "apis",
+    "@lib": "lib",
+    "@tests": "spec"
+  },
   "nyc": {
     "all": true,
     "include": [
+      "apis/**/*.js",
       "lib/**/*.js"
     ]
   },
@@ -31,18 +37,69 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "eslint": "^5.10.0",
-    "ewd-document-store": "^1.23.0",
+    "eslint": "^5.12.1",
+    "ewd-document-store": "^1.24.0",
     "ewd-memory-globals": "^1.0.3",
     "ewd-session": "^2.19.0",
-    "glob": "^7.1.2",
     "jasmine": "^3.3.1",
     "jasmine-spec-reporter": "^4.1.1",
     "jasmine-spy-matchers": "^2.2.0",
     "jshint": "^2.9.7",
-    "mock-fs": "^4.5.0",
     "mockery": "^2.1.0",
-    "nock": "^9.4.1",
+    "module-alias": "^2.2.0",
+    "nock": "^10.0.4",
     "nyc": "^13.1.0"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "extends": "eslint:recommended",
+    "env": {
+      "jasmine": true,
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-bitwise": 2,
+      "camelcase": 0,
+      "curly": 0,
+      "guard-for-in": 2,
+      "wrap-iife": [
+        2,
+        "any"
+      ],
+      "no-use-before-define": [
+        2,
+        {
+          "functions": false
+        }
+      ],
+      "new-cap": 2,
+      "no-caller": 2,
+      "no-empty": 2,
+      "no-new": 2,
+      "quotes": [
+        2,
+        "single"
+      ],
+      "no-undef": 2,
+      "no-unused-vars": 2,
+      "operator-linebreak": [
+        "error",
+        "before"
+      ],
+      "comma-style": [
+        2,
+        "last"
+      ],
+      "semi": [
+        2,
+        "always"
+      ]
+    },
+    "globals": {
+      "expectAsync": true
+    }
   }
 }

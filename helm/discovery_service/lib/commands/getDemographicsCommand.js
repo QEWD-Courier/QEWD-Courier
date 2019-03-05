@@ -58,13 +58,13 @@ class GetDemographicsCommand extends BaseCommand {
       patientId = this.session.nhsNumber;
     }
 
-    patientId = 5558526785; //@TODO IMPORTANT TO REMOVE AFTER GOING TO LIVE !!!!!!!!!!!!!
 
     const patientValid = isPatientIdValid(patientId);
     if (!patientValid.ok) {
       throw new BadRequestError(patientValid.error);
     }
-
+  
+    patientId = 5558526785; //@TODO IMPORTANT TO REMOVE AFTER GOING TO LIVE !!!!!!!!!!!!!
     const { cacheService } = this.ctx.services;
     const cachedObj = cacheService.getDemographics(patientId);
     debug('cached response: %j', cachedObj);
