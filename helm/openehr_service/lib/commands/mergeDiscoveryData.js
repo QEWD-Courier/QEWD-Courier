@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
 'use strict';
 
 const { RecordStatus, ExtraHeading } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:commands:discovery:merge');
+const debug = require('debug')('helm:openehr:commands:merge-discovery-data');
 
 class MergeDiscoveryDataCommand {
   constructor(ctx, session) {

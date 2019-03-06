@@ -83,6 +83,8 @@ describe('apis/getPatientHeadingSummary', () => {
   it('should return response object', async () => {
     const responseObj = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingSummary',
+      use: 'results',
       patientId: 9999999111,
       heading: 'procedures',
       results: [
@@ -107,6 +109,8 @@ describe('apis/getPatientHeadingSummary', () => {
 
     const responseObj = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingSummary',
+      use: 'results',
       patientId: 9999999111,
       heading: 'procedures',
       results: [

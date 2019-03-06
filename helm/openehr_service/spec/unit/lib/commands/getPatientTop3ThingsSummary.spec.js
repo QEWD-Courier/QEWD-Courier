@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -50,14 +50,16 @@ describe('lib/commands/getPatientTop3ThingsSummary', () => {
     patientId = 9999999111;
 
     top3ThingsService = ctx.services.top3ThingsService;
-    top3ThingsService.getLatestSummaryByPatientId.and.resolveValue({
-      source: 'QEWDDB',
-      sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
-      dateCreated: 1519851600000,
-      name1: 'foo1',
-      name2: 'foo2',
-      name3: 'foo3'
-    });
+    top3ThingsService.getLatestSummaryByPatientId.and.returnValue([
+      {
+        source: 'QEWDDB',
+        sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+        dateCreated: 1519851600000,
+        name1: 'foo1',
+        name2: 'foo2',
+        name3: 'foo3'
+      }
+    ]);
 
     ctx.services.freeze();
   });
@@ -73,12 +75,18 @@ describe('lib/commands/getPatientTop3ThingsSummary', () => {
 
   it('should return latest top 3 things summary', async () => {
     const expected = {
-      source: 'QEWDDB',
-      sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
-      dateCreated: 1519851600000,
-      name1: 'foo1',
-      name2: 'foo2',
-      name3: 'foo3'
+      api: 'getPatientTop3ThingsSummary',
+      use: 'results',
+      results: [
+        {
+          source: 'QEWDDB',
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          dateCreated: 1519851600000,
+          name1: 'foo1',
+          name2: 'foo2',
+          name3: 'foo3'
+        }
+      ]
     };
 
     const command = new GetPatientTop3ThingsSummaryCommand(ctx, session);
@@ -90,12 +98,18 @@ describe('lib/commands/getPatientTop3ThingsSummary', () => {
 
   it('should return latest top 3 things summary when user has phrUser role', async () => {
     const expected = {
-      source: 'QEWDDB',
-      sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
-      dateCreated: 1519851600000,
-      name1: 'foo1',
-      name2: 'foo2',
-      name3: 'foo3'
+      api: 'getPatientTop3ThingsSummary',
+      use: 'results',
+      results: [
+        {
+          source: 'QEWDDB',
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          dateCreated: 1519851600000,
+          name1: 'foo1',
+          name2: 'foo2',
+          name3: 'foo3'
+        }
+      ]
     };
 
     session.role = Role.PHR_USER;

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -113,6 +113,8 @@ describe('lib/commands/getPatientHeadingSummary', () => {
   it('should return patient heading summary', async () => {
     const expected = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingSummary',
+      use: 'results',
       patientId: 9999999111,
       heading: 'procedures',
       fetch_count: 8,
@@ -142,6 +144,8 @@ describe('lib/commands/getPatientHeadingSummary', () => {
   it('should return patient heading summary (phr user)', async () => {
     const expected = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingSummary',
+      use: 'results',
       patientId: 9999999000,
       heading: 'procedures',
       fetch_count: 8,
@@ -166,38 +170,6 @@ describe('lib/commands/getPatientHeadingSummary', () => {
 
     expect(headingService.fetchOne).toHaveBeenCalledWith(9999999000, 'procedures');
     expect(headingService.getSummary).toHaveBeenCalledWith(9999999000, 'procedures');
-
-    expect(actual).toEqual(expected);
-  });
-
-  it('should return patient heading summary when discovery sync is no', async () => {
-    const expected = {
-      responseFrom: 'phr_service',
-      patientId: 9999999111,
-      heading: 'procedures',
-      discovery_sync: false,
-      fetch_count: 8,
-      results: [
-        {
-          desc: 'foo',
-          source: 'ethercis',
-          sourceId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-        },
-        {
-          desc: 'bar',
-          source: 'marand',
-          sourceId: '41bc6370-33a4-4ae1-8b3d-d2d9cfe606a4'
-        }
-      ]
-    };
-
-    query.discovery_sync = 'no';
-
-    const command = new GetPatientHeadingSummaryCommand(ctx, session);
-    const actual = await command.execute(patientId, heading, query);
-
-    expect(headingService.fetchOne).toHaveBeenCalledWith(9999999111, 'procedures');
-    expect(headingService.getSummary).toHaveBeenCalledWith(9999999111, 'procedures');
 
     expect(actual).toEqual(expected);
   });

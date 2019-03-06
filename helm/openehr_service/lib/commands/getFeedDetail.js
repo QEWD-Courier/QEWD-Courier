@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
 'use strict';
 
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:feeds:get-detail');
+const debug = require('debug')('helm:openehr:commands:get-feed-detail');
 
 class GetFeedDetailCommand {
   constructor(ctx) {

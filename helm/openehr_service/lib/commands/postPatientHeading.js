@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const { BadRequestError } = require('../errors');
 const { isHeadingValid, isEmpty, isPatientIdValid } = require('../shared/validation');
 const { PostHeadingFormat, Role } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:commands:patients:post-heading');
+const debug = require('debug')('helm:openehr:commands:post-patient-heading');
 
 class PostPatientHeadingCommand {
   constructor(ctx, session) {

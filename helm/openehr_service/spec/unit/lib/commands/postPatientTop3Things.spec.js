@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -59,7 +59,7 @@ describe('lib/commands/postPatientTop3Things', () => {
     };
 
     top3ThingsService = ctx.services.top3ThingsService;
-    top3ThingsService.create.and.resolveValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
+    top3ThingsService.create.and.returnValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
 
     ctx.services.freeze();
   });

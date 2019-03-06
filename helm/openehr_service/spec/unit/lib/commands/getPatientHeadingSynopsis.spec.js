@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { ExecutionContextMock } = require('@tests/mocks');
 const { BadRequestError } = require('@lib/errors');
-const { Role } = require('@lib/shared/enums');
+const { Role, Heading } = require('@lib/shared/enums');
 const { GetPatientHeadingSynopsisCommand } = require('@lib/commands');
 
 describe('lib/commands/getPatientHeadingSynopsis', () => {
@@ -43,6 +43,7 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
   let query;
 
   let headingService;
+  let top3ThingsService;
 
   beforeEach(() => {
     ctx = new ExecutionContextMock();
@@ -56,6 +57,7 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
     query = {};
 
     headingService = ctx.services.headingService;
+    top3ThingsService = ctx.services.top3ThingsService;
 
     headingService.fetchOne.and.resolveValue({ ok: true });
     headingService.getSynopsis.and.resolveValue({
@@ -72,6 +74,21 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
         }
       ]
     });
+
+    top3ThingsService.getLatestSynopsisByPatientId.and.returnValue([
+      {
+        sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+        text: 'foo1'
+      },
+      {
+        sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+        text: 'foo2'
+      },
+      {
+        sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+        text: 'foo3'
+      }
+    ]);
 
     ctx.services.freeze();
   });
@@ -92,6 +109,64 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
     const actual = command.execute(patientId, heading, query);
 
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('Heading missing or empty'));
+  });
+
+  it('should return patient top3things synopsis', async () => {
+    const expected = {
+      heading: 'top3Things',
+      synopsis: [
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo1'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo2'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo3'
+        }
+      ]
+    };
+
+
+    heading = Heading.TOP_3_THINGS;
+
+    const command = new GetPatientHeadingSynopsisCommand(ctx, session);
+    const actual = await command.execute(patientId, heading, query);
+
+    expect(top3ThingsService.getLatestSynopsisByPatientId).toHaveBeenCalledWith(9999999111);
+    expect(actual).toEqual(expected);
+  });
+
+  it('should return patient top3things synopsis (phr user)', async () => {
+    const expected = {
+      heading: 'top3Things',
+      synopsis: [
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo1'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo2'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo3'
+        }
+      ]
+    };
+
+    session.role = Role.PHR_USER;
+    heading = Heading.TOP_3_THINGS;
+
+    const command = new GetPatientHeadingSynopsisCommand(ctx, session);
+    const actual = await command.execute(patientId, heading, query);
+
+    expect(top3ThingsService.getLatestSynopsisByPatientId).toHaveBeenCalledWith(9999999000);
+    expect(actual).toEqual(expected);
   });
 
   it('should return empty array when invalid or missing heading error', async () => {

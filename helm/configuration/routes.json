@@ -74,12 +74,6 @@
     "on_microservice": "openehr_service"
   },
   {
-    "uri": "/api/patients/:patientId/headings/synopsis",
-    "method": "GET",
-    "handler": "getPatientSynopsis",
-    "on_microservice": "openehr_service"
-  },
-  {
     "uri": "/api/patients/:patientId/top3Things",
     "method": "GET",
     "handler": "getPatientTop3ThingsSummary",

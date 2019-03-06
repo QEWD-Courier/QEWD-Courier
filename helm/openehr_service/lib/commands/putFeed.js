@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isFeedPayloadValid } = require('../shared/validation');
-const debug = require('debug')('helm:openehr:commands:feeds:put');
+const debug = require('debug')('helm:openehr:commands:put-feed');
 
 class PutFeedCommand {
   constructor(ctx, session) {

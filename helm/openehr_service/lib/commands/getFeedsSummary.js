@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
 'use strict';
 
-const debug = require('debug')('helm:openehr:commands:feeds:get-summary');
+const debug = require('debug')('helm:openehr:commands:get-feeds-summary');
 
 class GetFeedsSummaryCommand {
   constructor(ctx, session) {

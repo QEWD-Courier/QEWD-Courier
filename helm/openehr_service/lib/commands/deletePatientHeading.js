@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const { BadRequestError, ForbiddenError } = require('../errors');
 const { Heading, UserMode } = require('../shared/enums');
 const { isHeadingValid, isPatientIdValid } = require('../shared/validation');
-const debug = require('debug')('helm:openehr:commands:patients:delete-heading');
+const debug = require('debug')('helm:openehr:commands:delete-patient-heading');
 
 class DeletePatientHeadingCommand {
   constructor(ctx, session) {

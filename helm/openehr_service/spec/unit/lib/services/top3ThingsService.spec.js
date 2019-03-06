@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -48,7 +48,7 @@ describe('lib/services/top3ThingsService', () => {
     top3ThingsService = new Top3ThingsService(ctx);
 
     top3ThingsDb = ctx.db.top3ThingsDb;
-    top3ThingsDb.getBySourceId.and.resolveValue({
+    top3ThingsDb.getBySourceId.and.returnValue({
       patientId: 9999999000,
       date: 1514764800000,
       data: {
@@ -80,10 +80,10 @@ describe('lib/services/top3ThingsService', () => {
     it('should return empty array', async () => {
       const expected = [];
 
-      top3ThingsDb.getLatestSourceId.and.resolveValue('');
+      top3ThingsDb.getLatestSourceId.and.returnValue('');
 
       const patientId = 9999999000;
-      const actual = await top3ThingsService.getLatestSummaryByPatientId(patientId);
+      const actual = top3ThingsService.getLatestSummaryByPatientId(patientId);
 
       expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
       expect(actual).toEqual(expected);
@@ -101,10 +101,50 @@ describe('lib/services/top3ThingsService', () => {
         }
       ];
 
-      top3ThingsDb.getLatestSourceId.and.resolveValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
+      top3ThingsDb.getLatestSourceId.and.returnValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
 
       const patientId = 9999999000;
-      const actual = await top3ThingsService.getLatestSummaryByPatientId(patientId);
+      const actual = top3ThingsService.getLatestSummaryByPatientId(patientId);
+
+      expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
+      expect(top3ThingsDb.getBySourceId).toHaveBeenCalledWith('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('#getLatestSynopsisByPatientId', () => {
+    it('should return empty array', async () => {
+      const expected = [];
+
+      top3ThingsDb.getLatestSourceId.and.returnValue('');
+
+      const patientId = 9999999000;
+      const actual = top3ThingsService.getLatestSynopsisByPatientId(patientId);
+
+      expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
+      expect(actual).toEqual(expected);
+    });
+
+    it('should return top3 things synopsis', async () => {
+      const expected = [
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo1'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo2'
+        },
+        {
+          sourceId: 'ce437b97-4f6e-4c96-89bb-0b58b29a79cb',
+          text: 'foo3'
+        }
+      ];
+
+      top3ThingsDb.getLatestSourceId.and.returnValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
+
+      const patientId = 9999999000;
+      const actual = top3ThingsService.getLatestSynopsisByPatientId(patientId);
 
       expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
       expect(top3ThingsDb.getBySourceId).toHaveBeenCalledWith('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
@@ -116,10 +156,10 @@ describe('lib/services/top3ThingsService', () => {
     it('should return empty array', async () => {
       const expected = [];
 
-      top3ThingsDb.getLatestSourceId.and.resolveValue('');
+      top3ThingsDb.getLatestSourceId.and.returnValue('');
 
       const patientId = 9999999000;
-      const actual = await top3ThingsService.getLatestDetailByPatientId(patientId);
+      const actual = top3ThingsService.getLatestDetailByPatientId(patientId);
 
       expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
       expect(actual).toEqual(expected);
@@ -138,10 +178,10 @@ describe('lib/services/top3ThingsService', () => {
         description3: 'baz3'
       };
 
-      top3ThingsDb.getLatestSourceId.and.resolveValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
+      top3ThingsDb.getLatestSourceId.and.returnValue('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
 
       const patientId = 9999999000;
-      const actual = await top3ThingsService.getLatestDetailByPatientId(patientId);
+      const actual = top3ThingsService.getLatestDetailByPatientId(patientId);
 
       expect(top3ThingsDb.getLatestSourceId).toHaveBeenCalledWith(9999999000);
       expect(top3ThingsDb.getBySourceId).toHaveBeenCalledWith('ce437b97-4f6e-4c96-89bb-0b58b29a79cb');
@@ -161,7 +201,7 @@ describe('lib/services/top3ThingsService', () => {
         description3: 'baz3'
       };
 
-      const actual = await top3ThingsService.create(patientId, data);
+      const actual = top3ThingsService.create(patientId, data);
 
       expect(top3ThingsDb.insert).toHaveBeenCalledWith(
         9999999000,

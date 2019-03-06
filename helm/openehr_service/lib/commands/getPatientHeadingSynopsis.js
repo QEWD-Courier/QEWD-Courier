@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -31,8 +31,8 @@
 
 const { BadRequestError } = require('../errors');
 const { isHeadingValid, isPatientIdValid } = require('../shared/validation');
-const { Role } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:commands:patients:get-heading-synopsis');
+const { Role, Heading } = require('../shared/enums');
+const debug = require('debug')('helm:openehr:commands:get-patient-heading-synopsis');
 
 class GetPatientHeadingSynopsisCommand {
   constructor(ctx, session) {
@@ -62,6 +62,17 @@ class GetPatientHeadingSynopsisCommand {
 
     if (!heading) {
       throw new BadRequestError('Heading missing or empty');
+    }
+
+    if (heading === Heading.TOP_3_THINGS) {
+      const { top3ThingsService } = this.ctx.services;
+      const synopsis = top3ThingsService.getLatestSynopsisByPatientId(patientId);
+
+      return {
+        heading,
+        synopsis
+      };
+
     }
 
     const headingValid = isHeadingValid(this.ctx.headingsConfig, heading);

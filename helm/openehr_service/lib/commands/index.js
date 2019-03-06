@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -37,7 +37,6 @@ const GetHeadingSummaryFieldsCommand = require('./getHeadingSummaryFields');
 const GetPatientHeadingDetailCommand = require('./getPatientHeadingDetail');
 const GetPatientHeadingSummaryCommand = require('./getPatientHeadingSummary');
 const GetPatientHeadingSynopsisCommand = require('./getPatientHeadingSynopsis');
-const GetPatientSynopsisCommand = require('./getPatientSynopsis');
 const GetPatientTop3ThingsDetailCommand = require('./getPatientTop3ThingsDetail');
 const GetPatientTop3ThingsHscnDetailCommand = require('./getPatientTop3ThingsHscnDetail');
 const GetPatientTop3ThingsSummaryCommand = require('./getPatientTop3ThingsSummary');
@@ -59,7 +58,6 @@ module.exports = {
   GetPatientHeadingDetailCommand,
   GetPatientHeadingSummaryCommand,
   GetPatientHeadingSynopsisCommand,
-  GetPatientSynopsisCommand,
   GetPatientTop3ThingsDetailCommand,
   GetPatientTop3ThingsHscnDetailCommand,
   GetPatientTop3ThingsSummaryCommand,

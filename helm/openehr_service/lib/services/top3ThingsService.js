@@ -46,17 +46,17 @@ class Top3ThingsService {
    * Gets latest top3 things summary by patient id
    *
    * @param  {string|int} patientId
-   * @return {Promise.<Object[]>}
+   * @return {Object[]}
    */
-  async getLatestSummaryByPatientId(patientId) {
+  getLatestSummaryByPatientId(patientId) {
     logger.info('services/top3ThingsService|getLatestSummaryByPatientId', { patientId });
 
-    const sourceId = await this.top3ThingsDb.getLatestSourceId(patientId);
+    const sourceId = this.top3ThingsDb.getLatestSourceId(patientId);
     if (!sourceId) {
       return [];
     }
 
-    const top3Things = await this.top3ThingsDb.getBySourceId(sourceId);
+    const top3Things = this.top3ThingsDb.getBySourceId(sourceId);
 
     return [
       {
@@ -71,20 +71,52 @@ class Top3ThingsService {
   }
 
   /**
-   * Gets latest top3 things detail by patient id
+   * Gets latest top3 things synopsis by patient id
    *
    * @param  {string|int} patientId
-   * @return {Promise.<Object[]>}
+   * @return {Object[]}
    */
-  async getLatestDetailByPatientId(patientId) {
-    logger.info('services/top3ThingsService|getLatestDetailByPatientId', { patientId });
+  getLatestSynopsisByPatientId(patientId) {
+    logger.info('services/top3ThingsService|getLatestSynopsisByPatientId', { patientId });
 
-    const sourceId = await this.top3ThingsDb.getLatestSourceId(patientId);
+    const sourceId = this.top3ThingsDb.getLatestSourceId(patientId);
     if (!sourceId) {
       return [];
     }
 
-    const top3Things = await this.top3ThingsDb.getBySourceId(sourceId);
+    const top3Things = this.top3ThingsDb.getBySourceId(sourceId);
+
+    return [
+      {
+        sourceId: sourceId,
+        text: top3Things.data.name1
+      },
+      {
+        sourceId: sourceId,
+        text: top3Things.data.name2
+      },
+      {
+        sourceId: sourceId,
+        text: top3Things.data.name3
+      }
+    ];
+  }
+
+  /**
+   * Gets latest top3 things detail by patient id
+   *
+   * @param  {string|int} patientId
+   * @return {Object[]}
+   */
+  getLatestDetailByPatientId(patientId) {
+    logger.info('services/top3ThingsService|getLatestDetailByPatientId', { patientId });
+
+    const sourceId = this.top3ThingsDb.getLatestSourceId(patientId);
+    if (!sourceId) {
+      return [];
+    }
+
+    const top3Things = this.top3ThingsDb.getBySourceId(sourceId);
 
     return {
       source: 'QEWDDB',
@@ -106,7 +138,7 @@ class Top3ThingsService {
    * @param  {Object} data
    * @return {string}
    */
-  async create(patientId, data) {
+  create(patientId, data) {
     logger.info('services/top3ThingsService|create', { patientId, data });
 
     const sourceId = uuid();
@@ -118,8 +150,8 @@ class Top3ThingsService {
       data
     };
 
-    await this.top3ThingsDb.insert(patientId, sourceId, top3Things);
-    await this.top3ThingsDb.setLatestSourceId(patientId, sourceId);
+    this.top3ThingsDb.insert(patientId, sourceId, top3Things);
+    this.top3ThingsDb.setLatestSourceId(patientId, sourceId);
 
     return sourceId;
   }

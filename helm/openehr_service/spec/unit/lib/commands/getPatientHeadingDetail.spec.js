@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -109,6 +109,8 @@ describe('lib/commands/getPatientHeadingDetail', () => {
   it('should return details', async () => {
     const expected = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingDetail',
+      use: 'results',
       results: {
         foo: 'bar'
       }
@@ -126,6 +128,8 @@ describe('lib/commands/getPatientHeadingDetail', () => {
   it('should return details (PHR user)', async () => {
     const expected = {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingDetail',
+      use: 'results',
       results: {
         foo: 'bar'
       }

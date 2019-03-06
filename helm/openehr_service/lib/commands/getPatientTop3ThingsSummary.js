@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isPatientIdValid } = require('../shared/validation');
-const debug = require('debug')('helm:openehr:commands:top3things:get-summary');
+const debug = require('debug')('helm:openehr:commands:get-patient-top3things-summary');
 
 class GetTop3ThingsSummaryCommand {
   constructor(ctx, session) {
@@ -57,9 +57,13 @@ class GetTop3ThingsSummaryCommand {
     }
 
     const { top3ThingsService } = this.ctx.services;
-    const responseObj = await top3ThingsService.getLatestSummaryByPatientId(patientId);
+    const resultObj = top3ThingsService.getLatestSummaryByPatientId(patientId);
 
-    return responseObj;
+    return {
+      api: 'getPatientTop3ThingsSummary',
+      use: 'results',
+      results: resultObj
+    };
   }
 }
 

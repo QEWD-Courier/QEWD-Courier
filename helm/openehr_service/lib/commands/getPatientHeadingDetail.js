@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  7 March 2019
 
 */
 
@@ -32,7 +32,7 @@
 const { BadRequestError } = require('../errors');
 const { isHeadingValid, isPatientIdValid, isSourceIdValid } = require('../shared/validation');
 const { Role, ResponseFormat } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:commands:patients:get-heading-detail');
+const debug = require('debug')('helm:openehr:commands:get-patient-heading-detail');
 
 class GetPatientHeadingDetailCommand {
   constructor(ctx, session) {
@@ -83,6 +83,8 @@ class GetPatientHeadingDetailCommand {
 
     return {
       responseFrom: 'phr_service',
+      api: 'getPatientHeadingDetail',
+      use: 'results',
       results: responseObj
     };
   }
