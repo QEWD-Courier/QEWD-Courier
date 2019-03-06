@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -37,8 +37,10 @@ try {
   getHeadingFromOpenEHRServer = require('../../utils/jumper/lib/getHeadingFromOpenEHRServer');
 }
 catch(err) {
-  logger.error('jumper/query|err: ' + err.message);
-  logger.error('jumper/query|stack: ' + err.stack);
+  logger.error('jumper/query|err:', err);
+  if (err.message) logger.error('jumper/query|err|message: ' + err.message);
+  if (err.message) logger.error('jumper/query|err|stack: ' + err.stack);
+
   getHeadingFromOpenEHRServer = false;
 }
 

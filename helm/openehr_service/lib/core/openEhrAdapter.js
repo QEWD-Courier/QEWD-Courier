@@ -110,8 +110,9 @@ class OpenEhrAdapter {
     ehrSessionService.start(host)
       .then(ehrSession => callback({ id: ehrSession.sessionId }))
       .catch((err) => {
-        logger.error('jumper/adapter/startSession|err: ' + err.message);
-        logger.error('jumper/adapte/startSession|stack: ' + err.stack);
+        logger.error('jumper/adapter/startSession|err:', err);
+        if (err.message) logger.error('jumper/adapter|startSession|err|message: ' + err.message);
+        if (err.stack) logger.error('jumper/adapter|startSession|err|stack: ' + err.stack);
       });
   }
 
@@ -124,8 +125,9 @@ class OpenEhrAdapter {
     ehrSessionService.stop(host, sessionId)
       .then(() => callback())
       .catch((err) => {
-        logger.error('jumper/adapter/stopSession|err: ' + err.message);
-        logger.error('jumper/adapter/stopSession|stack: ' + err.stack);
+        logger.error('jumper/adapter/stopSession|err:', err);
+        if (err.message) logger.error('jumper/adapter/stopSession|err: ' + err.message);
+        if (err.stack) logger.error('jumper/adapter/stopSession|stack: ' + err.stack);
       });
   }
 }

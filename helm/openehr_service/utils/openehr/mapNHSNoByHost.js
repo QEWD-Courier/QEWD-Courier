@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -38,8 +38,9 @@ function mapNhsNoByHost(patientId, host, ehrSession, callback) {
   patientService.getEhrId(host, patientId)
     .then(ehrId => callback(ehrId))
     .catch(err => {
-      logger.error('utils/openehr/mapNhsNoByHost|err: ' + err.message);
-      logger.error('utils/openehr/mapNhsNoByHost|stack: ' + err.stack);
+      logger.error('utils/openehr/mapNhsNoByHost|err:', err);
+      if (err.message) logger.error('utils/openehr/mapNhsNoByHost|err|message: ' + err.message);
+      if (err.stack) logger.error('utils/openehr/mapNhsNoByHost|err|stack: ' + err.stack);
     });
 }
 module.exports = mapNhsNoByHost;

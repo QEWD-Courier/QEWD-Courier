@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -38,8 +38,9 @@ function fetchAndCacheHeading(patientId, heading, session, callback) {
   headingService.fetchOne(patientId, heading)
     .then((resultObj) => callback(resultObj))
     .catch(err => {
-      logger.error('utils/openehr/fetchAndCacheHeading|err: ' + err.message);
-      logger.error('utils/openehr/fetchAndCacheHeading|stack: ' + err.stack);
+      logger.error('utils/openehr/fetchAndCacheHeading|err:', err);
+      if (err.message) logger.error('utils/openehr/fetchAndCacheHeading|err|message: ' + err.message);
+      if (err.stack) logger.error('utils/openehr/fetchAndCacheHeading|err|stack: ' + err.stack);
     });
 }
 

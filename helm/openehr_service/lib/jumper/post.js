@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -37,8 +37,10 @@ try {
   postHeading = require('../../utils/jumper/lib/postHeading');
 }
 catch(err) {
-  logger.error('jumper/postHeading|err: ' + err.message);
-  logger.error('jumper/postHeading|stack: ' + err.stack);
+  logger.error('jumper/postHeading|err:', err);
+  if (err.message) logger.error('jumper/postHeading|err|message: ' + err.message);
+  if (err.stack) logger.error('jumper/postHeading|err|stack: ' + err.stack);
+
   postHeading = false;
 }
 

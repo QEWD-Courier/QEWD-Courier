@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  7 March 2019
 
 */
 
@@ -38,8 +38,9 @@ function deleteSessionCaches(patientId, heading, host, callback = () => null) {
   cacheService.delete(host, patientId, heading)
     .then(() => callback())
     .catch(err => {
-      logger.error('utils/openehr/deleteSessionCaches|err: ' + err.message);
-      logger.error('utils/openehr/deleteSessionCaches|stack: ' + err.stack);
+      logger.error('utils/openehr/deleteSessionCaches|err: ', err);
+      if (err.message) logger.error('utils/openehr/deleteSessionCaches|err|message: ' + err.message);
+      if (err.stack) logger.error('utils/openehr/deleteSessionCaches|err|stack: ' + err.stack);
     });
 }
 

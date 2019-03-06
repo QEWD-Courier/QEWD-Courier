@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  6 March 2019
+  7 March 2019
 
 */
 
@@ -150,8 +150,9 @@ class DiscoveryDispatcher {
       const discoveryData = await this.getDiscoveryData(patientId, heading, jwt, forward);
       await this.mergeDiscoveryData(heading, discoveryData.results, jwt);
     } catch (err) {
-      logger.error('dispatchers/discoveryDispatcher|sync|err: ' + err.message);
-      logger.error('dispatchers/discoveryDispatcher|sync|stack: ' + err.stack);
+      logger.error('dispatchers/discoveryDispatcher|sync|err:', err);
+      if (err.message) logger.error('dispatchers/discoveryDispatcher|sync|err|message: ' + err.message);
+      if (err.stack) logger.error('dispatchers/discoveryDispatcher|sync|err|stack: ' + err.stack);
     }
   }
 
