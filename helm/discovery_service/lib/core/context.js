@@ -53,15 +53,15 @@ class ExecutionContext {
   }
 
   get headingsConfig() {
-    return this.userDefined.globalConfig.headings;
+    return this.userDefined.globalConfig.DDS.headings;
   }
 
   get serversConfig() {
-    return this.userDefined.globalConfig;
+    return this.userDefined.globalConfig.DDS;
   }
 
   get transformationConfig() {
-    return this.userDefined.globalConfig.transformations;
+    return this.userDefined.globalConfig.DDS.transformations;
   }
 
   getTransformationConfig(format) {
