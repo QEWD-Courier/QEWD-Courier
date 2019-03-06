@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  6 March 2019
 
 */
 
@@ -60,11 +60,11 @@ describe('apis/mergeDiscoveryData', () => {
           {
             sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76'
           }
-        ]
-      },
-      session: {
-        nhsNumber: 9999999000,
-        email: 'john.doe@example.org'
+        ],
+        session: {
+          nhsNumber: 9999999000,
+          email: 'john.doe@example.org'
+        }
       }
     };
     finished = jasmine.createSpy();
@@ -89,7 +89,7 @@ describe('apis/mergeDiscoveryData', () => {
 
     await handler(args, finished);
 
-    expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
+    expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.req.session);
     expect(command.execute).toHaveBeenCalledWith(args.heading, args.req.data);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
@@ -100,7 +100,7 @@ describe('apis/mergeDiscoveryData', () => {
 
     await handler(args, finished);
 
-    expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
+    expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.req.session);
     expect(command.execute).toHaveBeenCalledWith(args.heading, args.req.data);
 
     expect(finished).toHaveBeenCalledWith({

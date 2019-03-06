@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  6 March 2019
 
 */
 
@@ -63,7 +63,7 @@ class DiscoveryService {
 
     // The posts are serialised - only one at a time, and the next one isn't sent till the
     // previous one gets a response from OpenEHR - so as not to flood the OpenEHR system with POSTs
-    const results = await P.mapSeries(data, x => this.merge(patientId, heading, x));
+    const results = await P.mapSeries(data, x => this.merge(host, patientId, heading, x));
 
     return results.some(x => x);
   }

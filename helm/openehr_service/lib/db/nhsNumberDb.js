@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  6 March 2019
 
 */
 
@@ -66,7 +66,7 @@ class NhsNumberDb {
    * @return {string|int|null}
    */
   getPatientId(host, ehrId) {
-    logger.info('db/nhsNumberDb|getEhrId', { host, ehrId });
+    logger.info('db/nhsNumberDb|getPatientId', { host, ehrId });
 
     const key = ['byEhrId', ehrId, host];
 
@@ -84,7 +84,7 @@ class NhsNumberDb {
    * @return {void}
    */
   insert(host, patientId, ehrId) {
-    logger.info('db/nhsNumberDb|getEhrId', { host, patientId, ehrId });
+    logger.info('db/nhsNumberDb|insert', { host, patientId, ehrId });
 
     this.nhsNoMap.$(['byNHSNo', patientId, host]).value = ehrId;
     this.nhsNoMap.$(['byEhrId', ehrId, host]).value = patientId;

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  6 March 2019
 
 */
 
@@ -104,7 +104,7 @@ describe('utils/openehr/openEHR', () => {
 
     it('should start ehr session', (done) => {
       const expected = {
-        sessionId: '03391e86-5085-4b99-89ff-79209f8d1f20'
+        id: '03391e86-5085-4b99-89ff-79209f8d1f20'
       };
 
       const host = 'ethercis';
@@ -126,7 +126,7 @@ describe('utils/openehr/openEHR', () => {
 
     it('should start ehr session (no qewd session)', (done) => {
       const expected = {
-        sessionId: '03391e86-5085-4b99-89ff-79209f8d1f20'
+        id: '03391e86-5085-4b99-89ff-79209f8d1f20'
       };
 
       const host = 'ethercis';

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  6 March 2019
 
 */
 
@@ -199,8 +199,14 @@ describe('lib/dispatchers/discovery', () => {
   });
 
   describe('#sync', () => {
+    let data;
+
     beforeEach(() => {
-      const data = { foo: 'bar' };
+      data = {
+        results:[
+          { foo: 'bar' }
+        ]
+      };
       spyOn(discoveryDispatcher, 'getDiscoveryData').and.resolveValue(data);
       spyOn(discoveryDispatcher, 'mergeDiscoveryData');
     });
@@ -214,7 +220,7 @@ describe('lib/dispatchers/discovery', () => {
       await discoveryDispatcher.sync(patientId, heading, jwt, forward);
 
       expect(discoveryDispatcher.getDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', 'foo.bar.baz', forward);
-      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', { foo: 'bar' }, 'foo.bar.baz');
+      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', data.results, 'foo.bar.baz');
     });
 
     it('should ignore errors', async () => {
@@ -228,7 +234,7 @@ describe('lib/dispatchers/discovery', () => {
       await discoveryDispatcher.sync(patientId, heading, jwt, forward);
 
       expect(discoveryDispatcher.getDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', 'foo.bar.baz', forward);
-      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', { foo: 'bar' }, 'foo.bar.baz');
+      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', data.results, 'foo.bar.baz');
     });
   });
 

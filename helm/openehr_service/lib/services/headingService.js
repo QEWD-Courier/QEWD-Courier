@@ -145,7 +145,6 @@ class HeadingService {
     const { ehrSessionService, patientService } = this.ctx.services;
     const { sessionId } = await ehrSessionService.start(host);
     await patientService.getEhrId(host, patientId);
-    // TODO: ask about ehrId passed to ehrRestService.putHeading
 
     const helpers = headingHelpers(host, heading, 'post');
     const output = transform(headingMap.transformTemplate, data, helpers);

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  6 March 2019
 
 */
 
@@ -40,7 +40,7 @@ const { getResponseError } = require('../../lib/errors');
  */
 module.exports = async function mergeDiscoveryData(args, finished) {
   try {
-    const command = new MergeDiscoveryDataCommand(args.req.ctx, args.session);
+    const command = new MergeDiscoveryDataCommand(args.req.ctx, args.req.session);
     const responseObj = await command.execute(args.heading, args.req.data);
 
     finished(responseObj);

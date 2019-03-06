@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  6 March 2019
 
 */
 
@@ -43,6 +43,8 @@ function requestAsync(options) {
     });
   });
 }
+
+// NOTE: Ehr-Session header must capitalized
 
 class EhrRestService {
   constructor(ctx, host, hostConfig) {
@@ -89,7 +91,7 @@ class EhrRestService {
       url: `${this.hostConfig.url}/rest/v1/session`,
       method: 'DELETE',
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -115,7 +117,7 @@ class EhrRestService {
         subjectNamespace: 'uk.nhs.nhs_number'
       },
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -147,7 +149,7 @@ class EhrRestService {
         modifiable: 'true'
       },
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -179,7 +181,7 @@ class EhrRestService {
       },
       body: data,
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -210,7 +212,7 @@ class EhrRestService {
       },
       body: data,
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -235,7 +237,7 @@ class EhrRestService {
         aql: query
       },
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };
@@ -257,7 +259,7 @@ class EhrRestService {
       url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
       method: 'DELETE',
       headers: {
-        'ehr-session': sessionId
+        'Ehr-Session': sessionId
       },
       json: true
     };

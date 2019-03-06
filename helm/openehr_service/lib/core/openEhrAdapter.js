@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  6 March 2019
 
 */
 
@@ -108,7 +108,7 @@ class OpenEhrAdapter {
     const { ehrSessionService } = ctx.services;
 
     ehrSessionService.start(host)
-      .then(ehrSession => callback(ehrSession))
+      .then(ehrSession => callback({ id: ehrSession.sessionId }))
       .catch((err) => {
         logger.error('jumper/adapter/startSession|err: ' + err.message);
         logger.error('jumper/adapte/startSession|stack: ' + err.stack);
