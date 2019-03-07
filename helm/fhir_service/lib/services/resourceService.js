@@ -126,15 +126,25 @@ class ResourceService {
     const { resourceCache, fetchCache } = this.ctx.cache;
     const { resourceRestService, patientService, tokenService } = this.ctx.services;
 
+    console.log("*************************************")
+    console.log(this.ctx.services)
+    console.log("*************************************")
+    console.log(resourceRestService)
+    console.log(resourceRestService.getPatientResources)
+
     const patientBundle = patientService.getPatientBundle(nhsNumber);
     const postData = {
       resources: [resourceName],
       patients: patientBundle
     };
+
+    console.log("************* postdata")
+    console.log(postData)
+
     const token = await tokenService.get();
     debug('post data: %j', postData);
 
-    const responseData = await resourceRestService.getPatientResources(postData, token);
+    const responseData = await resourceRestService.getPatientResources(nhsNumber, token);
     debug('response data: %j', responseData);
 
     if (!responseData || !responseData.entry) {
@@ -169,6 +179,7 @@ class ResourceService {
       patientCache.byNhsNumber.setResourceUuid(nhsNumber, resourceName, uuid);
 
       const practitionerRef = getPractitionerRef(resource);
+      
       if (practitionerRef) {
         const practitionerUuid = parseRef(practitionerRef).uuid;
         resourceCache.byUuid.setPractitionerUuid(resourceName, uuid, practitionerUuid);
@@ -199,17 +210,36 @@ class ResourceService {
     debug('resource: %j', resource);
     if (!resource) return;
 
-    // ensure organisation records for practitioner are also fetched and cached
-    await P.each(resource.practitionerRole, async (role) => {
-      const organisationRef = role.managingOrganisation.reference;
-      const { resource } = await this.fetchResource(organisationRef);
-      if (!resource) return;
+    // get PractitionerRole
+    const practionerRoleBundle = await this.fetchResources("PractitionerRole", `Practitioner=${ reference }`);
 
-      if (resourceName === ResourceName.PATIENT) {
-        const locationRef = getLocationRef(resource);
-        await this.fetchResource(locationRef);
-      }
-    });
+    // ensure organisation records for practitioner are also fetched and cached
+
+    // await P.each(practionerRoleBundle.entry, async (roleBundleEntry) => {
+    //   const { organisationReference } = roleBundleEntry.resource;
+
+    //   if (organisationReference) {
+    //     const organisation = await this.fetchResource(organisationReference.reference);
+      
+    //     if (!organisation) {
+    //       return
+    //     }
+
+    //     if (resourceName === ResourceName.PATIENT) { 
+          
+    //     }
+    //   }
+    // });
+    // await P.each(resource.practitionerRole, async (role) => {
+    //   const organisationRef = role.managingOrganisation.reference;
+    //   const { resource } = await this.fetchResource(organisationRef);
+    //   if (!resource) return;
+
+    //   if (resourceName === ResourceName.PATIENT) {
+    //     const locationRef = getLocationRef(resource);
+    //     await this.fetchResource(locationRef);
+    //   }
+    // });
   }
 
   /**
@@ -249,6 +279,51 @@ class ResourceService {
     debug('resource: %j', resource);
 
     resourceCache.byUuid.set(resourceName, uuid, resource);
+
+    return {
+      ok: true,
+      resource
+    };
+  }
+
+  /**
+   * Fetch resources
+   *
+   * @param  {string} reference
+   * @return {Promise.<Object>}
+   */
+  async fetchResources(resourceType, query) {
+    logger.info('services/resourceService|fetchResource', { reference });
+
+    //const { resourceName, uuid } = parseRef(reference);
+    //const { fetchCache, resourceCache } = this.ctx.cache;
+
+    // TODO - caching on query
+    // const exists  = resourceCache.byUuid.exists(resourceName, uuid);
+    // if (exists) {
+    //   return {
+    //     ok: false,
+    //     exists: true
+    //   };
+    // }
+
+    // const fetching = fetchCache.exists(reference);
+    // if (fetching) {
+    //   return {
+    //     ok: false,
+    //     fetching: true
+    //   };
+    // }
+
+    const { tokenService, resourceRestService } = this.ctx.services;
+    const token = await tokenService.get();
+
+    //fetchCache.set(reference);
+    const resource = await resourceRestService.getResources(resourceType, query, token);
+
+    debug('resource: %j', resource);
+
+    //resourceCache.byUuid.set(resourceName, uuid, resource);
 
     return {
       ok: true,

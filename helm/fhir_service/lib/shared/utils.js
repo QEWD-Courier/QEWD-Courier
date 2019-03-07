@@ -76,36 +76,52 @@ function getLocationRef(resource) {
 }
 
 function getPractitionerRef(resource) {
-  if (resource.informationSource) {
-    return resource.informationSource.reference;
+  
+  console.log("in getPractitionerReference")
+  console.log(resource)
+
+  if (resource.resourceType === ResourceName.PATIENT) {
+
+    // dummy reference, GP is not currently populated on test server
+    return "Practitioner/de24bec6-015f-4241-b3dd-a6da4c6332c4"
+
+    if (resource.generalPractitioner) {
+      return resource.generalPractitioner.reference
+    }
   }
 
-  if (resource.recorder) {
-    return resource.recorder.reference;
-  }
+  return null
+  
+  // if (resource.informationSource) {
+  //   return resource.informationSource.reference;
+  // }
 
-  if (resource.asserter) {
-    return resource.asserter.reference;
-  }
+  // if (resource.recorder) {
+  //   return resource.recorder.reference;
+  // }
 
-  if (resource.careProvider) {
-    let practitionerRef = false;
-    let found = false;
-    resource.careProvider.forEach(function(record) {
-      if (!found && record.reference.indexOf('Practitioner') !== -1) {
-        practitionerRef = record.reference;
-        found = true;
-      }
-    });
+  // if (resource.asserter) {
+  //   return resource.asserter.reference;
+  // }
 
-    return practitionerRef;
-  }
+  // if (resource.careProvider) {
+  //   let practitionerRef = false;
+  //   let found = false;
+  //   resource.careProvider.forEach(function(record) {
+  //     if (!found && record.reference.indexOf('Practitioner') !== -1) {
+  //       practitionerRef = record.reference;
+  //       found = true;
+  //     }
+  //   });
 
-  if (resource.performer) {
-    return resource.performer.reference;
-  }
+  //   return practitionerRef;
+  // }
 
-  return null;
+  // if (resource.performer) {
+  //   return resource.performer.reference;
+  // }
+
+  // return null;
 
   // debug('bad resource: %j', resource)
 }

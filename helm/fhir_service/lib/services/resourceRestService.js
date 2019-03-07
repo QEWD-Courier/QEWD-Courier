@@ -89,7 +89,10 @@ class ResourceRestService {
 
     const args = {
       url: `${this.hostConfig.api.host}/Patient?identifier=NHS Number|${ nhsNumber }`,
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "accept": "application/fhir+json; charset=UTF-8"
+      }
       // ,
       // headers: {
       //   Authorization: `Bearer ${token}`
@@ -115,12 +118,17 @@ class ResourceRestService {
     debug('token: %s', token);
 
     const args = {
-      url: `${this.hostConfig.api.host + this.hostConfig.api.paths.getPatientResources}`,
-      method: 'POST',
+      //url: `${this.hostConfig.api.host + this.hostConfig.api.paths.getPatientResources}`,
+      url: `${this.hostConfig.api.host}/Patient?identifier=NHS Number|${ data }`,
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
+        "accept": "application/fhir+json; charset=UTF-8"
+      }
+      // method: 'POST',
+      // headers: {
+      //   Authorization: `Bearer ${token}`
+      // },
+      //body: JSON.stringify(data)
     };
 
     debug('args: %j', args);
@@ -140,14 +148,63 @@ class ResourceRestService {
 
     debug('token: %s', token);
 
+    // modified - YHCR
+
     const args = {
-      url: `${this.hostConfig.api.host + this.hostConfig.api.paths.getResource}`,
+      url: `${this.hostConfig.api.host}/${ reference }`,
       method: 'GET',
+      json: false,
       headers: {
-        Authorization: `Bearer ${token}`
+        "accept": "application/fhir+json; charset=UTF-8"
+      }//,
+      // headers: {
+      //   Authorization: `Bearer ${token}`
+      // },
+      // qs: {
+      //   reference: reference
+      // }
+    };
+
+    debug('args: %j', args);
+
+    const result = await requestAsync(args);
+
+    console.log("getResourcesResult")
+    console.log(result)
+
+    return result === ''
+      ? {}
+      : parseJsonFormatter(result);
+  }
+
+  /**
+   * Sends a request to get referenced resources
+   * FHIR response is Bundle
+   *
+   * @param  {string} reference
+   * @param  {string} token
+   * @return {Promise.<Object>}
+   */
+  async getResources(resourceType, query, token) {
+    logger.info('services/resourceRestService|getResources', { resourceType, query, token: typeof token });
+
+    debug('token: %s', token);
+
+    // modified - YHCR
+
+    const args = {
+      url: `${this.hostConfig.api.host}/${ resourceType }`,
+      method: 'GET',
+      json: false,
+      headers: {
+        "accept": "application/fhir+json; charset=UTF-8"
       },
+      //,
+      // headers: {
+      //   Authorization: `Bearer ${token}`
+      // },
       qs: {
-        reference: reference
+        reference: query
       }
     };
 

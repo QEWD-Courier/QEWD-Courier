@@ -41,7 +41,7 @@
     "uri": "/api/demographics/:patientId",
     "method": "GET",
     "handler": "getPatientDemographics",
-    "on_microservice": "discovery_service",
+    "on_microservice": "fhir_service",
     "from_microservices": [
       "orchestrator",
       "openehr_service"
