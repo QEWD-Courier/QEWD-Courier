@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        This is a test
+
+        <button id="test-button">Test</button>
+
+        <script src="/ewd-client.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            $(document).ready(function () {
+                console.log("ready");
+
+                EWD.log = true
+
+                EWD.on("ewd-registered", function () {
+                    console.log("registered")
+
+                    onRegistered();
+                });
+
+                EWD.start("fhir_service", $, io);
+            });
+
+            function onRegistered() {
+                $("#test-button").on("click", function () {
+                    EWD.send({ type: "test" })
+                });
+            }
+        </script>
+    </body>
+</html>

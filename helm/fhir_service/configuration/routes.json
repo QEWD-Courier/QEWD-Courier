@@ -1,0 +1,12 @@
+[
+    {
+      "uri": "/api/test",
+      "method": "GET",
+      "handler": "test"
+    },
+    {
+        "uri": "/api/demographics/:patientId",
+        "method": "GET",
+        "handler": "getPatientDemographics"
+    }
+]
