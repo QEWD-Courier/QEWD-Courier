@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,27 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const DemographicCache = require('./demographicCache');
+const DiscoveryCache = require('./discoveryCache');
+const FetchCache = require('./fetchCache');
+const PatientBundleCache = require('./patientBundleCache');
+const PatientCache = require('./patientCache');
+const ResourceCache = require('./resourceCache');
+const TokenCache = require('./tokenCache');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+
+module.exports = {
+  DemographicCache,
+  DiscoveryCache,
+  FetchCache,
+  PatientBundleCache,
+  PatientCache,
+  ResourceCache,
+  TokenCache,
 };

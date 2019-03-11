@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,34 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../../../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+module.exports = (adapter) => {
+  return {
+
+    /**
+     * Gets all patients uuids by NHS number
+     *
+     * @param  {int|string} nhsNumber
+     * @return {string[]|}
+     */
+    getAllPatientUuids: (nhsNumber) => {
+      logger.info('mixins/bundle|byNhsNumber|getAllPatientUuids', { nhsNumber });
+
+      const patientUuids = [];
+      const key = ['Discovery', 'PatientBundle', 'by_nhsNumber', nhsNumber, 'Patient'];
+
+      adapter.qewdSession.data.$(key).forEachChild((patientUuid) => {
+        patientUuids.push(patientUuid);
+      });
+
+      return patientUuids;
+    }
+  };
 };

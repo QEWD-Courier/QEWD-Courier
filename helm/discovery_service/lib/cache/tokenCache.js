@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,61 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class TokenCache {
+  constructor(adapter) {
+    this.adapter = adapter;
   }
-};
+
+  static create(adapter) {
+    return new TokenCache(adapter);
+  }
+
+  /**
+   * Gets token
+   *
+   * @return {Object|null}
+   */
+  get() {
+    logger.info('cache/tokenCache|get');
+
+    const key = ['discoveryToken'];
+
+    return this.adapter.getObject(key);
+  }
+
+  /**
+   * Sets a token
+   *
+   * @param  {Object} data
+   * @return {void}
+   */
+  set(data) {
+    logger.info('cache/tokenCache|set', { data });
+
+    const key = ['discoveryToken'];
+    this.adapter.putObject(key, data);
+  }
+
+  /**
+   * Deletes a token
+   *
+   * @param  {string} host
+   * @return {void}
+   */
+  delete() {
+    logger.info('cache/tokenCache|delete');
+
+    const key = ['discoveryToken'];
+    this.adapter.delete(key);
+  }
+}
+
+module.exports = TokenCache;

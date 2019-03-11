@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,30 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 January 2018
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { createLogger, format, transports } = require('winston');
+const jsonStringify = require('fast-safe-stringify');
+const config = require('../config');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
-};
+const { combine, timestamp, colorize, printf, metadata } = format;
+const printLog = (info) => `${info.timestamp} ${info.level}: ${info.message} - ${jsonStringify(info.metadata)}`;
+const logger = createLogger({
+  transports: [
+    new transports.Console({
+      level: config.logging.defaultLevel,
+      format: combine(
+        colorize(),
+        metadata(),
+        timestamp(),
+        printf(printLog)
+      )
+    })
+  ]
+});
+
+module.exports = logger;

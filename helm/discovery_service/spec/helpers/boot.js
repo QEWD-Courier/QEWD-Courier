@@ -23,28 +23,21 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  1 March 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+require('module-alias/register');
+require('jasmine-spy-matchers');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+
+jasmine.getEnv().clearReporters();
+jasmine.getEnv().addReporter(new SpecReporter({
+  spec: {
+    displayPending: true,
+    displayStacktrace: true
   }
-};
+}));

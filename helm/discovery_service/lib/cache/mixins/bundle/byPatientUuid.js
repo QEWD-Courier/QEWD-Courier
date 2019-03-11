@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -29,22 +30,25 @@
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../../../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+module.exports = (adapter) => {
+  return {
+
+    /**
+     * Gets patients by patient uuids
+     *
+     * @param  {string[]} patientUuids
+     * @return {Object[]}
+     */
+    getByPatientUuids: (patientUuids) => {
+      logger.info('mixins/bundle|byPatientUuid|getByPatientUuids', { patientUuids });
+
+      const patients = patientUuids.map(patientUuid => {
+        return adapter.getObjectWithArrays(['Discovery', 'PatientBundle', 'by_uuid', patientUuid]);
+      });
+
+      return patients;
+    }
+  };
 };

@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,25 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 January 2019
 
 */
 
-'use strict';
+const getDemographics = require('./handlers/getDemographics');
+const getHeadingSummary = require('./handlers/getHeadingSummary');
+const getHeadingDetail = require('./handlers/getHeadingDetail');
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
-
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+module.exports = {
+  '/api/patients/:patientId/:heading': {
+    GET:  getHeadingSummary
+  },
+  '/api/discovery/:patientId/:heading': {
+    GET:  getHeadingSummary
+  },
+  '/api/patients/:patientId/:heading/:sourceId': {
+    GET: getHeadingDetail
+  },
+  '/api/demographics/:patientId': {
+    GET: getDemographics
   }
 };

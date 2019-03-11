@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,36 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { ExecutionContext, QewdCacheAdapter } = require('../../lib/core');
+const WorkerMock = require('./worker');
+const CacheRegistryMock = require('./cache');
+const DbRegistryMock = require('./db');
+const ServiceRegistryMock = require('./services');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class ExecutionContextMock extends ExecutionContext {
+  constructor(q) {
+    q = q || new WorkerMock();
+    const qewdSession = q.sessions.create('mock');
+
+    super(q, { qewdSession });
+
+    this.adapter = new QewdCacheAdapter(qewdSession);
+    this.cache = CacheRegistryMock.create();
+    this.db = DbRegistryMock.create();
+    this.services = ServiceRegistryMock.create();
   }
-};
+
+  freeze() {
+    this.cache.freeze();
+    this.db.freeze();
+    this.services.freeze();
+  }
+}
+
+module.exports = ExecutionContextMock;

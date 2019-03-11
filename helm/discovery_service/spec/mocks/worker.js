@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,43 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const DocumentStore = require('ewd-document-store');
+const DbGlobals = require('ewd-memory-globals');
+const sessions = require('ewd-session');
+const globalConfig = require('../support/global_config.json').DDS;
+const { clone } = require('../helpers/utils');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+module.exports = function (config) {
+  this.db = new DbGlobals();
+  this.documentStore = new DocumentStore(this.db);
+
+  this.userDefined = {
+    config: config || {},
+    globalConfig: clone(globalConfig)
+  };
+
+  sessions.init(this.documentStore);
+  this.sessions = sessions;
+
+  this.jwt = {};
+
+  this.db.reset = () => this.db.store.reset();
+  this.db.use = (documentName, ...subscripts) => {
+    if (subscripts.length === 1 && Array.isArray(subscripts[0])) {
+      subscripts = subscripts[0];
+    }
+
+    return new this.documentStore.DocumentNode(documentName, subscripts);
+  };
+
+  this.qewdSessionByJWT = jasmine.createSpy();
+  this.jwt.handlers = {
+    validateRestRequest: jasmine.createSpy()
+  };
 };

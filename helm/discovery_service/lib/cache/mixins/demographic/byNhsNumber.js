@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,43 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../../../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+module.exports = (adapter) => {
+  return {
+
+    /**
+     * Gets data by NHS number
+     *
+     * @param  {int|string} nhsNumber
+     * @return {Object}
+     */
+    get: (nhsNumber) => {
+      logger.info('mixins/demographic/byNhsNumber|get', { nhsNumber });
+
+      const key = ['Demographics', 'by_nhsNumber', nhsNumber];
+
+      return adapter.getObjectWithArrays(key);
+    },
+
+    /**
+     * Sets data
+     *
+     * @param  {int|string} nhsNumber
+     * @param  {Object} data
+     * @return {void}
+     */
+    set: (nhsNumber, data) => {
+      logger.info('mixins/demographic/byNhsNumber|set', { nhsNumber, data });
+
+      const key = ['Demographics', 'by_nhsNumber', nhsNumber];
+      adapter.putObject(key, data);
+    }
+  };
 };

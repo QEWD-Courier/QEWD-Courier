@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,64 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+function respondErr(err) {
+  return {
+    error: err
+  };
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function isPatientIdValid(patientId) {
+  if (!patientId || patientId === '') {
+    return respondErr(`patientId ${patientId} must be defined`);
+  }
+
+  if (!isNumeric(patientId)) {
+    return respondErr(`patientId ${patientId} is invalid`);
+  }
+
+  return {
+    ok: true
+  };
+}
 
 /**
- * @param  {Object} args
- * @param  {Function} finished
+ * Returns ok object if heading is valid. Otherwise returns error object
+ *
+ * @param  {Object} headingsConfig
+ * @param  {string} heading
+ * @return {Object}
  */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+function isHeadingValid(headingsConfig, heading) {
+  if (!heading || !headingsConfig[heading]) {
+    return respondErr(`Invalid or missing heading: ${heading}`);
   }
+
+  return {
+    ok: true
+  };
+}
+
+function isSourceIdValid(sourceId) {
+  const isValid = sourceId? sourceId.indexOf('Discovery-') > -1 : false;
+
+  return {
+    ok: isValid
+  };
+}
+
+module.exports = {
+  isNumeric,
+  isPatientIdValid,
+  isHeadingValid,
+  isSourceIdValid
 };

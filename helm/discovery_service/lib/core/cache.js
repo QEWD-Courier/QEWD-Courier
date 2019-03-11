@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,38 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 January 2018
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { lazyLoadAdapter } = require('../shared/utils');
+const QewdCacheAdapter = require('./adapter');
+const logger = require('./logger');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class CacheRegistry {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.adapter = new QewdCacheAdapter(ctx.qewdSession);
   }
-};
+
+  initialise(id) {
+    logger.info('core/cache|initialise', { id });
+
+    const Cache = require(`../cache/${id}`);
+
+    if (!Cache.create) {
+      throw new Error(`${id} cache class does not support lazy load initialisation.`);
+    }
+
+    return Cache.create(this.adapter);
+  }
+
+  static create(ctx) {
+    return lazyLoadAdapter(new CacheRegistry(ctx));
+  }
+}
+
+module.exports = CacheRegistry;
+

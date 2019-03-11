@@ -27,80 +27,24 @@
 
 */
 
-var authenticate = require('../../utils/authenticate');
-var getPatientsByNHSNumber = require('../../utils/getPatientsByNHSNumber');
-var getPatientResources = require('../../utils/getPatientResources');
-var getDemographics = require('../../utils/getDemographics');
-var mapToDiscoveryNHSNo = require('../../utils/mapToDiscoveryNHSNo');
+'use strict';
 
-var tools = require('../../../utils/tools');
+const { GetDemographicsCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
-var dds_config = require('/opt/qewd/mapped/configuration/global_config.json').DDS;
-
-module.exports = function(args, finished) {
-
-  var patientId = args.patientId;
-  var _this = this;
-
-
-  // override patientId for PHR Users - only allowed to see their own data
-
-  var nhsNumber = args.session.nhsNumber;
-
-  if (args.session.role === 'phrUser') patientId = nhsNumber;
-
-  var valid = tools.isPatientIdValid(patientId);
-  if (valid.error) return finished(valid);
-
-  if (dds_config.mode !== 'live') {
-    patientId = mapToDiscoveryNHSNo.call(this, nhsNumber);
+/**
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function getPatientDemographics (args, finished) {
+  try {
+    const command = new GetDemographicsCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.patientId);
+    
+    finished(responseObj);
+  } catch (err) {
+    const responseError = getResponseError(err);
+    
+    finished(responseError);
   }
-
-  var session = args.req.qewdSession;
-  var cachedDemographics = session.data.$(['Demographics', 'by_nhsNumber', nhsNumber]);
-
-  if (typeof cachedDemographics === 'undefined') {
-    return finished({error: 'Discovery service unable to identify a valid session'});
-  }
-
-  if (cachedDemographics.exists) {
-    return finished(cachedDemographics.getDocument(true));
-  }
-
-  console.log('\n *** authenticating ***');
-  authenticate(session, function(error, token) {
-    if (error) {
-      return finished({error: error});
-    }
-    else {
-      console.log('\n *** getPatientsByNHSNumber - token = ' + token);
-      getPatientsByNHSNumber(patientId, token, session, function(error) {
-        if (error) {
-          return finished({error: error});
-        }
-        else {
-
-          getPatientResources(patientId, 'Patient', token, session, function(error) {
-            if (error) {
-              return finished({error: error});
-            }
-
-            var results = getDemographics.call(_this, patientId, session);
-            // override the nhsNumber back to the proper one instead of the Discovery-mapped one
-
-            console.log('** /src/getDemographics: ' + JSON.stringify(results, null, 2));
-
-            results.demographics.id = nhsNumber;
-            results.demographics.nhsNumber = nhsNumber;
-            cachedDemographics.setDocument(results);
-
-            finished(results);
-
-          });
-        }
-      });
-    }
-  });
-
-  return;
 };

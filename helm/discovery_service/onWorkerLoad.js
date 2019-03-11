@@ -1,5 +1,4 @@
 /*
-
  ----------------------------------------------------------------------------
  |                                                                          |
  | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
@@ -22,29 +21,11 @@
  | See the License for the specific language governing permissions and      |
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
-
   13 February 2019
-
 */
 
-'use strict';
+const global_config = require('/opt/qewd/mapped/configuration/global_config.json');
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
-
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
+module.exports = async function (args, finished) {
+  this.userDefined.globalConfig = global_config
 };

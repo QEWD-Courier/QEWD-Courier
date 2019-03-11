@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,63 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
+const config = require('../config');
+const debug = require('debug')('ripple-cdr-discovery:services:token');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class TokenService {
+  constructor(ctx) {
+    this.ctx = ctx;
   }
-};
+
+  static create(ctx) {
+    return new TokenService(ctx);
+  }
+
+  /**
+   * Gets a token
+   *
+   * @returns {Promise.<string>}
+   */
+  async get() {
+    logger.info('cache/tokenService|get');
+
+    const { tokenCache } = this.ctx.cache;
+    const now = Date.now();
+
+    const token = tokenCache.get();
+    if (token && token.jwt) {
+      if ((now - token.createdAt) < config.auth.tokenTimeout) {
+        return token.jwt;
+      }
+    }
+
+    const { authRestService } = this.ctx.services;
+
+    try {
+      const data = await authRestService.authenticate();
+      debug('data: %j', data);
+
+      tokenCache.set({
+        jwt: data.access_token,
+        createdAt: now
+      });
+
+      return data.access_token;
+    } catch (err) {
+      logger.error('authenticate/get|err: ' + err.message);
+      logger.error('authenticate/get|stack: ' + err.stack);
+
+      tokenCache.delete();
+      throw err;
+    }
+  }
+}
+
+module.exports = TokenService;

@@ -22,7 +22,7 @@
       },
       "orchestrator": {
         "callback_url": "/api/auth/token",
-        "post_logout_redirect_uri": "/"
+        "post_logout_redirect_uri": ""
       }
     },
     "index_url": "/index.html",
@@ -44,6 +44,22 @@
         "getPatientsByNHSNumber": "/api/fhir/patients",
         "getPatientResources": "/api/fhir/resources",
         "getResource": "/api/fhir/reference"
+      }
+    },
+    "headings" : {
+      "medications": "MedicationStatement",
+      "allergies": "AllergyIntolerance",
+      "problems": "Condition",
+      "vaccinations": "Immunization"
+    },
+    "transformations": {
+      "pulsetile": {
+        "source": "openehr",
+        "destination": "pulsetile"
+      },
+      "defaults": {
+        "source": "discovery",
+        "destination": "openehr"
       }
     },
     "mode": "test"

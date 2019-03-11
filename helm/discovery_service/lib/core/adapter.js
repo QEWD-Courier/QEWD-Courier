@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,66 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 January 2018
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const logger = require('./logger');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class QewdCacheAdapter {
+  constructor(qewdSession) {
+    this.qewdSession = qewdSession;
   }
-};
+
+  exists(key) {
+    logger.debug('core/adapter|exists', { key });
+
+    return this.qewdSession.data.$(key).exists;
+  }
+
+  get(key) {
+    logger.debug('core/adapter|get', { key });
+
+    return this.qewdSession.data.$(key).exists
+      ? this.qewdSession.data.$(key).value
+      : null;
+  }
+
+  getObject(key) {
+    logger.debug('core/adapter|getObject', { key });
+
+    return this.qewdSession.data.$(key).exists
+      ? this.qewdSession.data.$(key).getDocument()
+      : null;
+  }
+
+  getObjectWithArrays(key) {
+    logger.debug('core/adapter|getObjectWithArrays', { key });
+
+    return this.qewdSession.data.$(key).exists
+      ? this.qewdSession.data.$(key).getDocument(true)
+      : null;
+  }
+
+  put(key, value) {
+    logger.debug('core/adapter|put', { key, value });
+
+    this.qewdSession.data.$(key).value = value;
+  }
+
+  putObject(key, value) {
+    logger.debug('core/adapter|putObject', { key, value });
+
+    this.qewdSession.data.$(key).setDocument(value);
+  }
+
+  delete(key) {
+    logger.debug('core/adapter|delete', { key });
+
+    this.qewdSession.data.$(key).delete();
+  }
+}
+
+module.exports = QewdCacheAdapter;

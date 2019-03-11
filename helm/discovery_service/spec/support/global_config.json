@@ -1,0 +1,36 @@
+{
+  "DDS": {
+    "auth": {
+      "host": "https://devauth.discoverydataservice.net",
+      "path": "/auth/realms/endeavour/protocol/openid-connect/token",
+      "username": "xxxxxxxxxxxxx",
+      "password": "yyyyyyyyyyyyy",
+      "client_id": "eds-data-checker",
+      "grant_type": "password"
+    },
+    "api": {
+      "host": "https://devgateway.discoverydataservice.net/data-assurance",
+      "paths": {
+        "getPatientsByNHSNumber": "/api/fhir/patients",
+        "getPatientResources": "/api/fhir/resources",
+        "getResource": "/api/fhir/reference"
+      }
+    },
+    "headings" : {
+      "medications": "MedicationStatement",
+      "allergies": "AllergyIntolerance",
+      "problems": "Condition",
+      "vaccinations": "Immunization"
+    },
+    "transformations": {
+      "pulsetile": {
+        "source": "openehr",
+        "destination": "pulsetile"
+      },
+      "defaults": {
+        "source": "discovery",
+        "destination": "openehr"
+      }
+    }
+  }
+}

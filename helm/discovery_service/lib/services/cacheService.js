@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,44 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  13 February 2018
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class CacheService {
+  constructor(ctx) {
+    this.ctx = ctx;
   }
-};
+
+  static create(ctx) {
+    return new CacheService(ctx);
+  }
+
+  /**
+   * Gets cached demographics
+   *
+   * @param  {int|string} nhsNumber
+   * @return {Object}
+   */
+  getDemographics(nhsNumber) {
+    logger.info('services/cacheService|getDemographics', { nhsNumber });
+
+    try {
+      const { demographicCache } = this.ctx.cache;
+      const cachedObj = demographicCache.byNhsNumber.get(nhsNumber);
+
+      return cachedObj;
+    } catch(err) {
+      logger.error('services/cacheService|getDemographics|err: ' + err.message);
+      logger.error('services/cacheService|getDemographics|stack: ' + err.stack);
+
+      return null;
+    }
+  }
+}
+
+module.exports = CacheService;

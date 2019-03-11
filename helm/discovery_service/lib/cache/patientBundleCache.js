@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,51 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
+const { byNhsNumber, byPatientUuid } = require('./mixins/bundle');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class PatientBundleCache {
+  constructor(adapter) {
+    this.adapter = adapter;
+    this.byNhsNumber = byNhsNumber(adapter, 'PatientBundle');
+    this.byPatientUuid = byPatientUuid(adapter, 'PatientBundle');
   }
-};
+
+  static create(adapter) {
+    return new PatientBundleCache(adapter);
+  }
+
+  /**
+   * Checks if bundle exists or not
+   *
+   * @return {bool}
+   */
+  exists() {
+    logger.info('cache/patientBundleCache|exists');
+
+    const key = ['Discovery', 'PatientBundle'];
+
+    return this.adapter.exists(key);
+  }
+
+  /**
+   * Imports data to bundle
+   *
+   * @param  {Object} data
+   * @return {void}
+   */
+  import(data) {
+    logger.info('cache/patientBundleCache|import', data);
+
+    const key = ['Discovery', 'PatientBundle'];
+    this.adapter.putObject(key, data);
+  }
+}
+
+module.exports = PatientBundleCache;

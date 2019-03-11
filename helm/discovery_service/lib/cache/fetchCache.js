@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,61 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class FetchCache {
+  constructor(adapter) {
+    this.adapter = adapter;
   }
-};
+
+  static create(adapter) {
+    return new FetchCache(adapter);
+  }
+
+  /**
+   * Checks if fetching cache exists for reference or not
+   *
+   * @param {string} reference
+   * @return {bool}
+   */
+  exists(reference) {
+    logger.info('cache/fetchCache|exists', { reference });
+
+    const key = ['fetchingResource', reference];
+
+    return this.adapter.exists(key);
+  }
+
+  /**
+   * Sets fetching status for a reference
+   *
+   * @param {string} reference
+   * @return {bool}
+   */
+  set(reference) {
+    logger.info('cache/fetchCache|exists', { reference });
+
+    const key = ['fetchingResource', reference];
+    this.adapter.put(key, true);
+  }
+
+  /**
+   * Deletes all fetching cache
+   *
+   * @return {void}
+   */
+  deleteAll() {
+    logger.info('cache/fetchCache|deleteAll');
+
+    const key = ['fetchingResource'];
+    this.adapter.delete(key);
+  }
+}
+
+module.exports = FetchCache;

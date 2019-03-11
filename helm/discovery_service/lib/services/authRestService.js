@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,66 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const request = require('request');
+const { logger } = require('../core');
+const debug = require('debug')('ripple-cdr-discovery:services:resource-rest');
+
+function requestAsync(options) {
+  return new Promise((resolve, reject) => {
+    request(options, (err, response, body) => {
+      if (err) return reject(err);
+
+      debug('body: %j', body);
+
+      return resolve(body);
+    });
+  });
+}
 
 /**
- * @param  {Object} args
- * @param  {Function} finished
+ * Discovery API Auth REST service
  */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class AuthRestService {
+  constructor(ctx, hostConfig) {
+    this.ctx = ctx;
+    this.hostConfig = hostConfig;
   }
-};
+
+  static create(ctx) {
+
+    return new AuthRestService(ctx, ctx.serversConfig);
+  }
+
+  /**
+   * Sends a request to get token
+   *
+   * @return {Promise.<Object>}
+   */
+  async authenticate() {
+    logger.info('services/authRestService|authenticate');
+
+    const options = {
+      url: `${this.hostConfig.auth.host + this.hostConfig.auth.path}`,
+      method: 'POST',
+      form: {
+        username: this.hostConfig.auth.username,
+        password: this.hostConfig.auth.password,
+        client_id: this.hostConfig.auth.client_id,
+        grant_type: this.hostConfig.auth.grant_type
+      },
+      json: true
+    };
+
+    debug('options: %j', options);
+
+    return requestAsync(options);
+  }
+}
+
+module.exports = AuthRestService;

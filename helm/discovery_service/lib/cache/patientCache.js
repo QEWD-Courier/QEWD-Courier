@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,40 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  12 February 2019
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+const { logger } = require('../core');
+const { ResourceName } = require('../shared/enums');
+const { byNhsNumber, byPatientUuid, byResource } = require('./mixins/patient');
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
+class PatientCache {
+  constructor(adapter) {
+    this.adapter = adapter;
+    this.byNhsNumber = byNhsNumber(adapter);
+    this.byPatientUuid = byPatientUuid(adapter);
+    this.byResource = byResource(adapter);
   }
-};
+
+  static create(adapter) {
+    return new PatientCache(adapter);
+  }
+
+  /**
+   * Exports all patient cache data
+   *
+   * @return {Object}
+   */
+  export() {
+    logger.info('cache/patientCache|export');
+
+    const key = ['Discovery', ResourceName.PATIENT];
+
+    return this.adapter.getObjectWithArrays(key);
+  }
+}
+
+module.exports = PatientCache;

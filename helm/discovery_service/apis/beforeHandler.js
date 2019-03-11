@@ -38,7 +38,7 @@
   The QEWD function - this.qewdSessionByJWT - handles this
 
   If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid" 
+  create a new QEWD Session.  It uses the unique user-specific "uuid"
   claim/property in the JWT as the QEWD Session token identifier
 
   On subsequent incoming requests from the user, the JWT's uuid claim will
@@ -50,12 +50,14 @@
 
 
 */
-
-module.exports = function(req, finished) {
-
+const { ExecutionContext } = require('../lib/core');
+module.exports = function (req, finished) {
+  
+  
   console.log('beforeHandler in discovery_service invoked!');
-
+  
   req.qewdSession = this.qewdSessionByJWT.call(this, req);
+  req.ctx = ExecutionContext.fromRequest(this, req);
   return true;
-
+  
 };

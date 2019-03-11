@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-openehr: Ripple MicroServices for OpenEHR                     |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,28 +24,24 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 February 2019
+  11 February 2018
 
 */
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
-const { getResponseError } = require('../../lib/errors');
+function BadRequestError(message, userMessage, reason, meta, statusCode, code) {
+  this.message = message || 'Bad request';
+  this.stack = new Error().stack;
+  this.errorType = this.name;
+  this.statusCode = statusCode || 400;
+  this.code = code || 'BadRequest';
+  this.userMessage = userMessage || message;
+  this.meta = meta;
+  this.reason = reason;
+}
 
-/**
- * @param  {Object} args
- * @param  {Function} finished
- */
-module.exports = async function getDiscoveryPatientHeading (args, finished) {
-  try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
-    
-    finished(responseObj);
-  } catch (err) {
-    const responseError = getResponseError(err);
-    
-    finished(responseError);
-  }
-};
+BadRequestError.prototype = Object.create(Error.prototype);
+BadRequestError.prototype.name = 'BadRequestError';
+
+module.exports = BadRequestError;
