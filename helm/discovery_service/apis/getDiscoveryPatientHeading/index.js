@@ -29,7 +29,7 @@
 
 'use strict';
 
-const { GetHeadingDetailCommand } = require('../../lib/commands');
+const { GetHeadingSummaryCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
 /**
@@ -38,8 +38,8 @@ const { getResponseError } = require('../../lib/errors');
  */
 module.exports = async function getDiscoveryPatientHeading (args, finished) {
   try {
-    const command = new GetHeadingDetailCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.heading, args.sourceId);
+    const command = new GetHeadingSummaryCommand(args.req.ctx, args.session);
+    const responseObj = await command.execute(args.patientId, args.heading);
     
     finished(responseObj);
   } catch (err) {
