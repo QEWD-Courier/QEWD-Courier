@@ -6,8 +6,5 @@
   "valid-url",
   "bluebird",
   "fast-safe-stringify",
-  "qewd-router",
-  "qewd-transform-json",
-  "request",
   "winston"
 ]
