@@ -1,0 +1,21 @@
+{
+  "ctx/composer_name": "Dr Tony Shannon",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Rippleburgh GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/medication_item|value": "John Doe",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/medication_item|code": "some medication name code",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/medication_item|terminology": "some medication name terminology",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/additional_instruction:0": "some dose directions",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/route": "another some route",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/dose_amount_description": "some dose amounts",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/dose_timing_description": "some timing in period",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/order_details/order_start_date_time": "2018-01-02T03:00:00Z",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/order_details/order_summary/course_status|code": "at0021",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/order:0/timing": "R5/2017-06-26T10:00:00Z/P1M",
+  "medication_statement_list/medication_and_medical_devices/medication_order:0/narrative": "John Doe - another some route - some dose amounts some timing in period"
+}

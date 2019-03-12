@@ -1,0 +1,13 @@
+{
+  "problem": "some problem",
+  "dateOfOnset": 1517486400000,
+  "description": "some description",
+  "terminology": "some problem terminology",
+  "code": "one more problem code",
+  "author": "Mr John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "originalComposition": "wow original composition",
+  "originalSource": "new original source"
+}

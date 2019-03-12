@@ -1,0 +1,11 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "name": "John Doe",
+  "contactInformation": "some contact Information",
+  "relationshipCode": "some relationship Code",
+  "relationship": "some relationship",
+  "nextOfKin": "some next Of Kin",
+  "notes": "some notes"
+}

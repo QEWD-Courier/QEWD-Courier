@@ -1,0 +1,22 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "end_of_life_patient_preferences/legal_information:0/preferred_priorities_of_care:0/preferred_place_of_care:0|value": "some priorities Of Care place Of Care",
+  "end_of_life_patient_preferences/legal_information:0/preferred_priorities_of_care:0/preferred_place_of_care:0|code": "at0008",
+  "end_of_life_patient_preferences/legal_information:0/preferred_priorities_of_care:0/preferred_place_of_death:0|value": "some priorities Of Care place Of Death",
+  "end_of_life_patient_preferences/legal_information:0/preferred_priorities_of_care:0/preferred_place_of_death:0|code": "at0018",
+  "end_of_life_patient_preferences/legal_information:0/preferred_priorities_of_care:0/comment": "some priority comment",
+  "end_of_life_patient_preferences/legal_information:0/advance_decision_to_refuse_treatment/decision_status|value": "some treatment decision",
+  "end_of_life_patient_preferences/legal_information:0/advance_decision_to_refuse_treatment/decision_status|code": "at0005",
+  "end_of_life_patient_preferences/legal_information:0/advance_decision_to_refuse_treatment/date_of_decision": "2018-03-01T12:00:00Z",
+  "end_of_life_patient_preferences/legal_information:0/cpr_decision/cpr_decision|value": "some cpr decision",
+  "end_of_life_patient_preferences/legal_information:0/cpr_decision/cpr_decision|code": "at0005",
+  "end_of_life_patient_preferences/legal_information:0/cpr_decision/date_of_cpr_decision": "2018-02-01T12:00:00Z",
+  "end_of_life_patient_preferences/legal_information:0/cpr_decision/comment": "some cpr comment"
+}

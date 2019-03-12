@@ -1,0 +1,15 @@
+{
+  "respirationRate": "some respiration rate",
+  "oxygenSupplemental": "true",
+  "heartRate": "some heart rate",
+  "temperature": "42",
+  "levelOfConsciousness": "Voice",
+  "systolicBP": "some systolic",
+  "diastolicBP": "some diastolic",
+  "oxygenSaturation": "awesome stats",
+  "newsScore": "some great score",
+  "author": "Mr John Doe",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

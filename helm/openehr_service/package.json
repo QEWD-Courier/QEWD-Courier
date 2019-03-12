@@ -1,0 +1,109 @@
+{
+  "name": "@helm/openehr-service",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint apis headings lib spec utils/openehr --fix",
+    "test": "NODE_ENV=test jasmine --config=spec/support/jasmine.json",
+    "coverage": "nyc --reporter=html --reporter=text npm test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "fast-safe-stringify": "^2.0.6",
+    "fs-extra": "^7.0.1",
+    "moment-timezone": "^0.5.20",
+    "qewd-router": "^1.13.1",
+    "qewd-template": "^1.1.2",
+    "qewd-transform-json": "^1.10.0",
+    "request": "^2.87.0",
+    "valid-url": "^1.0.9",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "eslint": "^5.12.1",
+    "ewd-document-store": "^1.24.0",
+    "ewd-memory-globals": "^1.0.3",
+    "ewd-session": "^2.19.0",
+    "jasmine": "^3.3.1",
+    "jasmine-spec-reporter": "^4.1.1",
+    "jasmine-spy-matchers": "^2.2.0",
+    "jshint": "^2.9.7",
+    "mockery": "^2.1.0",
+    "module-alias": "^2.2.0",
+    "nock": "^10.0.4",
+    "nyc": "^13.1.0"
+  },
+  "_moduleAliases": {
+    "@apis": "apis",
+    "@headings": "headings",
+    "@lib": "lib",
+    "@tests": "spec",
+    "@utils": "utils"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "apis/**/*.js",
+      "headings/**/*.js",
+      "lib/**/*.js",
+      "utils/openehr/*.js"
+    ],
+    "exclude": [
+      "lib/jumper/**/*.js"
+    ]
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "extends": "eslint:recommended",
+    "env": {
+      "jasmine": true,
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "no-bitwise": 2,
+      "camelcase": 0,
+      "curly": 0,
+      "guard-for-in": 2,
+      "wrap-iife": [
+        2,
+        "any"
+      ],
+      "no-use-before-define": [
+        2,
+        {
+          "functions": false
+        }
+      ],
+      "new-cap": 2,
+      "no-caller": 2,
+      "no-empty": 2,
+      "no-new": 2,
+      "quotes": [
+        2,
+        "single"
+      ],
+      "no-undef": 2,
+      "no-unused-vars": 2,
+      "operator-linebreak": [
+        "error",
+        "before"
+      ],
+      "comma-style": [
+        2,
+        "last"
+      ],
+      "semi": [
+        2,
+        "always"
+      ]
+    },
+    "globals": {
+      "expectAsync": true
+    }
+  }
+}

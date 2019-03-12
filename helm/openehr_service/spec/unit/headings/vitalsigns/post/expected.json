@@ -1,0 +1,19 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "vital_signs_observations/vital_signs/respirations/rate|magnitude": "some respiration rate",
+  "vital_signs_observations/vital_signs/respirations/inspired_oxygen/on_air": "true",
+  "vital_signs_observations/vital_signs/pulse_heart_beat/heart_rate|magnitude": 76,
+  "vital_signs_observations/vital_signs/body_temperature/temperature|magnitude": 38,
+  "vital_signs_observations/vital_signs/avpu/avpu_observation|code": "Not known",
+  "vital_signs_observations/vital_signs/blood_pressure/systolic|magnitude": "some systolic bp",
+  "vital_signs_observations/vital_signs/blood_pressure/diastolic|magnitude": "some diastolic BP",
+  "vital_signs_observations/vital_signs/indirect_oximetry/spo2|numerator": "some oxygen saturation",
+  "vital_signs_observations/vital_signs/news_uk_rcp/total_score": "some score"
+}

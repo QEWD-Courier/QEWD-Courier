@@ -23,28 +23,25 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  7 March 2019
 
 */
 
-module.exports = function(patientId, heading, host) {
+'use strict';
 
-  // delete cached heading data in all active sessions, for patient
+const { ExecutionContext, logger } = require('../../lib/core');
 
-  var sessions = this.sessions.active();
-  sessions.forEach(function(session) {
-    var patientHeadingCache = session.data.$(['headings', 'byPatientId', patientId, heading]);
-    if (patientHeadingCache.exists) {
-      var byDateCache = patientHeadingCache.$('byDate');
-      var sourceIdCache = session.data.$(['headings', 'bySourceId']);
-      patientHeadingCache.$(['byHost', host]).forEachChild(function(sourceId, indexNode) {
-        var sourceIdNode = sourceIdCache.$(sourceId);
-        var date = sourceIdNode.$('date').value;
-        sourceIdNode.delete();
-        byDateCache.$([date, sourceId]).delete();
-        indexNode.delete();
-      });
-    }
-    session.data.$(['headings', 'byHeading', heading]).delete();
-  });
-};
+function deleteSessionCaches(patientId, heading, host, callback = () => null) {
+  const ctx = new ExecutionContext(this);
+  const { cacheService } = ctx.services;
+
+  cacheService.delete(host, patientId, heading)
+    .then(() => callback())
+    .catch(err => {
+      logger.error('utils/openehr/deleteSessionCaches|err: ', err);
+      if (err.message) logger.error('utils/openehr/deleteSessionCaches|err|message: ' + err.message);
+      if (err.stack) logger.error('utils/openehr/deleteSessionCaches|err|stack: ' + err.stack);
+    });
+}
+
+module.exports = deleteSessionCaches;

@@ -1,0 +1,13 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "respirationRate": "some respiration rate",
+  "oxygenSupplemental": "other air mode",
+  "heartRate": 76,
+  "temperature": 38,
+  "systolicBP": "some systolic bp",
+  "diastolicBP": "some diastolic BP",
+  "oxygenSaturation": "some oxygen saturation",
+  "newsScore": "some score"
+}

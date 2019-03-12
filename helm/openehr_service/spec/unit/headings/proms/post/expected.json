@@ -1,0 +1,18 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "generic_proms/context/proms_type": "Giga John Doe",
+  "generic_proms/context/ecis_procedure_link": "some procedure source id",
+  "generic_proms/sf-36:0/a1._health_in_general|code": "some a_1_Health_in_general",
+  "generic_proms/sf-36:0/a2._health_compared_to_1_year_ago|code": "some a_2_Health_compared_to_1_year_ago",
+  "generic_proms/sf-36:0/a3._vigorous_activies|code": "some a_3_Vigorous_activies",
+  "generic_proms/sf-36:0/a4._moderate_activies|code": "some a_4_Moderate_activies",
+  "generic_proms/sf-36:0/a5._lifting_or_carrying_groceries|code": "some a_5_Lifting_or_carrying_groceries",
+  "generic_proms/pain_vas:0/pain_scale": "some pain scale"
+}

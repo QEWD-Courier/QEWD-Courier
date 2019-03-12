@@ -1,0 +1,12 @@
+{
+  "author": "Rob Tweed",
+  "healthcareFacilityId": "888888-567",
+  "healthcareFacilityName": "Gothenburg GP Practice",
+  "problem": "some problem",
+  "dateOfOnset": "2018-02-01T12:00:00Z",
+  "description": "some description",
+  "terminology": "some problem terminology",
+  "code": "one more problem code",
+  "originalComposition": "wow original composition",
+  "originalSource": "new original source"
+}

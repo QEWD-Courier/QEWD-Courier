@@ -7,35 +7,22 @@
     "authenticate": false
   },
   {
+    "uri": "/api/application",
+    "method": "GET",
+    "handler": "getApplication"
+  },
+  {
+    "uri": "/api/user",
+    "method": "GET",
+    "handler": "getUser",
+    "on_microservice": "auth_service"
+  },
+  {
     "uri": "/api/auth/token",
     "method": "GET",
     "handler": "oidc_callback",
     "on_microservice": "auth_service",
     "authenticate": false
-  },
-  {
-    "uri": "/api/openehr/check",
-    "method": "GET",
-    "handler": "ddsUpdateCheck",
-    "on_microservice": "openehr_service"
-  },
-  {
-    "uri": "/api/discovery/:patientId/:heading",
-    "method": "GET",
-    "handler": "getDiscoveryPatientHeading",
-    "on_microservice": "discovery_service",
-    "from_microservices": [
-      "openehr_service"
-    ]
-  },
-  {
-    "uri": "/discovery/merge/:heading",
-    "method": "GET",
-    "handler": "mergeDDSHeading",
-    "on_microservice": "openehr_service",
-    "from_microservices": [
-      "openehr_service"
-    ]
   },
   {
     "uri": "/api/demographics/:patientId",
@@ -48,10 +35,19 @@
     ]
   },
   {
-    "uri": "/api/user",
+    "uri": "/api/discovery/:patientId/:heading",
     "method": "GET",
-    "handler": "getUser",
-    "on_microservice": "auth_service"
+    "handler": "getDiscoveryPatientHeading",
+    "on_microservice": "discovery_service",
+    "from_microservices": [
+      "openehr_service"
+    ]
+  },
+  {
+    "uri": "/api/openehr/check",
+    "method": "GET",
+    "handler": "checkNhsNumber",
+    "on_microservice": "openehr_service"
   },
   {
     "uri": "/api/logout",
@@ -60,14 +56,21 @@
     "on_microservice": "auth_service"
   },
   {
-    "uri": "/api/application",
-    "method": "GET",
-    "handler": "getApplication"
-  },
-  {
     "uri": "/api/feeds",
     "method": "GET",
-    "handler": "getFeeds",
+    "handler": "getFeedsSummary",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/feeds/:sourceId",
+    "method": "GET",
+    "handler": "getFeedDetail",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/heading/:heading/fields/summary",
+    "method": "GET",
+    "handler": "getHeadingSummaryFields",
     "on_microservice": "openehr_service"
   },
   {
@@ -83,6 +86,12 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/api/patients/:patientId/top3Things/:sourceId",
+    "method": "GET",
+    "handler": "getPatientTop3ThingsDetail",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/api/patients/:patientId/:heading",
     "method": "GET",
     "handler": "getPatientHeadingSummary",
@@ -92,6 +101,75 @@
     "uri": "/api/patients/:patientId/:heading/:sourceId",
     "method": "GET",
     "handler": "getPatientHeadingDetail",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/hscn/:site/top3Things/:patientId",
+    "method": "GET",
+    "handler": "getPatientTop3ThingsHscnDetail",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/discovery/merge/:heading",
+    "method": "GET",
+    "handler": "mergeDiscoveryData",
+    "on_microservice": "openehr_service",
+    "from_microservices": [
+      "openehr_service"
+    ]
+  },
+  {
+    "uri": "/api/feeds",
+    "method": "POST",
+    "handler": "postFeed",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/top3Things",
+    "method": "POST",
+    "handler": "postPatientTop3Things",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/:heading",
+    "method": "POST",
+    "handler": "postPatientHeading",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/feeds/:sourceId",
+    "method": "PUT",
+    "handler": "putFeed",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/top3Things/:sourceId",
+    "method": "PUT",
+    "handler": "putPatientTop3Things",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/:heading/:sourceId",
+    "method": "PUT",
+    "handler": "putPatientHeading",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/:heading/:sourceId",
+    "method": "DELETE",
+    "handler": "deletePatientHeading",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/discovery/revert/all",
+    "method": "DELETE",
+    "handler": "revertAllDiscoveryData",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/discovery/revert/:patientId/:heading",
+    "method": "DELETE",
+    "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
   }
 ]

@@ -1,0 +1,29 @@
+{
+  "name": "End of Life Care",
+  "type": "Document",
+  "careDocument": {
+    "name": "End of Life Care",
+    "type": "Document",
+    "author": "John Doe Jr",
+    "dateCreated":  1514808000000
+  },
+  "cprDecision": {
+    "cprDecision": "some cpr decision",
+    "dateOfDecision": 1517486400000,
+    "comment": "some cpr comment"
+  },
+  "prioritiesOfCare": {
+    "placeOfCare": "some priority place of care",
+    "placeOfDeath": "some priority place of death",
+    "comment": "some priority comment"
+  },
+  "treatmentDecision": {
+    "decisionToRefuseTreatment": "some treatment decision",
+    "dateOfDecision": 1519905600000,
+    "comment": "some treatment comment"
+  },
+  "author": "John Doe Jr",
+  "dateCreated": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}
