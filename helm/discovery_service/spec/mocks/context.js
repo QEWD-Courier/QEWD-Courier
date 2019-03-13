@@ -34,7 +34,9 @@ const { ExecutionContext, QewdCacheAdapter } = require('../../lib/core');
 const WorkerMock = require('./worker');
 const CacheRegistryMock = require('./cache');
 const DbRegistryMock = require('./db');
+const globalConfig = require('../support/configuration.json');
 const ServiceRegistryMock = require('./services');
+const { clone } = require('../helpers/utils');
 
 class ExecutionContextMock extends ExecutionContext {
   constructor(q) {
@@ -42,6 +44,9 @@ class ExecutionContextMock extends ExecutionContext {
     const qewdSession = q.sessions.create('mock');
 
     super(q, { qewdSession });
+    this.userDefined = {
+      globalConfig: clone(globalConfig)
+    };
 
     this.adapter = new QewdCacheAdapter(qewdSession);
     this.cache = CacheRegistryMock.create();

@@ -145,6 +145,16 @@ function parseRef(reference, { separator = '/' } = {}) {
   };
 }
 
+function getName(nameObj) {
+  let name;
+  
+  Array.isArray(nameObj)
+    ? nameObj.forEach(n => name = name ? `${name} ${n}` : `${n}`)
+    : name = nameObj;
+  
+  return name;
+}
+
 //@TODO Re check functionality for correct spaces
 function parseName(name) {
   let initName = name && name.text
@@ -165,16 +175,6 @@ function parseName(name) {
   }
 
   return initName;
-}
-
-function getName(nameObj) {
-  let name;
-
-  Array.isArray(nameObj)
-    ? nameObj.forEach(n => name = name ? `${name} ${n}` : `${n}`)
-    : name = nameObj;
-
-  return name;
 }
 
 function getOrganisationRef(resource) {
