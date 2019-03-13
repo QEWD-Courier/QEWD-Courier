@@ -76,7 +76,6 @@ describe('ripple-cdr-lib/lib/services/authRestService', () => {
 
   xit('should throw error', async () => {
     nock('https://devauth.discoverydataservice.net')
-      .log(console.log)
       .post('/auth/realms/endeavour/protocol/openid-connect/token', [
         'username=xxxxxxxx',
         'password=yyyyyyyyyyy', //@TODO how handle real credentials?

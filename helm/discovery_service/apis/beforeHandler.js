@@ -50,14 +50,13 @@
 
 
 */
+const { logger } = require('../lib/core');
 const { ExecutionContext } = require('../lib/core');
-module.exports = function (req, finished) {
-  
-  
-  console.log('beforeHandler in discovery_service invoked!');
-  
+module.exports = function (req) {
+  logger.info('beforeHandler in discovery_service invoked!');
+
   req.qewdSession = this.qewdSessionByJWT.call(this, req);
   req.ctx = ExecutionContext.fromRequest(this, req);
   return true;
-  
+
 };

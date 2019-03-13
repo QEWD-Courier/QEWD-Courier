@@ -34,7 +34,7 @@ const { ExecutionContext, QewdCacheAdapter } = require('../../lib/core');
 const WorkerMock = require('./worker');
 const CacheRegistryMock = require('./cache');
 const DbRegistryMock = require('./db');
-const globalConfig = require('../support/global_config.json');
+const globalConfig = require('../support/configuration.json');
 const ServiceRegistryMock = require('./services');
 const { clone } = require('../helpers/utils');
 

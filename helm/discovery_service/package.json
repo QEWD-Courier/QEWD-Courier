@@ -5,8 +5,7 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "scripts": {
-    "lint": "jshint lib spec index.js",
-    "lint2": "eslint lib2 spec2 --fix",
+    "lint": "eslint apis lib spec --fix",
     "test": "jasmine --config=spec/support/jasmine.json",
     "test:debug": "DEBUG=ripple-cdr-discovery* jasmine --config=spec/support/jasmine.json",
     "coverage": "nyc --reporter=html --reporter=text jasmine --config=spec/support/jasmine.json",

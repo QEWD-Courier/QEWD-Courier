@@ -33,7 +33,7 @@
 const { logger } = require('../../../core');
 const { ResourceName } = require('../../../shared/enums');
 
-module.exports = (adapter, ) => {
+module.exports = (adapter) => {
   return {
 
     /**
