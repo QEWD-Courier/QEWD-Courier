@@ -1,0 +1,15 @@
+{
+  "name": "some medication name",
+  "doseAmount": "some dose amounts",
+  "doseDirections": "some dose directions",
+  "doseTiming": "some timing in period",
+  "route": "another some route",
+  "startDate": 1514808000000,
+  "startTime": 54000000,
+  "medicationCode": "some medication name code",
+  "medicationTerminology": "some medication name terminology",
+  "author": "John Doe",
+  "dateCreated": 1517486400000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

@@ -1,0 +1,16 @@
+{
+  "prioritiesOfCare": {
+    "placeOfCare": "some priorities Of Care place Of Care",
+    "placeOfDeath": "some priorities Of Care place Of Death",
+    "comment": "some priority comment"
+  },
+  "treatmentDecision": {
+    "decisionToRefuseTreatment": "some treatment decision",
+    "dateOfDecision": "2018-01-01T12:00:00Z"
+  },
+  "cprDecision": {
+    "cprDecision": "some cpr decision",
+    "dateOfDecision": "2018-01-01T12:00:00Z",
+    "comment": "some cpr comment"
+  }
+}

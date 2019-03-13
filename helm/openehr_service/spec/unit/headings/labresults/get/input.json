@@ -1,0 +1,73 @@
+{
+  "test_name": "some test name",
+  "sample_taken": "2018-01-01T12:00:00Z",
+  "status": "some status",
+  "conclusion": "some conclusion",
+  "test_panel": {
+    "items": [
+      {
+        "name": {
+          "value": "John Doe"
+        },
+        "value": {
+          "magnitude": "some magnitude",
+          "units": "some units",
+          "normalRange": {
+            "interval": {
+              "lower": {
+                "magnitude": "some lower magnitude"
+              },
+              "upper": {
+                "magnitude": "some upper magnitude"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "name": {
+        "value": "John Doe"
+      },
+      "value": {
+        "magnitude": "some magnitude",
+        "units": "some units",
+        "normalRange": {
+          "interval": {
+            "lower": {
+              "magnitude": "some lower magnitude"
+            },
+            "upper": {
+              "magnitude": "some upper magnitude"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": {
+        "value": "Comment"
+      },
+      "value": {
+        "magnitude": "some other magnitude",
+        "value": "i dont know",
+        "units": "some other units",
+        "normalRange": {
+          "interval": {
+            "lower": {
+              "magnitude": "some other lower magnitude"
+            },
+            "upper": {
+              "magnitude": "some other upper magnitude"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "author": "John Doe Jr",
+  "date_created": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

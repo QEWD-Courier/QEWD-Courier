@@ -1,0 +1,16 @@
+{
+  "ctx/composer_name": "Rob Tweed",
+  "ctx/health_care_facility|id": "888888-567",
+  "ctx/health_care_facility|name": "Gothenburg GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "top_issues/story_history:0/issue_1/issue_1_name": "some name 1",
+  "top_issues/story_history:0/issue_1/issue_1_detail": "some detail 1",
+  "top_issues/story_history:0/issue_2/issue_2_name": "some name 2",
+  "top_issues/story_history:0/issue_2/issue_2_detail": "some detail 2",
+  "top_issues/story_history:0/issue_3/issue_3_name": "some name 3",
+  "top_issues/story_history:0/issue_3/issue_3_detail": "some detail 3"
+}

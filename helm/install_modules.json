@@ -1,10 +1,11 @@
 [
-  "openid-client",
-  "qewd-template",
-  "moment-timezone",
-  "jsonschema",
-  "valid-url",
   "bluebird",
   "fast-safe-stringify",
+  "fs-extra",
+  "jsonschema",
+  "openid-client",
+  "moment-timezone",
+  "qewd-template",
+  "valid-url",
   "winston"
 ]

@@ -1,0 +1,11 @@
+{
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "date_created": "2018-01-01T12:00:00Z",
+  "author": "John Doe",
+  "cause": "some cause",
+  "cause_code": "some cause code",
+  "cause_terminology": "some cause terminology",
+  "reaction": "some reaction",
+  "originalComposition": "some original composition",
+  "originalSource": "some original source"
+}

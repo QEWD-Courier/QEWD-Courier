@@ -1,0 +1,14 @@
+{
+  "procedure_name": "some procedure name",
+  "procedure_code": "some procedure code",
+  "procedure_datetime": "2018-02-01T12:00:00Z",
+  "procedure_terminology": "some procedure terminology",
+  "procedure_notes": "some procedure notes",
+  "performer": "some performer",
+  "procedure_state": "test procedure state",
+  "author": "Super John Doe",
+  "date_submitted": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "originalComposition": "wow original composition",
+  "originalSource": "new original source"
+}

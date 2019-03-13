@@ -1,0 +1,10 @@
+{
+  "name": "Giga John Doe",
+  "procedureSourceId": "some procedure source id",
+  "specific_q1": "some a_1_Health_in_general",
+  "specific_q2": "some a_2_Health_compared_to_1_year_ago",
+  "specific_q3": "some a_3_Vigorous_activies",
+  "specific_q4": "some a_4_Moderate_activies",
+  "specific_q5": "some a_5_Lifting_or_carrying_groceries",
+  "score": "some pain scale"
+}

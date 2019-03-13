@@ -1,0 +1,12 @@
+{
+  "diagnosesCount": 100,
+  "diagnosesDate": "2018-01-01T12:00:00Z",
+  "ordersCount": 200,
+  "ordersDate": "2018-02-01T12:00:00Z",
+  "resultsCount": 300,
+  "resultsDate": "2018-03-01T12:00:00Z",
+  "vitalsCount": 400,
+  "vitalsDate": "2018-04-01T12:00:00Z",
+  "source": "marand",
+  "sourceId": "marand-counts"
+}

@@ -1,0 +1,12 @@
+{
+  "name1": "some name 1",
+  "description1": "some detail 1",
+  "name2":  "some name 2",
+  "description2": "some detail 2",
+  "name3":  "some name 3",
+  "description3": "some detail 3",
+  "author":  "Mr John Doe",
+  "dateCreated": 1514808000000,
+  "source":  "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

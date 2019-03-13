@@ -1,0 +1,17 @@
+{
+  "name": "some procedure name",
+  "procedureName": "some procedure name",
+  "procedureCode": "some procedure code",
+  "date": 1517486400000,
+  "time": 54000000,
+  "procedureTerminology": "some procedure terminology",
+  "notes": "some procedure notes",
+  "performer": "some performer",
+  "currentStatus": "test procedure state",
+  "author": "Super John Doe",
+  "dateSubmitted": 1514808000000,
+  "source": "marand",
+  "sourceId": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "originalComposition": "wow original composition",
+  "originalSource": "new original source"
+}

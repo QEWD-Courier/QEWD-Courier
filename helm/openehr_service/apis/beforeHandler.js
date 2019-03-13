@@ -23,39 +23,41 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  3 March 2019
 
 */
 
-/*
+'use strict';
 
-  The beforeHandler module is invoked for EVERY incoming request handled by
-  the OpenEHR MicroService.
+const { ExecutionContext, logger } = require('../lib/core');
 
-  Here we use it to set up and maintain a QEWD session for the user - this
-  QEWD Session is used for data cacheing.
-
-  The QEWD function - this.qewdSessionByJWT - handles this
-
-  If this is the first time this user's JWT has been received, it will
-  create a new QEWD Session.  It uses the unique user-specific "uuid" 
-  claim/property in the JWT as the QEWD Session token identifier
-
-  On subsequent incoming requests from the user, the JWT's uuid claim will
-  be recognised as a pointer to an existing session, and that QEWD Session will
-  be re-allocated to the incoming request object.
-
-  The module always returns true to signal that the incoming request is to be
-  handled by its allocated handler module.
-
-
-*/
-
-module.exports = function(req, finished) {
-
-  console.log('beforeHandler in openehr_service invoked!');
+/**
+ * The beforeHandler module is invoked for EVERY incoming request handled by
+ * the OpenEHR MicroService.
+ *
+ * Here we use it to set up and maintain a QEWD session for the user - this
+ * QEWD Session is used for data cacheing.
+ *
+ * The QEWD function - this.qewdSessionByJWT - handles this
+ * If this is the first time this user's JWT has been received, it will
+ * create a new QEWD Session.  It uses the unique user-specific "uuid"
+ * claim/property in the JWT as the QEWD Session token identifier
+ *
+ * On subsequent incoming requests from the user, the JWT's uuid claim will
+ * be recognised as a pointer to an existing session, and that QEWD Session will
+ * be re-allocated to the incoming request object.
+ * The module always returns true to signal that the incoming request is to be
+ * handled by its allocated handler module.
+ *
+ * @param  {Object} req
+ * @param  {Function} finished
+ * @return {bool}
+ */
+module.exports = function (req, finished) { // eslint-disable-line no-unused-vars
+  logger.info('beforeHandler');
 
   req.qewdSession = this.qewdSessionByJWT.call(this, req);
-  return true;
+  req.ctx = ExecutionContext.fromQewdSession(this, req.qewdSession);
 
+  return true;
 };

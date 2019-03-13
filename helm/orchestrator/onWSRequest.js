@@ -45,7 +45,7 @@
   3) Incoming requests from LTHT via the HSCN network must have been authenticated
      against our OpenId Connect server, in which case they will have our Access Token
      as a Bearer Token.  However, QEWD-Courier will be expecting one of its JWTs, so
-     would otherwise reject this incoming request.  So instead we convert the 
+     would otherwise reject this incoming request.  So instead we convert the
      Authorization header into a custom "AccessToken" version, which allows it
      to reach the OpenEHR MicroService - its header will be ignored by the special
      beforeHandler processing in the OpenEHR MicroService
@@ -90,19 +90,17 @@ module.exports = function(req, res, next) {
   if (req.url.startsWith('/hscn/')) {
     // For Access Token-authenticated messages from HSCN (eg Leeds)
     // we need to change the Authorization header because QEWD
-    // expects a Bearer token to be a JWT.  We'll change it to 
+    // expects a Bearer token to be a JWT.  We'll change it to
     // a custom type of Access to allow the incoming message to
     // not get rejected by the Conductor, and make it to the
     // OpenEHR microservice
 
-          if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-            var token = req.headers.authorization.split('Bearer ')[1];
-            req.headers.authorization = 'AccessToken ' + token;
-          }
-          // for next step see beforeMicroService handler in OpenEHR MicroService index.js
-        }
-
-
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      var token = req.headers.authorization.split('Bearer ')[1];
+      req.headers.authorization = 'AccessToken ' + token;
+    }
+    // for next step see beforeMicroService handler in OpenEHR MicroService index.js
+  }
 
   next();
 };

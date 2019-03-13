@@ -1,0 +1,12 @@
+{
+  "problem": "some problem",
+  "onset_date": "2018-02-01T12:00:00Z",
+  "description": "some description",
+  "problem_terminology": "some problem terminology",
+  "problem_code": "one more problem code",
+  "author": "Mr John Doe",
+  "date_created": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010",
+  "originalComposition": "wow original composition",
+  "originalSource": "new original source"
+}

@@ -1,0 +1,9 @@
+{
+  "service_team": "some service_team",
+  "location": "some location",
+  "appointment_date": "2018-01-01T12:00:00Z",
+  "author": "John Doe",
+  "status": "some status",
+  "date_created": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}

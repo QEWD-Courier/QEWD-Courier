@@ -1,0 +1,15 @@
+{
+  "ctx/composer_name": "Dr Tony Shannon",
+  "ctx/health_care_facility|id": "999999-345",
+  "ctx/health_care_facility|name": "Rippleburgh GP Practice",
+  "ctx/id_namespace": "NHS-UK",
+  "ctx/id_scheme": "2.16.840.1.113883.2.1.4.3",
+  "ctx/language": "en",
+  "ctx/territory": "GB",
+  "ctx/time": "2018-06-01T01:00:00+01:00",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|value": "some cause",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|code": "some cause code",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/causative_agent|terminology": "some cause terminology",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/reaction_details/manifestation:0": "some reaction"
+}
+

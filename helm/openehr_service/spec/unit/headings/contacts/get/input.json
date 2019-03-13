@@ -1,0 +1,13 @@
+{
+  "name": "John Doe",
+  "relationshipRoleType": "some relationship Role Type",
+  "relationshipCategory": "some relationship Category",
+  "relationshipCategoryCode": "some relationship Category Code",
+  "relationshipCategoryTerminology": "some relationship Category Terminology",
+  "contactInformation": "some contact Information",
+  "next_of_kin": "some next of kin",
+  "notes": "some notes",
+  "author": "John Doe Jr",
+  "dateCreated": "2018-01-01T12:00:00Z",
+  "uid": "260a7be5-e00f-4b1e-ad58-27d95604d010"
+}
