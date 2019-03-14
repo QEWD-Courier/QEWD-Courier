@@ -146,6 +146,14 @@ You'll see three main folders:
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
+
+## nginx_container
+
+        sudo docker run -it --name nginx_conainer --rm --net qewd-net -v ~/qewd-courier/nginx/html:/usr/share/nginx/html -v  ~/qewd-courier/nginx/conf.d:/etc/nginx/conf.d -p 80:80 -p 443:443  nginx
+
+**Note:** replace *-it* with *-d* to run it as a background daemon process.
+
+
 ## OIDC Provider / Server
 
         sudo docker run -it --rm --name oidc -p 8000:8080 -v ~/qewd-courier/oidc_provider/openid-connect-server:/opt/qewd/mapped -v ~/qewd-courier/oidc_provider/openid-connect-server/www:/opt/qewd/www -v ~/qewd-courier/oidc_provider/settings:/opt/qewd/mapped/settings -v ~/qewd-courier/yottaDB/oidc_provider:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
