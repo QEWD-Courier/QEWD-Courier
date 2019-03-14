@@ -6,4 +6,4 @@ lint:
 	(cd helm/discovery_service && yarn && yarn lint)
 	(cd helm/openehr_service && yarn && yarn lint)
 
-.PHONY: test lint clean
+.PHONY: test lint

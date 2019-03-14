@@ -66,7 +66,7 @@ describe('lib/services/jumperService', () => {
         ok: false
       };
 
-      const heading = 'problems';
+      const heading = 'referrals';
       const method = 'foo';
       const actual = jumperService.check(heading, method);
 
@@ -117,7 +117,7 @@ describe('lib/services/jumperService', () => {
 
     it('should return jumper config', async () => {
       const expected = {
-        ok: false,
+        ok: true,
         synopsisField: 'vaccinationName',
         summaryTableFields: ['vaccinationName', 'dateCreated']
       };

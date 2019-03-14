@@ -23,19 +23,18 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-
+var fs = require('fs-extra');
+var transform = require('qewd-transform-json').transform;
 var mapRawJSON = require('./mapRawJSON');
 var buildJSONFile = require('./buildJsonFile');
 var addPatientDataToCache = require('./addPatientDataToCache');
-var transform = require('qewd-transform-json').transform;
-var fs = require('fs-extra');
-
 var helpers = require('./helpers');
+
+var openehr_config;
 
 var initialised = false;
 var templateIndex = {};
@@ -47,7 +46,7 @@ var metaDataByHeading = {};
 
 function initialise() {
   if (initialised) return;
- 
+
   var templateName;
   var headingObj;
   var getTemplate;
@@ -106,6 +105,7 @@ function pulseTileCache(hostCache, sourceIdCache, heading, headingPath) {
 }
 
 module.exports = function(params, callback) {
+  openehr_config = this.userDefined.globalConfig.openehr;
 
   // called by ripple-cdr-openehd/getHeadingFromOpenEHR Server
   //  retrieving and caching heading data using Jumper instead
@@ -153,7 +153,7 @@ module.exports = function(params, callback) {
   //console.log('&& templateName = ' + templateName);
   //console.log('&& templateId = ' + templateId);
 
-  //var aqlFields = this.db.use(documentName, 'templateMap', templateId, 'aql').getDocument();  
+  //var aqlFields = this.db.use(documentName, 'templateMap', templateId, 'aql').getDocument();
   var aql = {
     aql: "select a as data from EHR e[ehr_id/value='" + ehrId + "'] contains COMPOSITION a[" + metaDataByHeading[heading].composition_name + "] where a/name/value='" + metaDataByHeading[heading].template_name + "'"
   };
@@ -223,7 +223,7 @@ module.exports = function(params, callback) {
 
       // save a copy of the processed results
       if (!exampleSavedToFile[host][heading]) {
-        
+
         buildJSONFile.call(self, resultArr, headingPath, 'patient_data_formatted_example_' + host + '.json');
         console.log(new Date().getTime() + ' Top level formatted copy saved for ' + host);
         exampleSavedToFile[host][heading] = true;

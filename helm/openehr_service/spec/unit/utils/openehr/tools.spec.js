@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  15 March 2019
 
 */
 
 'use strict';
 
-const tools = require('@utils/openehr/tools');
+const tools = require('@openehr/tools');
 
 describe('utils/openehr/tools', () => {
   describe('#isPatientIdValid', () => {

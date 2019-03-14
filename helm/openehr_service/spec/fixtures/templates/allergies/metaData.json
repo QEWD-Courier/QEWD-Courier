@@ -1,0 +1,26 @@
+{
+  "template_name": "Adverse reaction list",
+  "composition_name": "openEHR-EHR-COMPOSITION.adverse_reaction_list.v1",
+  "metadata": [
+    {
+      "id": "category",
+      "name": "Category",
+      "path": [
+        "allergies_and_adverse_reactions",
+        "adverse_reaction_risk",
+        "category"
+      ],
+      "type": "DV_CODED_TEXT",
+      "aqlPath": "/content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]/items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]/data[at0001]/items[at0120]",
+      "pathArr": [
+        "content[openEHR-EHR-SECTION.allergies_adverse_reactions_rcp.v1]",
+        "items[openEHR-EHR-EVALUATION.adverse_reaction_risk.v1]",
+        "data[at0001]",
+        "items[at0120]"
+      ],
+      "required": false,
+      "max": 1,
+      "flatJSONPath": "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/category"
+    }
+  ]
+}

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  6 March 2019
+  15 March 2019
 
 */
 
@@ -40,8 +40,8 @@ describe('utils/openehr/openEHR', () => {
   beforeEach(() => {
     q = new Worker();
 
-    delete require.cache[require.resolve('@utils/openehr/openEHR')];
-    openEHR = require('@utils/openehr/openEHR');
+    delete require.cache[require.resolve('@openehr/openEHR')];
+    openEHR = require('@openehr/openEHR');
   });
 
   afterEach(() => {
@@ -145,6 +145,27 @@ describe('utils/openehr/openEHR', () => {
         done();
       });
     });
+
+    it('should start ehr session (error)', (done) => {
+      const host = 'ethercis';
+      const qewdSession = null;
+
+      nock('http://178.62.71.220:8080')
+        .post('/rest/v1/session?username=bar&password=quux')
+        .matchHeader('x-max-session', 75)
+        .matchHeader('x-session-timeout', 120000)
+        .replyWithError({
+          message: 'custom error',
+          code: 500
+        });
+
+      openEHR.startSession(host, qewdSession, (actual) => {
+        expect(nock).toHaveBeenDone();
+        expect(actual).toBeUndefined();
+
+        done();
+      });
+    });
   });
 
   describe('#stopSession', () => {
@@ -177,6 +198,25 @@ describe('utils/openehr/openEHR', () => {
         .delete('/rest/v1/session')
         .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
         .reply(204);
+
+      openEHR.stopSession(host, sessionId, qewdSession, () => {
+        expect(nock).toHaveBeenDone();
+        done();
+      });
+    });
+
+    it('should stop ehr session (error)', (done) => {
+      const host = 'ethercis';
+      const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
+      const qewdSession = null;
+
+      nock('http://178.62.71.220:8080')
+        .delete('/rest/v1/session')
+        .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
+        .replyWithError({
+          message: 'custom error',
+          code: 500
+        });
 
       openEHR.stopSession(host, sessionId, qewdSession, () => {
         expect(nock).toHaveBeenDone();

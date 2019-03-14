@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  15 March 2019
 
 */
 
 'use strict';
 
 const { Worker } = require('@tests/mocks');
-const deleteSessionCaches = require('@utils/openehr/deleteSessionCaches');
+const deleteSessionCaches = require('@openehr/deleteSessionCaches');
 
 describe('utils/openehr/deleteSessionCaches', () => {
   let q;

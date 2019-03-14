@@ -1,0 +1,7 @@
+{
+  "ctx/composer_name": "=> either(composer.value, 'Dr Tony Shannon')",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/comment": "=> dvText(allergies_and_adverse_reactions.adverse_reaction_risk.comment)",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/comment|value": "=> either(allergies_and_adverse_reactions.adverse_reaction_risk.comment.value, <!delete>)",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/comment|code": "=> either(allergies_and_adverse_reactions.adverse_reaction_risk.comment.code, <!delete>)",
+  "adverse_reaction_list/allergies_and_adverse_reactions/adverse_reaction_risk:0/comment|terminology": "=> either(allergies_and_adverse_reactions.adverse_reaction_risk.comment.terminology, <!delete>)"
+}

@@ -150,16 +150,17 @@ function parse(obj, path, info, platform, flatJSONPath) {
                   if (typeof min === 'undefined' && occurrence.min) min = occurrence.min;
                   if (occurrence.max) max = occurrence.max;
                 }
+                if (node.constraints[0].constraint.defining_code) {
+                  codes = node.constraints[0].constraint.defining_code;
+                }
               }
               if (node.constraints[0].type) type = node.constraints[0].type;
-              if (node.constraints[0].constraint.defining_code) {
-                codes = node.constraints[0].constraint.defining_code;
-              }
             }
           }
           if (min > 0) required = true;
         }
-        info.push({
+
+        const newItem = {
           id: nodeId,
           name: node.name,
           path: currentPath,
@@ -168,9 +169,13 @@ function parse(obj, path, info, platform, flatJSONPath) {
           pathArr: newPath,
           required: required,
           max: max,
-          codes: codes,
           flatJSONPath: newFlatJSONPath
-        });
+        };
+        if (codes) {
+          newItem.codes = codes
+        }
+
+        info.push(newItem);
       }
     }
   });

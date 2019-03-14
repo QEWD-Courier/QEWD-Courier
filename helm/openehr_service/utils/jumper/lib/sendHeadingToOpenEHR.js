@@ -23,13 +23,12 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
 var openEHR;
 var sendHeadingData = require('./sendHeadingData');
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
 
 function isEmpty(obj) {
   for (var property in obj) {
@@ -39,6 +38,7 @@ function isEmpty(obj) {
 }
 
 function sendHeadingToOpenEHR(params, callback) {
+  var openehr_config = this.userDefined.globalConfig.openehr;
 
   if (!openEHR) {
     var openEHRPath = openehr_config.paths.openEHR_modules;
@@ -60,7 +60,7 @@ function sendHeadingToOpenEHR(params, callback) {
   console.log('** compositionId: ' + params.compositionId);
 
   openEHR.startSession(host, qewdSession, function(openEhrSession) {
-    console.log('**** inside postHeadingToOpenEHR/startSession callback - OpenEhr session = ' + JSON.stringify(openEhrSession));
+    console.log('**** inside sendHeadingToOpenEHR/startSession callback - OpenEhr session = ' + JSON.stringify(openEhrSession));
     if (!openEhrSession || !openEhrSession.id) {
       if (callback) callback({error: 'Unable to establish a session with ' + host});
       return;

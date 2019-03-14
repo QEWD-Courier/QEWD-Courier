@@ -23,11 +23,10 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
 
 var path = require('path');
 var fs = require('fs-extra');
@@ -38,6 +37,7 @@ var createJSONSchema = require('./createJSONSchema');
 var buildJSONFile = require('./buildJsonFile');
 
 function processWebTemplate(templateName, headingPath, body, host) {
+  var openehr_config = this.userDefined.globalConfig.openehr;
 
   // save Web Template as a file
 

@@ -1,1 +1,1 @@
-These headings for testing purpose only.
+These headings for openehr testing purpose only.

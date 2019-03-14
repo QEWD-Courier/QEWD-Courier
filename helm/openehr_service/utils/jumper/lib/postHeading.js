@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  15 March 2019
 
 */
 
@@ -34,16 +34,15 @@ var sendHeadingToOpenEHR = require('./sendHeadingToOpenEHR');
 var Validator = require('jsonschema').Validator;
 var validator = new Validator();
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-
+var openehr_config;
+var servers;
 var initialised = false;
 var templateIndex = {};
-var servers;
 var jumperModules = {};
 
 function initialise() {
   if (initialised) return;
- 
+
   var templateName;
   var headingObj;
   var postTemplate;
@@ -64,6 +63,7 @@ function initialise() {
 }
 
 module.exports = function(params, callback) {
+  openehr_config = this.userDefined.globalConfig.openehr;
 
   // called by ripple-cdr-openehr/postHeading
   //  saving data using Jumper instead
@@ -119,7 +119,7 @@ module.exports = function(params, callback) {
     var semicolon = '';
     results.errors.forEach(function(error) {
       errors = errors + semicolon + error.property + ': ' + error.message;
-      semicolon = ';'; 
+      semicolon = ';';
     });
     return callback({error: errors});
   }
@@ -136,7 +136,7 @@ module.exports = function(params, callback) {
   console.log('Flat JSON for ' + heading + ': ' + JSON.stringify(flatJSON, null, 2));
 
   params.flatJSON = flatJSON;
-    
+
   sendHeadingToOpenEHR.call(this, params, callback);
 
 };

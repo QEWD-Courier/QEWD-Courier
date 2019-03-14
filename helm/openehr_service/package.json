@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "eslint apis headings lib spec utils/openehr --fix",
     "test": "NODE_ENV=test jasmine --config=spec/support/jasmine.json",
+    "test:debug": "DEBUG=helm:openehr* jasmine --config=spec/support/jasmine.json",
     "coverage": "nyc --reporter=html --reporter=text npm test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -29,18 +30,20 @@
     "jasmine": "^3.3.1",
     "jasmine-spec-reporter": "^4.1.1",
     "jasmine-spy-matchers": "^2.2.0",
-    "jshint": "^2.9.7",
+    "mock-fs": "^4.8.0",
     "mockery": "^2.1.0",
     "module-alias": "^2.2.0",
     "nock": "^10.0.4",
-    "nyc": "^13.1.0"
+    "nyc": "^13.1.0",
+    "stat-mode": "^0.3.0"
   },
   "_moduleAliases": {
     "@apis": "apis",
     "@headings": "headings",
     "@lib": "lib",
     "@tests": "spec",
-    "@utils": "utils"
+    "@jumper": "utils/jumper/lib",
+    "@openehr": "utils/openehr"
   },
   "nyc": {
     "all": true,
@@ -48,10 +51,11 @@
       "apis/**/*.js",
       "headings/**/*.js",
       "lib/**/*.js",
-      "utils/openehr/*.js"
+      "utils/**/*.js"
     ],
     "exclude": [
-      "lib/jumper/**/*.js"
+      "lib/jumper/**/*.js",
+      "utils/jumper/lib/templateTest.js"
     ]
   },
   "eslintConfig": {

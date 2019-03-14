@@ -1,0 +1,10 @@
+{
+  "allergies_and_adverse_reactions": {
+    "adverse_reaction_risk": {
+      "comment": {
+        "value": "{{comment}}",
+        "code": "=> either(commentCode, <!delete>)"
+      }
+    }
+  }
+}
