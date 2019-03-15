@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "IDCR - Adverse Reaction List.v1",
+  "description": "Data Entry Schema for OpenEHR Template IDCR - Adverse Reaction List.v1",
+  "type": "object",
+  "properties": {
+    "allergies_and_adverse_reactions": {
+      "type": "object",
+      "properties": {
+        "adverse_reaction_risk": {
+          "type": "object",
+          "properties": {
+            "comment": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "description": "Comment value",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "description": "Comment code",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "terminology": {
+                  "description": "Comment terminology",
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

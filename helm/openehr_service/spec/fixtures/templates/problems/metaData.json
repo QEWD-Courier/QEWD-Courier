@@ -1,0 +1,26 @@
+{
+  "template_name": "Problem list",
+  "composition_name": "openEHR-EHR-COMPOSITION.problem_list.v1",
+  "metadata": [
+    {
+      "id": "last_updated",
+      "name": "Last updated",
+      "path": [
+        "problems_and_issues",
+        "problem_diagnosis",
+        "last_updated"
+      ],
+      "type": "DV_DATE_TIME",
+      "aqlPath": "/content[openEHR-EHR-SECTION.problems_issues_rcp.v1]/items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]/protocol[at0032]/items[at0070]",
+      "pathArr": [
+        "content[openEHR-EHR-SECTION.problems_issues_rcp.v1]",
+        "items[openEHR-EHR-EVALUATION.problem_diagnosis.v1]",
+        "protocol[at0032]",
+        "items[at0070]"
+      ],
+      "required": false,
+      "max": 1,
+      "flatJSONPath": "problem_list/problems_and_issues/problem_diagnosis:0/last_updated"
+    }
+  ]
+}

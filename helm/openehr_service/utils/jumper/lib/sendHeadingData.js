@@ -23,13 +23,12 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-
 module.exports = function(params, callback) {
+  var openehr_config = this.userDefined.globalConfig.openehr;
 
   var args = {
     host: params.host,

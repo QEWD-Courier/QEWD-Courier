@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 October 2018
+  15 March 2018
 
 */
 
@@ -42,9 +42,10 @@ module.exports = {
     return formatDate(new Date(date + time));
   },
   msAfterMidnight: function(date) {
-    var e = new Date(date);
-    console.log('\n msAfterMidnight: e.setHours(0,0,0,0) = ' + e.setHours(0,0,0,0) + '; e = ' + e.getTime());
-    return e.getTime() - e.setHours(0,0,0,0);
+    var d1 = new Date(date);
+    var d2 = new Date(date);
+
+    return d2.getTime() - d1.setHours(0,0,0,0);
   },
   getNarrative: function(name, route, doseAmount, doseTiming) {
     return name + 'Route: ' + route + '; Dose: ' + doseAmount + '; Timing: ' + doseTiming;

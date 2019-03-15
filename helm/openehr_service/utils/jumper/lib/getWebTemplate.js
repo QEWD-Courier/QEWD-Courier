@@ -23,18 +23,19 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
 var openEHR;
 var processWebTemplate = require('./processWebTemplate');
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
 
 function getWebTemplate(templateName, headingPath, callback) {
+  var openehr_config = this.userDefined.globalConfig.openehr;
+
   if (!openEHR) openEHR = require(openehr_config.paths.openEHR_modules + 'openEHR');
   openEHR.init.call(this)
-  
+
 
   var host = 'ethercis';
   //var host = 'marand';
@@ -60,7 +61,7 @@ function getWebTemplate(templateName, headingPath, callback) {
       openEHR.stopSession(host, openEHRSession.id);
 
       if (body.status === 404) {
-        return finished({
+        return callback({
           error: body.developerMessage
         });
       }

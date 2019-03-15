@@ -23,11 +23,9 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
-
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
 
 var fs = require('fs-extra');
 var buildHeadingFHIRTemplate = require('./buildHeadingFHIRTemplate');
@@ -35,6 +33,8 @@ var buildHeadingRippleTemplate = require('./buildHeadingRippleTemplate');
 var buildJSONFile = require('./buildJsonFile');
 
 function build(headings) {
+  var openehr_config = this.userDefined.globalConfig.openehr;
+
   // check to see what headings need building out
 
   var templateName;

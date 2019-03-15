@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  15 March 2019
 
 */
 
@@ -33,10 +33,12 @@ const CommandMock = require('./command');
 const ExecutionContextMock = require('./context');
 const MasterMock = require('./master');
 const Worker = require('./worker');
+const rewritePaths = require('./rewritePaths');
 
 module.exports = {
   CommandMock,
   ExecutionContextMock,
   MasterMock,
-  Worker
+  Worker,
+  rewritePaths
 };

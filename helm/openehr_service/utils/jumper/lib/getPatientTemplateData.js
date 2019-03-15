@@ -23,21 +23,21 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  8 February 2019
+  15 March 2019
 
 */
 
-var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
-
 var fs = require('fs-extra');
 var getPatientDataFromCache = require('./getPatientDataFromCache');
+
+var openehr_config;
+var servers;
 var openEHRPath;
-var tools = require('../../../../utils/tools');
+var tools;
 var fetchAndCacheHeading;
 
 var initialised = false;
 var templateIndex = {};
-var servers;
 
 function initialise() {
 
@@ -67,6 +67,7 @@ function initialise() {
 }
 
 module.exports = function(args, finished) {
+  openehr_config = this.userDefined.globalConfig.openehr;
 
   initialise.call(this);
 
@@ -113,7 +114,7 @@ module.exports = function(args, finished) {
       //  fetched from the OpenEHR servers and cached in the user session, in 2 formats
       //  1) OpenEHR "reference" format and 2) PulseTile format
 
-      //  If a previous request for the data in FHIR format had been made, 
+      //  If a previous request for the data in FHIR format had been made,
       //   then the data would be already cached in FHIR format also
 
       getPatientDataFromCache.call(self, patientId, heading, format, qewdSession, function(response) {

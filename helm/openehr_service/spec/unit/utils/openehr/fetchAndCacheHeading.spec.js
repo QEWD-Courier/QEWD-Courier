@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  15 March 2019
 
 */
 
@@ -33,7 +33,7 @@ const nock = require('nock');
 const template = require('qewd-template');
 const { Worker } = require('@tests/mocks');
 const { getHeadingAql } = require('@lib/shared/headings');
-const fetchAndCacheHeading = require('@utils/openehr/fetchAndCacheHeading');
+const fetchAndCacheHeading = require('@openehr/fetchAndCacheHeading');
 
 describe('utils/openehr/fetchAndCacheHeading', () => {
   let q;

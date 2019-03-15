@@ -32,8 +32,32 @@
       ],
       "maximum": 2
     },
+    "paths": {
+      "jumper_templates": "/path/to/jumper/templates/",
+      "openEHR_modules": "/path/to/openehr/src/"
+    },
     "headings": {
+      "allergies": {
+        "template": {
+          "name": "IDCR - Adverse Reaction List.v1"
+        },
+        "fhir": {
+          "name": "AllergyIntolerance"
+        },
+        "synopsisField": "cause",
+        "summaryTableFields": ["cause", "reaction"]
+      },
       "counts": true,
+      "problems": {
+        "template": {
+          "name": "IDCR - Problem List.v1"
+        },
+        "fhir": {
+          "name": "Condition"
+        },
+        "synopsisField": "problem",
+        "summaryTableFields": ["problem", "dateOfOnset"]
+      },
       "procedures": true,
       "proms-test": true,
       "vaccinations": {
@@ -43,6 +67,9 @@
         "synopsisField": "vaccinationName",
         "summaryTableFields": ["vaccinationName", "dateCreated"]
       }
+    },
+    "documentNames": {
+      "jumperTemplateFields": "CustomOpenEHRJumper"
     }
   }
 }
