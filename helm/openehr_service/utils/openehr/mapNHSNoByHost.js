@@ -39,8 +39,6 @@ function mapNhsNoByHost(patientId, host, ehrSession, callback) {
     .then(ehrId => callback(ehrId))
     .catch(err => {
       logger.error('utils/openehr/mapNhsNoByHost|err:', err);
-      if (err.message) logger.error('utils/openehr/mapNhsNoByHost|err|message: ' + err.message);
-      if (err.stack) logger.error('utils/openehr/mapNhsNoByHost|err|stack: ' + err.stack);
     });
 }
 module.exports = mapNhsNoByHost;

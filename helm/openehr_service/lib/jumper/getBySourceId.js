@@ -38,9 +38,6 @@ try {
 }
 catch(err) {
   logger.error('jumper/getBySourceId|err:', err);
-  if (err.message) logger.error('jumper/getBySourceId|err|message: ' + err.message);
-  if (err.stack) logger.error('jumper/getBySourceId|err|stack: ' + err.stack);
-
   getFormattedRecordFromCache = false;
 }
 

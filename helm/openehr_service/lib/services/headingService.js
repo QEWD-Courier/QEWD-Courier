@@ -378,8 +378,6 @@ class HeadingService {
         await this.fetchOne(patientId, heading);
       } catch (err) {
         logger.error('services/headingService|fetchMany|err:', err);
-        if (err.message) logger.error('services/headingService|fetchMany|err|message: ' + err.message);
-        if (err.stack) logger.error('services/headingService|fetchMany|err|stack: ' + err.stack);
       }
     });
 
@@ -452,8 +450,6 @@ class HeadingService {
       return ok();
     } catch (err) {
       logger.error('services/headingService|fetch|err:', err);
-      if (err.message) logger.error('services/headingService|fetch|err|message: ' + err.message);
-      if (err.stack) logger.error('services/headingService|fetch|err|stack: ' + err.stack);
 
       return fail(err);
     }

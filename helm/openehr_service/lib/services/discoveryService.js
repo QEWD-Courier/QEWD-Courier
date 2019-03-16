@@ -116,8 +116,6 @@ class DiscoveryService {
       result = true;
     } catch (err) {
       logger.error('services/discoveryService|merge|err:', err.message);
-      if (err.message) logger.error('services/discoveryService|merge|err|message: ' + err.message);
-      if (err.stack) logger.error('services/discoveryService|merge|err|stack: ' + err.stack);
     }
 
     return result;

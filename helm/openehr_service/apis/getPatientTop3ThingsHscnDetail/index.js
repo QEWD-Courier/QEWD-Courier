@@ -29,6 +29,7 @@
 
 'use strict';
 
+const { logger } = require('../../lib/core');
 const { GetPatientTop3ThingsHscnDetailCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
@@ -45,6 +46,8 @@ module.exports = async function getPatientTop3ThingsHscnDetail(args, finished) {
 
     finished(responseObj);
   } catch (err) {
+    logger.error('apis/getPatientTop3ThingsHscnDetail|err:', err);
+
     const responseError = getResponseError(err);
 
     finished(responseError);

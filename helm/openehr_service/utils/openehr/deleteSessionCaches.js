@@ -39,8 +39,6 @@ function deleteSessionCaches(patientId, heading, host, callback = () => null) {
     .then(() => callback())
     .catch(err => {
       logger.error('utils/openehr/deleteSessionCaches|err: ', err);
-      if (err.message) logger.error('utils/openehr/deleteSessionCaches|err|message: ' + err.message);
-      if (err.stack) logger.error('utils/openehr/deleteSessionCaches|err|stack: ' + err.stack);
     });
 }
 

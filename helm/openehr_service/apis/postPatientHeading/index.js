@@ -29,6 +29,7 @@
 
 'use strict';
 
+const { logger } = require('../../lib/core');
 const { PostPatientHeadingCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
@@ -47,6 +48,8 @@ module.exports = async function postPatientHeading(args, finished) {
 
     finished(responseObj);
   } catch (err) {
+    logger.error('apis/postPatientHeading|err:', err);
+
     const responseError = getResponseError(err);
 
     finished(responseError);

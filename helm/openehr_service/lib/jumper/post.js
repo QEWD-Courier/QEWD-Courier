@@ -38,9 +38,6 @@ try {
 }
 catch(err) {
   logger.error('jumper/postHeading|err:', err);
-  if (err.message) logger.error('jumper/postHeading|err|message: ' + err.message);
-  if (err.stack) logger.error('jumper/postHeading|err|stack: ' + err.stack);
-
   postHeading = false;
 }
 

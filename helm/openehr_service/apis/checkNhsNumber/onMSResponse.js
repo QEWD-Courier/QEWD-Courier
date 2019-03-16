@@ -29,7 +29,6 @@
 
 'use strict';
 
-// var openehr_config = require('/opt/qewd/mapped/configuration/global_config.json').openehr;
 const { logger } = require('../../lib/core');
 const DiscoveryDispatcher = require('../../lib/dispatchers/discovery');
 const { ExtraHeading, Heading, RecordStatus } = require('../../lib/shared/enums');

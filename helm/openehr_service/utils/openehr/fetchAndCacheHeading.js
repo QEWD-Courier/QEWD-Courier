@@ -39,8 +39,6 @@ function fetchAndCacheHeading(patientId, heading, session, callback) {
     .then((resultObj) => callback(resultObj))
     .catch(err => {
       logger.error('utils/openehr/fetchAndCacheHeading|err:', err);
-      if (err.message) logger.error('utils/openehr/fetchAndCacheHeading|err|message: ' + err.message);
-      if (err.stack) logger.error('utils/openehr/fetchAndCacheHeading|err|stack: ' + err.stack);
     });
 }
 

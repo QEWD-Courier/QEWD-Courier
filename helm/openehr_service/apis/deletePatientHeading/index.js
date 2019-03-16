@@ -29,6 +29,7 @@
 
 'use strict';
 
+const { logger } = require('../../lib/core');
 const { DeletePatientHeadingCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
@@ -45,6 +46,8 @@ module.exports = async function deletePatientHeading(args, finished) {
 
     finished(responseObj);
   } catch (err) {
+    logger.error('apis/deletePatientHeading|err:', err);
+
     const responseError = getResponseError(err);
 
     finished(responseError);

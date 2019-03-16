@@ -151,8 +151,6 @@ class DiscoveryDispatcher {
       await this.mergeDiscoveryData(heading, discoveryData.results, jwt);
     } catch (err) {
       logger.error('dispatchers/discoveryDispatcher|sync|err:', err);
-      if (err.message) logger.error('dispatchers/discoveryDispatcher|sync|err|message: ' + err.message);
-      if (err.stack) logger.error('dispatchers/discoveryDispatcher|sync|err|stack: ' + err.stack);
     }
   }
 

@@ -38,9 +38,6 @@ try {
 }
 catch(err) {
   logger.error('jumper/query|err:', err);
-  if (err.message) logger.error('jumper/query|err|message: ' + err.message);
-  if (err.message) logger.error('jumper/query|err|stack: ' + err.stack);
-
   getHeadingFromOpenEHRServer = false;
 }
 
