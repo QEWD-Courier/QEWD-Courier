@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 March 2019
+  16 March 2019
 
 */
 
@@ -151,8 +151,6 @@ class DiscoveryDispatcher {
       await this.mergeDiscoveryData(heading, discoveryData.results, jwt);
     } catch (err) {
       logger.error('dispatchers/discoveryDispatcher|sync|err:', err);
-      if (err.message) logger.error('dispatchers/discoveryDispatcher|sync|err|message: ' + err.message);
-      if (err.stack) logger.error('dispatchers/discoveryDispatcher|sync|err|stack: ' + err.stack);
     }
   }
 
