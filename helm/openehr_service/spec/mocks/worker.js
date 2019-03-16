@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  3 March 2019
+  16 March 2019
 
 */
 
@@ -57,7 +57,4 @@ module.exports = function () {
   };
 
   this.qewdSessionByJWT = jasmine.createSpy();
-  this.jwt.handlers = {
-    validateRestRequest: jasmine.createSpy()
-  };
 };
