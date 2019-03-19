@@ -1,0 +1,10 @@
+select
+  a/uid as version_uid,
+  b/composer/name as authorName,
+  b/context/start_time/value as dateUpdated
+from EHR e[ehr_id/value = {{ehrId}}] contains
+  VERSIONED_OBJECT a contains
+  VERSION v[all_versions]
+  contains COMPOSITION b
+  where b/name/value = 'NSS RESPECT Form'
+  ORDER BY b/context/start_time/value DESC

@@ -67,9 +67,9 @@
   "openehr": {
     "servers": {
       "ethercis": {
-        "url": "http://46.101.81.30:8080",
-        "username": "xxxxxxx",
-        "password": "yyyyyyyy",
+        "url": "http://ethercis1.3-test.ripple.foundation:8080",
+        "username": "xxxxxxxxxxx",
+        "password": "yyyyyyyyyyy",
         "platform": "ethercis"
       }
     },
@@ -85,7 +85,8 @@
         "medications",
         "problems",
         "vaccinations",
-        "top3Things"
+        "top3Things",
+        "respectform"
       ],
       "maximum": 4
     },
@@ -103,6 +104,11 @@
         },
         "synopsisField": "cause",
         "summaryTableFields": ["cause", "reaction", "dateCreated"]
+      },
+      "respectform": {
+        "template" : {
+          "name": "RESPECT_NSS-v0"
+        }
       },
       "contacts": {
         "template": {
