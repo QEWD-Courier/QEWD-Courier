@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  21 March 2019
 
 */
 
@@ -71,12 +71,12 @@ module.exports = (adapter) => {
      *
      * @param  {string|int} patientId
      * @param  {string} heading
-     * @param  {string} sourceId
      * @param  {string} host
+     * @param  {string} sourceId
      * @return {void}
      */
-    set: (patientId, heading, sourceId, host) => {
-      logger.info('cache/headingCache|byHost|set', { patientId, heading, sourceId, host });
+    set: (patientId, heading, host, sourceId, ) => {
+      logger.info('cache/headingCache|byHost|set', { patientId, heading, host, sourceId});
 
       const key = ['headings', 'byPatientId', patientId, heading, 'byHost', host, sourceId];
       adapter.put(key, 'true');

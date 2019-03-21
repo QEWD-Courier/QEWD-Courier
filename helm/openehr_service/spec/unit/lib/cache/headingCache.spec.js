@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  21 March 2019
 
 */
 
@@ -221,10 +221,10 @@ describe('lib/cache/headingCache', () => {
 
         const patientId = 9999999000;
         const heading = 'procedures';
-        const sourceId = 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12';
         const date = 1514734500000;
+        const sourceId = 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12';
 
-        headingCache.byDate.set(patientId, heading, sourceId, date);
+        headingCache.byDate.set(patientId, heading, date, sourceId);
 
         const actual = qewdSession.data.$('headings').getDocument();
 
@@ -400,10 +400,10 @@ describe('lib/cache/headingCache', () => {
 
         const patientId = 9999999000;
         const heading = 'procedures';
-        const sourceId = 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12';
         const host = 'ethercis';
+        const sourceId = 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12';
 
-        headingCache.byHost.set(patientId, heading, sourceId, host);
+        headingCache.byHost.set(patientId, heading, host, sourceId);
 
         const actual = qewdSession.data.$('headings').getDocument();
 
