@@ -80,7 +80,8 @@ module.exports = function(args, finished) {
         session.timeout = verify_jwt.exp - verify_jwt.iat;
       }
 
-      session.role = 'phrUser';
+      // session.role = 'phrUser';
+      session.role = 'IDCR';
       session.uid = tokenSet.session_state;
       session.openid = verify_jwt;
       session.openid.id_token = tokenSet.id_token;
