@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,12 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  1 March 2019
+  16 March 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../../lib/core');
 const { RevertDiscoveryDataCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
@@ -45,6 +46,8 @@ module.exports = async function revertDiscoveryData(args, finished) {
 
     finished(responseObj);
   } catch (err) {
+    logger.error('apis/revertDiscoveryData|err:', err);
+
     const responseError = getResponseError(err);
 
     finished(responseError);

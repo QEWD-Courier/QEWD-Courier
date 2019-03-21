@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 March 2019
+  16 March 2019
 
 */
 
@@ -378,8 +378,6 @@ class HeadingService {
         await this.fetchOne(patientId, heading);
       } catch (err) {
         logger.error('services/headingService|fetchMany|err:', err);
-        if (err.message) logger.error('services/headingService|fetchMany|err|message: ' + err.message);
-        if (err.stack) logger.error('services/headingService|fetchMany|err|stack: ' + err.stack);
       }
     });
 
@@ -452,8 +450,6 @@ class HeadingService {
       return ok();
     } catch (err) {
       logger.error('services/headingService|fetch|err:', err);
-      if (err.message) logger.error('services/headingService|fetch|err|message: ' + err.message);
-      if (err.stack) logger.error('services/headingService|fetch|err|stack: ' + err.stack);
 
       return fail(err);
     }

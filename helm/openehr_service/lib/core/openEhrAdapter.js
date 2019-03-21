@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 March 2019
+  16 March 2019
 
 */
 
@@ -111,8 +111,6 @@ class OpenEhrAdapter {
       .then(ehrSession => callback({ id: ehrSession.sessionId }))
       .catch((err) => {
         logger.error('jumper/adapter/startSession|err:', err);
-        if (err.message) logger.error('jumper/adapter|startSession|err|message: ' + err.message);
-        if (err.stack) logger.error('jumper/adapter|startSession|err|stack: ' + err.stack);
         callback();
       });
   }
@@ -127,8 +125,6 @@ class OpenEhrAdapter {
       .then(() => callback())
       .catch((err) => {
         logger.error('jumper/adapter/stopSession|err:', err);
-        if (err.message) logger.error('jumper/adapter/stopSession|err: ' + err.message);
-        if (err.stack) logger.error('jumper/adapter/stopSession|stack: ' + err.stack);
         callback();
       });
   }
