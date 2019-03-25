@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  25 March 2019
 
 */
 
@@ -40,12 +40,17 @@ const GetPatientHeadingSynopsisCommand = require('./getPatientHeadingSynopsis');
 const GetPatientTop3ThingsDetailCommand = require('./getPatientTop3ThingsDetail');
 const GetPatientTop3ThingsHscnDetailCommand = require('./getPatientTop3ThingsHscnDetail');
 const GetPatientTop3ThingsSummaryCommand = require('./getPatientTop3ThingsSummary');
+const GetRespectFormCommand = require('./getRespectForm');
+const GetRespectFormVersionsCommand = require('./getRespectFormVersions');
 const MergeDiscoveryDataCommand = require('./mergeDiscoveryData');
 const PostFeedCommand = require('./postFeed');
 const PostPatientHeadingCommand = require('./postPatientHeading');
 const PostPatientTop3ThingsCommand = require('./postPatientTop3Things');
+const PostRespectFormCommand = require('./postRespectForm');
+const PostRespectFormVersionCommand = require('./postRespectFormVersion');
 const PutFeedCommand = require('./putFeed');
 const PutPatientHeadingCommand = require('./putPatientHeading');
+const PutRespectFormVersionCommand = require('./putRespectFormVersion');
 const RevertAllDiscoveryDataCommand = require('./revertAllDiscoveryData');
 const RevertDiscoveryDataCommand = require('./revertDiscoveryData');
 
@@ -61,12 +66,17 @@ module.exports = {
   GetPatientTop3ThingsDetailCommand,
   GetPatientTop3ThingsHscnDetailCommand,
   GetPatientTop3ThingsSummaryCommand,
+  GetRespectFormCommand,
+  GetRespectFormVersionsCommand,
   MergeDiscoveryDataCommand,
   PostFeedCommand,
   PostPatientHeadingCommand,
   PostPatientTop3ThingsCommand,
+  PostRespectFormCommand,
+  PostRespectFormVersionCommand,
   PutFeedCommand,
   PutPatientHeadingCommand,
+  PutRespectFormVersionCommand,
   RevertAllDiscoveryDataCommand,
   RevertDiscoveryDataCommand
 };

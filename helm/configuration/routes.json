@@ -92,6 +92,18 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/api/patients/:patientId/respectforms",
+    "method": "GET",
+    "handler": "getRespectFormVersions",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/respectforms/:sourceId/:version",
+    "method": "GET",
+    "handler": "getRespectForm",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/api/patients/:patientId/:heading",
     "method": "GET",
     "handler": "getPatientHeadingSummary",
@@ -131,6 +143,18 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/api/patients/:patientId/respectforms",
+    "method": "POST",
+    "handler": "postRespectForm",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/respectforms/:sourceId",
+    "method": "POST",
+    "handler": "postRespectFormVersion",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/api/patients/:patientId/:heading",
     "method": "POST",
     "handler": "postPatientHeading",
@@ -146,6 +170,12 @@
     "uri": "/api/patients/:patientId/top3Things/:sourceId",
     "method": "PUT",
     "handler": "putPatientTop3Things",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patients/:patientId/respectforms/:sourceId/:version",
+    "method": "PUT",
+    "handler": "putRespectFormVersion",
     "on_microservice": "openehr_service"
   },
   {
