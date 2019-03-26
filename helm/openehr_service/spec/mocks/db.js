@@ -23,13 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  26 March 2019
 
 */
 
 'use strict';
 
 const { lazyLoadAdapter } = require('@lib/shared/utils');
+const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
 
 class DbRegistryMock {
   constructor() {
@@ -39,12 +40,18 @@ class DbRegistryMock {
   initialise(id) {
     if (this.freezed) return;
 
-    const Db = require(`../../lib/db/${id}`);
-    const methods = Reflect
-      .ownKeys(Db.prototype)
-      .filter(x => x !== 'constructor');
+    const methods = getMethods(id, 'db');
+    const spyObj = createSpyObj(id, methods);
 
-    return jasmine.createSpyObj(id, methods);
+    const mixins = getMixins(id, 'db');
+    Object.keys(mixins).forEach(key => {
+      const mixin = mixins[key]();
+      const mixinMethods = Reflect.ownKeys(mixin);
+
+      spyObj[key] = createSpyObj(key, mixinMethods);
+    });
+
+    return spyObj;
   }
 
   freeze() {
