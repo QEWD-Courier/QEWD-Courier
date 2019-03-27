@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
- 16 March 2019
+ 27 March 2019
 
 */
 
@@ -82,11 +82,30 @@ describe('apis/onMsResponse', () => {
     mockery.deregisterAll();
   });
 
+  it('should do nothing when DDS missed', () => {
+    delete q.userDefined.globalConfig.DDS
+
+    const actual = onMsResponse.call(q, message, forward, sendBack);
+
+    expect(DiscoveryDispatcher).not.toHaveBeenCalled();
+    expect(actual).toBe(false);
+  });
+
+  it('should do nothing when DDS not enabled', () => {
+    q.userDefined.globalConfig.DDS.enabled = false;
+
+    const actual = onMsResponse.call(q, message, forward, sendBack);
+
+    expect(DiscoveryDispatcher).not.toHaveBeenCalled();
+    expect(actual).toBe(false);
+  });
+
   it('should do nothing when status is ready', () => {
     message.status = 'ready';
 
     const actual = onMsResponse.call(q, message, forward, sendBack);
 
+    expect(DiscoveryDispatcher).not.toHaveBeenCalled();
     expect(actual).toBe(false);
   });
 
@@ -95,6 +114,7 @@ describe('apis/onMsResponse', () => {
 
     const actual = onMsResponse.call(q, message, forward, sendBack);
 
+    expect(DiscoveryDispatcher).not.toHaveBeenCalled();
     expect(actual).toBe(false);
   });
 
