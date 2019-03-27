@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -51,7 +51,8 @@ class PostRespectFormCommand {
 
     const { respectFormVersionService } = this.ctx.services;
 
-    respectFormVersionService.create(patientId, data);
+    respectFormVersionService.create(patientId, null, data);
+
     const resultObj = respectFormVersionService.getByPatientId(patientId);
     debug('resultObj = %j', resultObj);
 

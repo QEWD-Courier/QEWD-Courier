@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
@@ -49,7 +49,7 @@ exports.getMethods = function (id, dir) {
 
 exports.getMixins = function (id, dir) {
   try {
-    const name = id.split(/(?=[A-Z])/g)[0];
+    const name = id.split(/(?=[A-Z])/g).slice(0, -1).join('');
     const mixins = require(`@lib/${dir}/mixins/${name}`);
 
     return mixins;

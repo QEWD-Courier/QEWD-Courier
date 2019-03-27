@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
@@ -50,6 +50,7 @@ describe('lib/commands/getRespectForm', () => {
     version = 5;
 
     respectFormVersionService = ctx.services.respectFormVersionService;
+    respectFormVersionService.validateGet.and.returnValue({ ok : true });
     respectFormVersionService.get.and.returnValue({
       version: 5,
       author: 'Tony Shannon',
@@ -89,6 +90,21 @@ describe('lib/commands/getRespectForm', () => {
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('version was not defined'));
   });
 
+  it('should throw validate get error', async () => {
+    respectFormVersionService.validateGet.and.returnValue({
+      error: 'custom error'
+    });
+
+    const command = new GetRespectFormCommand(ctx);
+    const actual = command.execute(patientId, sourceId, version);
+
+    await expectAsync(actual).toBeRejectedWith(new BadRequestError('custom error'));
+
+    expect(respectFormVersionService.validateGet).toHaveBeenCalledWith(
+      9999999111, '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5
+    );
+  });
+
   it('should return respect form data', async () => {
     const expected = {
       respect_form: {
@@ -104,9 +120,9 @@ describe('lib/commands/getRespectForm', () => {
     const command = new GetRespectFormCommand(ctx);
     const actual = await command.execute(patientId, sourceId, version);
 
-    expect(respectFormVersionService.get).toHaveBeenCalledWith(
-      9999999111, '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5
-    );
+    expect(respectFormVersionService.validateGet).toHaveBeenCalledWith(9999999111, '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
+    expect(respectFormVersionService.get).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
+
     expect(actual).toEqual(expected);
   });
 });

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -59,7 +59,13 @@ class GetRespectFormCommand {
     }
 
     const { respectFormVersionService } = this.ctx.services;
-    const resultObj = respectFormVersionService.get(patientId, sourceId, version);
+
+    const valid = respectFormVersionService.validateGet(patientId, sourceId, version);
+    if (!valid.ok) {
+      throw new BadRequestError(valid.error);
+    }
+
+    const resultObj = respectFormVersionService.get(sourceId, version);
     debug('resultObj = %j', resultObj);
 
     return {

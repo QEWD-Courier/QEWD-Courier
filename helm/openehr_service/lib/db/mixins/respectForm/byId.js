@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -36,18 +36,18 @@ module.exports = (db) => {
   return {
 
     /**
-     * Gets next id
+     * Gets next compositionid
      *
      * @return {int}
      */
-    nextId() {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|nextId');
+    nextCompositionId() {
+      logger.debug('db/respectFormDb/mixins/respectForm/byId|nextCompositionId');
 
       return db.respectForm.$('next_id').increment();
     },
 
     /**
-     * Gets next version number
+     * Gets next version
      *
      * @param  {int} id
      * @return {int}
@@ -81,7 +81,7 @@ module.exports = (db) => {
     set: (id, version, data) => {
       logger.debug('db/respectFormDb/mixins/respectForm/byId|set', { id, version, data });
 
-      db.respectForm.$(['by_id', id, version]).setDocument(data);
+      db.respectForm.$(['by_id', id, 'version', version]).setDocument(data);
     },
 
     /**
@@ -94,7 +94,7 @@ module.exports = (db) => {
     delete: (id, version) => {
       logger.debug('db/respectFormDb/mixins/respectForm/byId|delete', { id, version });
 
-      db.respectForm.$(['by_id', id, version]).delete();
+      db.respectForm.$(['by_id', id, 'version', version]).delete();
     },
   };
 };

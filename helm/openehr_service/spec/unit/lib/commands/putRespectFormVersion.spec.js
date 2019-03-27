@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
@@ -54,6 +54,7 @@ describe('lib/commands/putRespectFormVersion', () => {
     };
 
     respectFormVersionService = ctx.services.respectFormVersionService;
+    respectFormVersionService.validateUpdate.and.returnValue({ ok: true });
     respectFormVersionService.getByPatientId.and.returnValue([
       {
         version: 5,
@@ -95,10 +96,28 @@ describe('lib/commands/putRespectFormVersion', () => {
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('version was not defined'));
   });
 
+  it('should throw validate update error', async () => {
+    respectFormVersionService.validateUpdate.and.returnValue({
+      error: 'custom error'
+    });
+
+    const command = new PutRespectFormVersionCommand(ctx);
+    const actual = command.execute(patientId, sourceId, version, data);
+
+    await expectAsync(actual).toBeRejectedWith(new BadRequestError('custom error'));
+
+    expect(respectFormVersionService.validateUpdate).toHaveBeenCalledWith(
+      9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5
+    );
+  });
+
   it('should update existing respect form version', async () => {
     const command = new PutRespectFormVersionCommand(ctx);
     await command.execute(patientId, sourceId, version, data);
 
+    expect(respectFormVersionService.validateUpdate).toHaveBeenCalledWith(
+      9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5
+    );
     expect(respectFormVersionService.update).toHaveBeenCalledWith(
       9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5, { foo: 'bar' }
     );

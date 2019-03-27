@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
 'use strict';
 
 const { logger } = require('../core');
-const { byId, byPatientId, bySourceId, byVersion } = require('./mixins/patient');
+const { byId, byPatientId, bySourceId, byVersion } = require('./mixins/respectForm');
 
 /*
   QEWD Document Storage:

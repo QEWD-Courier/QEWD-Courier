@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -55,21 +55,7 @@ module.exports = (db) => {
      * @return {int}
      */
     getCompositionId: (sourceId, version) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byVersion|get', { sourceId, version });
-
-      return db.respectFormIndex.$(['by_uid', sourceId, version]).value;
-    },
-
-    /**
-     * Gets composition id by source id
-     *
-     * @param  {string} sourceId
-     * @return {int}
-     */
-    getCompositionIdBySourceId: (sourceId) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byVersion|getCompositionIdBySourceId', { sourceId });
-
-      const version = db.respectFormIndex.$(['by_uid', sourceId]).firstChild.value;
+      logger.debug('db/respectFormDb/mixins/respectForm/byVersion|getCompositionId', { sourceId, version });
 
       return db.respectFormIndex.$(['by_uid', sourceId, version]).value;
     }

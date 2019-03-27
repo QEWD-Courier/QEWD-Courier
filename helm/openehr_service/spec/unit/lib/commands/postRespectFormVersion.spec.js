@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
@@ -52,6 +52,7 @@ describe('lib/commands/postRespectFormVersion', () => {
     };
 
     respectFormVersionService = ctx.services.respectFormVersionService;
+    respectFormVersionService.validateCreate.and.returnValue({ ok: true });
     respectFormVersionService.getByPatientId.and.returnValue([
       {
         version: 5,
@@ -84,11 +85,29 @@ describe('lib/commands/postRespectFormVersion', () => {
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('sourceId was not defined'));
   });
 
-  it('should create new respect form version 2', async () => {
+  it('should throw validate creation error', async () => {
+    respectFormVersionService.validateCreate.and.returnValue({
+      error: 'custom error'
+    });
+
+    const command = new PostRespectFormVersionCommand(ctx);
+    const actual = command.execute(patientId, sourceId, data);
+
+    await expectAsync(actual).toBeRejectedWith(new BadRequestError('custom error'));
+
+    expect(respectFormVersionService.validateCreate).toHaveBeenCalledWith(
+      9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7'
+    );
+  });
+
+  it('should create new respect form version', async () => {
     const command = new PostRespectFormVersionCommand(ctx);
     await command.execute(patientId, sourceId, data);
 
-    expect(respectFormVersionService.create2).toHaveBeenCalledWith(
+    expect(respectFormVersionService.validateCreate).toHaveBeenCalledWith(
+      9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7'
+    );
+    expect(respectFormVersionService.create).toHaveBeenCalledWith(
       9999999111,  '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', { foo: 'bar' }
     );
   });

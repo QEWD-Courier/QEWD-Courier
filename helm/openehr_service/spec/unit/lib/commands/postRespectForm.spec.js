@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
@@ -77,7 +77,7 @@ describe('lib/commands/postRespectForm', () => {
     const command = new PostRespectFormCommand(ctx);
     await command.execute(patientId, data);
 
-    expect(respectFormVersionService.create).toHaveBeenCalledWith(9999999111, { foo: 'bar' });
+    expect(respectFormVersionService.create).toHaveBeenCalledWith(9999999111, null, { foo: 'bar' });
   });
 
   it('should return all respect form versions', async () => {

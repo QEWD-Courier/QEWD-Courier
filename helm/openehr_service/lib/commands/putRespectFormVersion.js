@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -61,7 +61,13 @@ class PutRespectFormVersionCommand {
 
     const { respectFormVersionService } = this.ctx.services;
 
+    const valid = respectFormVersionService.validateUpdate(patientId, sourceId, version);
+    if (!valid.ok) {
+      throw new BadRequestError(valid.error);
+    }
+
     respectFormVersionService.update(patientId, sourceId, version, data);
+
     const resultObj = respectFormVersionService.getByPatientId(patientId);
     debug('resultObj = %j', resultObj);
 

@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -42,7 +42,7 @@ module.exports = (db) => {
      * @return {bool}
      */
     exists: (patientId) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|exists', { patientId });
+      logger.debug('db/respectFormDb/mixins/respectForm/byPatientId|exists', { patientId });
 
       return db.respectFormIndex.$(['by_patientId', patientId]).exists;
     }

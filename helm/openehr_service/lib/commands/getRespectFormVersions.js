@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  27 March 2019
 
 */
 
@@ -49,6 +49,7 @@ class GetRespectFormVersionsCommand {
     }
 
     const { respectFormVersionService } = this.ctx.services;
+
     const resultObj = respectFormVersionService.getByPatientId(patientId);
     debug('resultObj = %j', resultObj);
 
