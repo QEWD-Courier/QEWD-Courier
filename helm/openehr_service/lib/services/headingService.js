@@ -86,7 +86,7 @@ class HeadingService {
     const output = transform(headingMap.transformTemplate, data.data, helpers);
     const postData = flatten(output);
     const ehrRestService = this.ctx.rest[host];
-    const responseObj = await ehrRestService.postHeading(sessionId, ehrId, headingMap.templateId, postData);
+    const responseObj = await ehrRestService.postComposition(sessionId, ehrId, headingMap.templateId, postData);
     debug('response: %j', responseObj);
 
     await ehrSessionService.stop(host, sessionId);
@@ -150,7 +150,7 @@ class HeadingService {
     const output = transform(headingMap.transformTemplate, data, helpers);
     const postData = flatten(output);
     const ehrRestService = this.ctx.rest[host];
-    const responseObj = await ehrRestService.putHeading(sessionId, compositionId, headingMap.templateId, postData);
+    const responseObj = await ehrRestService.putComposition(sessionId, compositionId, headingMap.templateId, postData);
     debug('response: %j', responseObj);
 
     await ehrSessionService.stop(host, sessionId);
@@ -485,7 +485,7 @@ class HeadingService {
     const { sessionId } = await ehrSessionService.start(host);
 
     const ehrRestService = this.ctx.rest[host];
-    await ehrRestService.deleteHeading(sessionId, compositionId);
+    await ehrRestService.deleteComposition(sessionId, compositionId);
 
     headingCache.byHost.delete(patientId, heading, host, sourceId);
     headingCache.byDate.delete(patientId, heading, date, sourceId);

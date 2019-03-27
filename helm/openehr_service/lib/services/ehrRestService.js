@@ -158,7 +158,7 @@ class EhrRestService {
   }
 
   /**
-   * Sends a request to create a new heading record
+   * Sends a request to create a new heading composition
    *
    * @param  {string} sessionId
    * @param  {string} ehrId
@@ -166,8 +166,8 @@ class EhrRestService {
    * @param  {Object} data
    * @return {Promise.<Object>}
    */
-  async postHeading(sessionId, ehrId, templateId, data) {
-    logger.info(`services/ehrRestService|${this.host}|postEhr`, { sessionId, ehrId, templateId, data: typeof data });
+  async postComposition(sessionId, ehrId, templateId, data) {
+    logger.info(`services/ehrRestService|${this.host}|postComposition`, { sessionId, ehrId, templateId, data: typeof data });
 
     debug('data: %j', data);
 
@@ -198,7 +198,7 @@ class EhrRestService {
    * @param  {Object} data
    * @return {Promise.<Object>}
    */
-  async putHeading(sessionId, compositionId, templateId, data) {
+  async putComposition(sessionId, compositionId, templateId, data) {
     logger.info(`services/ehrRestService|${this.host}|putHeading`, { sessionId, compositionId, templateId, data: typeof data });
 
     debug('data: %j', data);
@@ -221,7 +221,7 @@ class EhrRestService {
   }
 
   /**
-   * Sends a request to retrieve heading records
+   * Sends a request to retrieve heading compositions
    *
    * @param  {string} sessionId
    * @param  {string} query
@@ -246,14 +246,14 @@ class EhrRestService {
   }
 
   /**
-   * Sends a request to delete an existing heading record
+   * Sends a request to delete an existing heading composition
    *
    * @param  {string} sessionId
    * @param  {string} compositionId
    * @return {Promise.<Object>}
    */
-  async deleteHeading(sessionId, compositionId) {
-    logger.info(`services/ehrRestService|${this.host}|deleteHeading`, { sessionId, compositionId });
+  async deleteComposition(sessionId, compositionId) {
+    logger.info(`services/ehrRestService|${this.host}|deleteComposition`, { sessionId, compositionId });
 
     const options = {
       url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
