@@ -31,7 +31,7 @@
 var heading = {
   name: 'top3things',
   textFieldName: 'name1',
-  headingTableFields: ['name1', 'name2', 'name3'],
+  headingTableFields: ['name1', 'name2', 'name3', 'dateCreated'],
 
   get: {
 

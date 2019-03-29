@@ -67,9 +67,9 @@
   "openehr": {
     "servers": {
       "ethercis": {
-        "url": "http://46.101.81.30:8080",
-        "username": "xxxxxxx",
-        "password": "yyyyyyyy",
+        "url": "http://ethercis1.3-test.ripple.foundation:8080",
+        "username": "guest",
+        "password": "guest",
         "platform": "ethercis"
       }
     },
@@ -87,7 +87,7 @@
         "vaccinations",
         "top3Things"
       ],
-      "maximum": 4
+      "maximum": 3
     },
     "paths": {
       "jumper_templates": "/opt/qewd/mapped/openehr_service/utils/jumper/templates/",
@@ -144,7 +144,7 @@
         "summaryTableFields": ["name", "score", "dateCreated"]
       },
       "referrals": true,
-      "top3Things": false,
+      "top3Things": true,
       "vaccinations": {
         "template": {
           "name": "IDCR - Immunisation summary.v0"
