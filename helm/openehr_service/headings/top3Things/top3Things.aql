@@ -8,7 +8,8 @@ select
         b/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.issue.v0,'Issue 2']/items[at0002]/value/value as Issue_2_Detail,
         b/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.issue.v0,'Issue 3']/items[at0001]/value/value as Issue_3_Name,
         b/data[at0001]/events[at0002]/data[at0003]/items[openEHR-EHR-CLUSTER.issue.v0,'Issue 3']/items[at0002]/value/value as Issue_3_Detail
-from EHR e[ehr_id/value='7bbc1ebe-12a3-4f99-827e-86aa013e1349']
+from EHR e[ehr_id/value='{{ehrId}}']
 contains COMPOSITION a[openEHR-EHR-COMPOSITION.encounter.v1]
 contains OBSERVATION b[openEHR-EHR-OBSERVATION.story.v1]
 where a/name/value='Top issues'
+
