@@ -64,16 +64,16 @@ class GetPatientHeadingSynopsisCommand {
       throw new BadRequestError('Heading missing or empty');
     }
 
-    if (heading === Heading.TOP_3_THINGS) {
-      const { top3ThingsService } = this.ctx.services;
-      const synopsis = top3ThingsService.getLatestSynopsisByPatientId(patientId);
-
-      return {
-        heading,
-        synopsis
-      };
-
-    }
+    // if (heading === Heading.TOP_3_THINGS) {
+    //   const { top3ThingsService } = this.ctx.services;
+    //   const synopsis = top3ThingsService.getLatestSynopsisByPatientId(patientId);
+    //
+    //   return {
+    //     heading,
+    //     synopsis
+    //   };
+    //
+    // }
 
     const headingValid = isHeadingValid(this.ctx.headingsConfig, heading);
     if (!headingValid.ok) {

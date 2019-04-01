@@ -1,8 +1,8 @@
 {
   "oidc_client": {
     "hosts": {
-      "oidc_server": "http://mango-cookie.ripple.foundation:8000",
-      "orchestrator": "http://mango-cookie.ripple.foundation:8080"
+      "oidc_server": "https://helm-dev.ripple.foundation:443",
+      "orchestrator": "https://helm-dev.ripple.foundation:443"
     },
     "type": "OpenID Connect",
     "client_id": "foo",
@@ -67,9 +67,9 @@
   "openehr": {
     "servers": {
       "ethercis": {
-        "url": "http://46.101.81.30:8080",
-        "username": "xxxxxxx",
-        "password": "yyyyyyyy",
+        "url": "http://ethercis1.3-test.ripple.foundation:8080",
+        "username": "xxxxxx",
+        "password": "yyyyyyy",
         "platform": "ethercis"
       }
     },
@@ -144,7 +144,7 @@
         "summaryTableFields": ["name", "score", "dateCreated"]
       },
       "referrals": true,
-      "top3Things": false,
+      "top3Things": true,
       "vaccinations": {
         "template": {
           "name": "IDCR - Immunisation summary.v0"
