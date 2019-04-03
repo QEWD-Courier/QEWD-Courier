@@ -61,7 +61,7 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
       console.log('openehr response: ' + JSON.stringify(openehrResponse, null, 2));
 
       // is DDS configured for use?
-      if (!globalConfig.DDS || !globalConfig.DDS.enabled) {
+      if (!global_config.DDS || !global_config.DDS.enabled) {
         return sendResponse({
           ok: true,
           mode: 'secure'
