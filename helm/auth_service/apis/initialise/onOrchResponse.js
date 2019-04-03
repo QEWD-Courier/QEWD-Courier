@@ -43,21 +43,21 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
   console.log('** response = ' + JSON.stringify(response, null, 2));
 
   // is DDS configured for use?
-
+  
   var global_config = require('/opt/qewd/mapped/configuration/global_config.json');
-  if (!global_config.DDS) {
-
-    if (!response.error && response.authenticated) {
-      sendResponse({
-        ok: true,
-        mode: 'secure'
-      });
-      return true;
-    }
-    // otherwise return original response unchanged
-
-    return;
-  }
+  // if (!global_config.DDS) {
+  //
+  //   if (!response.error && response.authenticated) {
+  //     sendResponse({
+  //       ok: true,
+  //       mode: 'secure'
+  //     });
+  //     return true;
+  //   }
+  //   // otherwise return original response unchanged
+  //
+  //   return;
+  // }
 
   // DDS is in use:
 
@@ -77,6 +77,15 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
       //  after handler /openehr_service/ddsUpdateCheck/index.js
 
       console.log('openehr response: ' + JSON.stringify(openehrResponse, null, 2));
+      // is DDS configured for use?
+      if (!global_config.DDS || !global_config.DDS.enabled) {
+        return sendResponse({
+          ok: true,
+          mode: 'secure'
+        });
+      }
+  
+      // DDS is in use
 
       var recordStatus;
       var new_patient;
@@ -110,11 +119,11 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
 
       else if (recordStatus === 'ready') {
 
-        // pre-fetch the demographics from DDS now 
+        // pre-fetch the demographics from DDS now
         // to avoid later race conditions and speed up UI later
 
         // note the dummy patient Id - this is because the actual
-        // patient Id is picked up in the handler function 
+        // patient Id is picked up in the handler function
         // from the JWT
         //  ie the patientId in the path is ignored
 
