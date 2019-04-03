@@ -362,6 +362,34 @@ class HeadingService {
       results
     };
   }
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * @param  {string|int} patientId
+   * @param  {string} heading
+   * @param  {int} limit
+   * @returns {Promise<*[]>}
+   */
+  async getLatestTop3ThingsSynopsis(patientId, heading, limit) {
+    logger.info('services/headingService|getSynopsis', { patientId, heading, limit });
+  
+    const { results } = await this.getSummary(patientId, heading);
+    
+    let data = results.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
+  
+    return [
+      {
+        sourceId: data.sourceId,
+        text: data.name1
+      }, {
+        sourceId: data.sourceId,
+        text: data.name2
+      }, {
+        sourceId: data.sourceId,
+        text: data.name3
+      }
+    ]
+  }
 
   /**
    * Fetch records from OpenEHR servers for multiple headings

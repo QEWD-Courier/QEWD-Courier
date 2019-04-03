@@ -48,6 +48,7 @@ const PutFeedCommand = require('./putFeed');
 const PutPatientHeadingCommand = require('./putPatientHeading');
 const RevertAllDiscoveryDataCommand = require('./revertAllDiscoveryData');
 const RevertDiscoveryDataCommand = require('./revertDiscoveryData');
+const GetPatientTop3ThingsLatestCommand = require('./getPatientTop3ThingsLatest');
 
 module.exports = {
   CheckNhsNumberCommand,
@@ -68,5 +69,6 @@ module.exports = {
   PutFeedCommand,
   PutPatientHeadingCommand,
   RevertAllDiscoveryDataCommand,
-  RevertDiscoveryDataCommand
+  RevertDiscoveryDataCommand,
+  GetPatientTop3ThingsLatestCommand
 };

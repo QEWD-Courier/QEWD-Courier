@@ -80,6 +80,12 @@
     "on_microservice": "openehr_service"
   },
   {
+    "uri": "/api/patients/:patientId/synopsis/top3Things/latest",
+    "method": "GET",
+    "handler": "getPatientTop3ThingsLatest",
+    "on_microservice": "openehr_service"
+  },
+  {
     "uri": "/api/patients/:patientId/:heading",
     "method": "GET",
     "handler": "getPatientHeadingSummary",
@@ -95,7 +101,8 @@
     "uri": "/api/hscn/:site/top3Things/:patientId",
     "method": "GET",
     "handler": "getPatientTop3ThingsHscnDetail",
-    "on_microservice": "openehr_service"
+    "on_microservice": "openehr_service",
+    "authenticate": false
   },
   {
     "uri": "/discovery/merge/:heading",
@@ -147,5 +154,16 @@
     "method": "DELETE",
     "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/user_meta",
+    "method": "POST",
+    "handler": "setMetaData"
+  },
+  {
+    "uri": "/api/user_meta/:patientId",
+    "method": "GET",
+    "handler": "getMetaData"
   }
+
 ]
