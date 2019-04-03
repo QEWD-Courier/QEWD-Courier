@@ -375,6 +375,10 @@ class HeadingService {
   
     const { results } = await this.getSummary(patientId, heading);
     
+    if (results.length === 0) {
+      return [];
+    }
+    
     let data = results.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
   
     return [
