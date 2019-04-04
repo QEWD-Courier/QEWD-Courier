@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  27 March 2019
 
 */
 
@@ -41,6 +41,13 @@ const { ExtraHeading, Heading, RecordStatus } = require('../../lib/shared/enums'
  * @return {bool}
  */
 module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-line no-unused-vars
+  const globalConfig = this.userDefined.globalConfig;
+
+  // is DDS configured for use?
+  if (!globalConfig.DDS || !globalConfig.DDS.enabled) {
+    return false;
+  }
+
   /*
 
     Handling the response from /api/openehr/check  (ie response from index.js in this folder)
@@ -92,7 +99,7 @@ module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-
     return false;
   }
 
-  const synopsisConfig = this.userDefined.globalConfig.openehr.synopsis;
+  const synopsisConfig = globalConfig.openehr.synopsis;
   logger.debug('synopsis headings:', { headings: synopsisConfig.headings });
 
   // this is the first poll request using /api/initialise by the user, so
