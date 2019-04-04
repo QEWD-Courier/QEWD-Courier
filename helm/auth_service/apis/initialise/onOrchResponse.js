@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  27 March 2019
 
 */
 
@@ -39,32 +39,14 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
 
   console.log('onOrchResponse for /api/initialise');
 
+  var global_config = require('/opt/qewd/mapped/configuration/global_config.json');
   var response = responseObj.message;
   console.log('** response = ' + JSON.stringify(response, null, 2));
-
-  // is DDS configured for use?
-  
-  var global_config = require('/opt/qewd/mapped/configuration/global_config.json');
-  // if (!global_config.DDS) {
-  //
-  //   if (!response.error && response.authenticated) {
-  //     sendResponse({
-  //       ok: true,
-  //       mode: 'secure'
-  //     });
-  //     return true;
-  //   }
-  //   // otherwise return original response unchanged
-  //
-  //   return;
-  // }
-
-  // DDS is in use:
 
   var message;
 
   if (!response.error && response.authenticated) {
-    console.log('** no error, but authenticated, so redirect to DDS to fetch new data');
+    console.log('** no error, but authenticated');
 
     message = {
       path: '/api/openehr/check',
@@ -77,6 +59,7 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
       //  after handler /openehr_service/ddsUpdateCheck/index.js
 
       console.log('openehr response: ' + JSON.stringify(openehrResponse, null, 2));
+
       // is DDS configured for use?
       if (!global_config.DDS || !global_config.DDS.enabled) {
         return sendResponse({
@@ -84,7 +67,7 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
           mode: 'secure'
         });
       }
-  
+
       // DDS is in use
 
       var recordStatus;
@@ -164,6 +147,5 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
 
   // implicitly for errors or unautenticated responses,
   // response will be returned to browser unchanged
-
 
 };

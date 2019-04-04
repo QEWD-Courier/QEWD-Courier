@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  27 March 2019
 
 */
 
@@ -42,11 +42,12 @@ const { ExtraHeading, Heading, RecordStatus } = require('../../lib/shared/enums'
  */
 module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-line no-unused-vars
   const globalConfig = this.userDefined.globalConfig;
-  
+
   // is DDS configured for use?
   if (!globalConfig.DDS || !globalConfig.DDS.enabled) {
     return false;
   }
+
   /*
 
     Handling the response from /api/openehr/check  (ie response from index.js in this folder)
@@ -97,7 +98,7 @@ module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-
     // so return the "loading data" signal back to PulseTile
     return false;
   }
-  
+
   const synopsisConfig = globalConfig.openehr.synopsis;
   logger.debug('synopsis headings:', { headings: synopsisConfig.headings });
 

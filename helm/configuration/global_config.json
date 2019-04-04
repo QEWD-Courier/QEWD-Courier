@@ -30,7 +30,7 @@
     "logout_approach": "client"
   },
   "DDS": {
-    "enabled": false,
+    "enabled": true,
     "auth": {
       "host": "https://devauth.discoverydataservice.net",
       "path": "/auth/realms/endeavour/protocol/openid-connect/token",
