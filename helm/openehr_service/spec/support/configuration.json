@@ -4,6 +4,9 @@
       "oidc_server": "http://oidc.ripple.foundation:8000"
     }
   },
+  "DDS": {
+    "enabled": true
+  },
   "openehr": {
     "servers": {
       "marand": {
