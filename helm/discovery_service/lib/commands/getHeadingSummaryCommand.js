@@ -71,6 +71,8 @@ class GetHeadingSummaryCommand extends BaseCommand {
     if (!headingValid.ok) {
       return this.respond([]);
     }
+    
+    patientId = 8111144490; //@TODO PLEASE REMOVE IT AFTER GOING TO LIVE !!!!!!!!!
 
     const { resourceService, headingService } = this.ctx.services;
     const resourceName = this.ctx.headingsConfig[heading];
