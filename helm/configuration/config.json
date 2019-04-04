@@ -27,16 +27,6 @@
         "serverName": "Discovery MicroService",
         "poolSize": 4
       }
-    },
-    {
-      "name": "user_meta",
-      "qewd": {
-        "serverName": "User Metadata MicroService",
-        "poolSize": 4
-      }
     }
-  ],
-  "jwt": {
-    "secret": "f482a8d7-c0f3-43ac-a08f-be0530ad0e49"
-  }
+  ]
 }

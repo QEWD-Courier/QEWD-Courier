@@ -154,16 +154,5 @@
     "method": "DELETE",
     "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
-  },
-  {
-    "uri": "/api/user_meta",
-    "method": "POST",
-    "handler": "setMetaData"
-  },
-  {
-    "uri": "/api/user_meta/:patientId",
-    "method": "GET",
-    "handler": "getMetaData"
   }
-
 ]
