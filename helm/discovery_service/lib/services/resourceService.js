@@ -201,7 +201,7 @@ class ResourceService {
 
     // ensure organisation records for practitioner are also fetched and cached
     await P.each(resource.practitionerRole, async (role) => {
-      const organisationRef = role.managingOrganisation.reference;
+      const organisationRef = role.managingOrganization.reference;
       const { resource } = await this.fetchResource(organisationRef);
       if (!resource) return;
 

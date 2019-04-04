@@ -91,10 +91,10 @@ class HeadingService {
    */
   getSummary(nhsNumber, heading, format = ResourceFormat.PULSETILE) {
     logger.info('services/headingService|getSummary', { nhsNumber, heading, format });
-
+  
     const resourceName = this.ctx.headingsConfig[heading];
-
-    const { source, destination } = this.ctx.getTransformationConfig(format);
+  
+    let { source, destination } = this.ctx.getTransformationConfig();
     const template = getHeadingTemplate(heading, source, destination);
     const helpers = headingHelpers();
 
@@ -113,7 +113,12 @@ class HeadingService {
         ? practitioner.name.text
         : 'Not known';
 
-      const result = transform(template, resource, helpers);
+      let result = transform(template, resource, helpers);
+      if (format === ResourceFormat.PULSETILE) {
+        let { source, destination } = this.ctx.getTransformationConfig(format);
+        const template = getHeadingTemplate(heading, source, destination);
+        result = transform(template, result, helpers);
+      }
       debug('uuid: %s, result: %j', uuid, result);
 
       results.push(result);
