@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
 'use strict';
 
-const { logger } = require('../../lib/core');
+const { ExecutionContext, logger } = require('../../lib/core');
 const { GetPatientTop3ThingsHscnDetailCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
@@ -41,7 +41,8 @@ const { getResponseError } = require('../../lib/errors');
  */
 module.exports = async function getPatientTop3ThingsHscnDetail(args, finished) {
   try {
-    const command = new GetPatientTop3ThingsHscnDetailCommand(args.req.ctx);
+    const ctx = new ExecutionContext(this);
+    const command = new GetPatientTop3ThingsHscnDetailCommand(ctx);
     const responseObj = await command.execute(args.site, args.patientId, args.req.headers);
 
     finished(responseObj);

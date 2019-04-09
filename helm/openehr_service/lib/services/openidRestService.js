@@ -23,14 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
 'use strict';
 
 const request = require('request');
-const config = require('../config');
 const logger = require('../core/logger');
 const debug = require('debug')('helm:openehr:services:openid-rest');
 
@@ -51,7 +50,7 @@ class OpenidRestService {
   }
 
   static create(ctx) {
-    return new OpenidRestService(ctx, config.oidcServerConfig);
+    return new OpenidRestService(ctx, ctx.oidcServerConfig);
   }
 
   /**

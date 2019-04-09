@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
@@ -31,7 +31,6 @@
 
 const nock = require('nock');
 const { ExecutionContextMock } = require('@tests/mocks');
-const config = require('@lib/config');
 const OpenidRestService = require('@lib/services/openidRestService');
 
 describe('lib/services/openidRestService', () => {
@@ -59,7 +58,7 @@ describe('lib/services/openidRestService', () => {
 
       expect(actual).toEqual(jasmine.any(OpenidRestService));
       expect(actual.ctx).toBe(ctx);
-      expect(actual.hostConfig).toEqual(config.oidcServerConfig);
+      expect(actual.hostConfig).toEqual(ctx.oidcServerConfig);
     });
   });
 

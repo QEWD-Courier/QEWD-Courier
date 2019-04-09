@@ -23,16 +23,18 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
 'use strict';
 
 const mockery = require('mockery');
-const { CommandMock, ExecutionContextMock } = require('@tests/mocks');
+const { ExecutionContext } = require('@lib/core');
+const { CommandMock, Worker } = require('@tests/mocks');
 
 describe('apis/getPatientTop3ThingsHscnDetail', () => {
+  let q;
   let args;
   let finished;
 
@@ -52,11 +54,11 @@ describe('apis/getPatientTop3ThingsHscnDetail', () => {
   });
 
   beforeEach(() => {
+    q = new Worker();
     args = {
       site: 'ltht',
       patientId: 9999999111,
       req: {
-        ctx: new ExecutionContextMock(),
         headers: {
           authorization: 'AccessToken 5ebe2294ecd0e0f08eab7690d2a6ee69'
         }
@@ -92,9 +94,9 @@ describe('apis/getPatientTop3ThingsHscnDetail', () => {
     ];
     command.execute.and.resolveValue(responseObj);
 
-    await handler(args, finished);
+    await handler.call(q, args, finished);
 
-    expect(GetPatientTop3ThingsHscnDetailCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(GetPatientTop3ThingsHscnDetailCommand).toHaveBeenCalledWith(jasmine.any((ExecutionContext)));
     expect(command.execute).toHaveBeenCalledWith(args.site, args.patientId, args.req.headers);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
@@ -103,9 +105,9 @@ describe('apis/getPatientTop3ThingsHscnDetail', () => {
   it('should return error object', async () => {
     command.execute.and.rejectValue(new Error('custom error'));
 
-    await handler(args, finished);
+    await handler.call(q, args, finished);
 
-    expect(GetPatientTop3ThingsHscnDetailCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(GetPatientTop3ThingsHscnDetailCommand).toHaveBeenCalledWith(jasmine.any((ExecutionContext)));
     expect(command.execute).toHaveBeenCalledWith(args.site, args.patientId, args.req.headers);
 
     expect(finished).toHaveBeenCalledWith({
