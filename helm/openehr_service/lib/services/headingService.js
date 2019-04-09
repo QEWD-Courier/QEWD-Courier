@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
@@ -362,7 +362,7 @@ class HeadingService {
       results
     };
   }
-  
+
   /**
    * @TODO Need to think about refactoring this method to style of all architecture concept
    * @param  {string|int} patientId
@@ -372,15 +372,15 @@ class HeadingService {
    */
   async getLatestTop3ThingsSynopsis(patientId, heading, limit) {
     logger.info('services/headingService|getSynopsis', { patientId, heading, limit });
-  
+
     const { results } = await this.getSummary(patientId, heading);
-    
+
     if (results.length === 0) {
       return [];
     }
-    
+
     let data = results.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
-  
+
     return [
       {
         sourceId: data.sourceId,
@@ -392,7 +392,7 @@ class HeadingService {
         sourceId: data.sourceId,
         text: data.name3
       }
-    ]
+    ];
   }
 
   /**
