@@ -270,7 +270,7 @@ describe('lib/services/ehrRestService', () => {
         'personal_notes/clinical_synopsis:0/_name|value': 'foo',
         'personal_notes/clinical_synopsis:0/notes': 'bar'
       };
-      const actual = await ehrRestService.postHeading(sessionId, ehrId, templateId, data);
+      const actual = await ehrRestService.postComposition(sessionId, ehrId, templateId, data);
 
       expect(nock).toHaveBeenDone();
       expect(actual).toEqual(expected);
@@ -344,7 +344,7 @@ describe('lib/services/ehrRestService', () => {
         'personal_notes/clinical_synopsis:0/_name|value': 'foo',
         'personal_notes/clinical_synopsis:0/notes': 'bar'
       };
-      const actual = await ehrRestService.putHeading(sessionId, compositionId, templateId, data);
+      const actual = await ehrRestService.putComposition(sessionId, compositionId, templateId, data);
 
       expect(nock).toHaveBeenDone();
       expect(actual).toEqual(expected);
@@ -391,7 +391,7 @@ describe('lib/services/ehrRestService', () => {
            'personal_notes/clinical_synopsis:0/_name|value': 'foo',
            'personal_notes/clinical_synopsis:0/notes': 'bar'
          };
-         await ehrRestService.putHeading(sessionId, compositionId, templateId, data);
+         await ehrRestService.putComposition(sessionId, compositionId, templateId, data);
        } catch (err) {
          expect(err).toEqual(expected);
        }
@@ -466,7 +466,7 @@ describe('lib/services/ehrRestService', () => {
 
       const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
       const compositionId = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
-      const actual = await ehrRestService.deleteHeading(sessionId, compositionId);
+      const actual = await ehrRestService.deleteComposition(sessionId, compositionId);
 
       expect(nock).toHaveBeenDone();
       expect(actual).toEqual(expected);
@@ -489,7 +489,7 @@ describe('lib/services/ehrRestService', () => {
        try {
          const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
          const compositionId = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
-         await ehrRestService.deleteHeading(sessionId, compositionId);
+         await ehrRestService.deleteComposition(sessionId, compositionId);
        } catch (err) {
          expect(err).toEqual(expected);
        }

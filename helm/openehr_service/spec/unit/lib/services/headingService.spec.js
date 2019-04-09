@@ -164,7 +164,7 @@ describe('lib/services/headingService', () => {
 
       jumperService.check.and.returnValue({ ok: false });
       patientService.getEhrId.and.resolveValue('74b6a24b-bd97-47f0-ac6f-a632d0cac60f');
-      ethercisEhrRestService.postHeading.and.resolveValue({
+      ethercisEhrRestService.postComposition.and.resolveValue({
         compositionUid: '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::1'
       });
 
@@ -182,7 +182,7 @@ describe('lib/services/headingService', () => {
       expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'post');
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
       expect(patientService.getEhrId).toHaveBeenCalledWith('ethercis', 9999999000);
-      expect(ethercisEhrRestService.postHeading).toHaveBeenCalledWith(
+      expect(ethercisEhrRestService.postComposition).toHaveBeenCalledWith(
         '03134cc0-3741-4d3f-916a-a279a24448e5',
         '74b6a24b-bd97-47f0-ac6f-a632d0cac60f',
         'RIPPLE - Personal Notes.v1',
@@ -211,7 +211,7 @@ describe('lib/services/headingService', () => {
 
       jumperService.check.and.returnValue({ ok: false });
       patientService.getEhrId.and.resolveValue('74b6a24b-bd97-47f0-ac6f-a632d0cac60f');
-      ethercisEhrRestService.postHeading.and.resolveValue({});
+      ethercisEhrRestService.postComposition.and.resolveValue({});
 
       const host = 'ethercis';
       const patientId = 9999999000;
@@ -227,7 +227,7 @@ describe('lib/services/headingService', () => {
       expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'post');
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
       expect(patientService.getEhrId).toHaveBeenCalledWith('ethercis', 9999999000);
-      expect(ethercisEhrRestService.postHeading).toHaveBeenCalledWith(
+      expect(ethercisEhrRestService.postComposition).toHaveBeenCalledWith(
         '03134cc0-3741-4d3f-916a-a279a24448e5',
         '74b6a24b-bd97-47f0-ac6f-a632d0cac60f',
         'RIPPLE - Personal Notes.v1',
@@ -386,7 +386,7 @@ describe('lib/services/headingService', () => {
 
       headingCache.bySourceId.get.and.returnValue(dbData);
       jumperService.check.and.returnValue({ ok: false });
-      ethercisEhrRestService.putHeading.and.resolveValue({
+      ethercisEhrRestService.putComposition.and.resolveValue({
         compositionUid: '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::1',
         action: 'foo'
       });
@@ -403,7 +403,7 @@ describe('lib/services/headingService', () => {
 
       expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
       expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'put');
-      expect(ethercisEhrRestService.putHeading).toHaveBeenCalledWith(
+      expect(ethercisEhrRestService.putComposition).toHaveBeenCalledWith(
         '03134cc0-3741-4d3f-916a-a279a24448e5',
         '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::1',
         'RIPPLE - Personal Notes.v1',
@@ -435,7 +435,7 @@ describe('lib/services/headingService', () => {
 
       headingCache.bySourceId.get.and.returnValue(dbData);
       jumperService.check.and.returnValue({ ok: false });
-      ethercisEhrRestService.putHeading.and.resolveValue();
+      ethercisEhrRestService.putComposition.and.resolveValue();
 
       const host = 'ethercis';
       const patientId = 9999999000;
@@ -449,7 +449,7 @@ describe('lib/services/headingService', () => {
 
       expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
       expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'put');
-      expect(ethercisEhrRestService.putHeading).toHaveBeenCalledWith(
+      expect(ethercisEhrRestService.putComposition).toHaveBeenCalledWith(
         '03134cc0-3741-4d3f-916a-a279a24448e5',
         '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::1',
         'RIPPLE - Personal Notes.v1',
@@ -1744,7 +1744,7 @@ describe('lib/services/headingService', () => {
       const actual = await headingService.delete(patientId, heading, sourceId);
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
-      expect(ethercisEhrRestService.deleteHeading).toHaveBeenCalledWith(
+      expect(ethercisEhrRestService.deleteComposition).toHaveBeenCalledWith(
         '03134cc0-3741-4d3f-916a-a279a24448e5',
         '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::1'
       );

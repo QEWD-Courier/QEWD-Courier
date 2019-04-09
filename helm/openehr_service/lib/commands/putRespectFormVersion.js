@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +23,60 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const { BadRequestError } = require('../errors');
+const debug = require('debug')('helm:openehr:commands:put-respect-form-version');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
+class PutRespectFormVersionCommand {
+  constructor(ctx) {
+    this.ctx = ctx;
   }
 
-  initialise(id) {
-    if (this.freezed) return;
+  /**
+   * @param  {string} patientId
+   * @param  {string} sourceId
+   * @param  {string} version
+   * @param  {data} data
+   * @return {Promise.<Object>}
+   */
+  async execute(patientId, sourceId, version, data) {
+    debug('patientId: %s, sourceId = %s, version = %s, data = %j', patientId, sourceId, version, data);
 
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
+    if (!patientId) {
+      throw new BadRequestError('patientId was not defined');
+    }
 
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
+    if (!sourceId) {
+      throw new BadRequestError('sourceId was not defined');
+    }
 
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
+    if (!version) {
+      throw new BadRequestError('version was not defined');
+    }
 
-    return spyObj;
-  }
+    const { respectFormVersionService } = this.ctx.services;
 
-  freeze() {
-    this.freezed = true;
-  }
+    const valid = respectFormVersionService.validateUpdate(patientId, sourceId, version);
+    if (!valid.ok) {
+      throw new BadRequestError(valid.error);
+    }
 
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
+    respectFormVersionService.update(patientId, sourceId, version, data);
+
+    const resultObj = respectFormVersionService.getByPatientId(patientId);
+    debug('resultObj = %j', resultObj);
+
+    return {
+      api: 'getRespectFormVersions',
+      use: 'results',
+      results: resultObj
+    };
   }
 }
 
-module.exports = DbRegistryMock;
+module.exports = PutRespectFormVersionCommand;

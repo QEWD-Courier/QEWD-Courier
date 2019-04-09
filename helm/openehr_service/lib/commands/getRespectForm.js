@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +23,55 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const { BadRequestError } = require('../errors');
+const debug = require('debug')('helm:openehr:commands:get-respect-form');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
+class GetRespectFormCommand {
+  constructor(ctx) {
+    this.ctx = ctx;
   }
 
-  initialise(id) {
-    if (this.freezed) return;
+  /**
+   * @param  {string} patientId
+   * @param  {string} sourceId
+   * @param  {string} version
+   * @return {Promise.<Object>}
+   */
+  async execute(patientId, sourceId, version) {
+    debug('patientId: %s, sourceId = %s, version = %s', patientId, sourceId, version);
 
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
+    if (!patientId) {
+      throw new BadRequestError('patientId was not defined');
+    }
 
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
+    if (!sourceId) {
+      throw new BadRequestError('sourceId was not defined');
+    }
 
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
+    if (!version) {
+      throw new BadRequestError('version was not defined');
+    }
 
-    return spyObj;
-  }
+    const { respectFormVersionService } = this.ctx.services;
 
-  freeze() {
-    this.freezed = true;
-  }
+    const valid = respectFormVersionService.validateGet(patientId, sourceId, version);
+    if (!valid.ok) {
+      throw new BadRequestError(valid.error);
+    }
 
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
+    const resultObj = respectFormVersionService.get(sourceId, version);
+    debug('resultObj = %j', resultObj);
+
+    return {
+      respect_form: resultObj
+    };
   }
 }
 
-module.exports = DbRegistryMock;
+module.exports = GetRespectFormCommand;

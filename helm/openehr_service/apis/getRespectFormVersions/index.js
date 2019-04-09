@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +23,33 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  25 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const { logger } = require('../../lib/core');
+const { GetRespectFormVersionsCommand } = require('../../lib/commands');
+const { getResponseError } = require('../../lib/errors');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
+/**
+ * GET /api/patients/:patientId/respectforms
+ *
+ * @param  {Object} args
+ * @param  {Function} finished
+ */
+module.exports = async function getRespectFormVersions(args, finished) {
+  try {
+    const command = new GetRespectFormVersionsCommand(args.req.ctx);
+    const responseObj = await command.execute(args.patientId);
+
+    finished(responseObj);
+  } catch (err) {
+    logger.error('apis/getRespectFormVersions|err:', err);
+
+    const responseError = getResponseError(err);
+
+    finished(responseError);
   }
-
-  initialise(id) {
-    if (this.freezed) return;
-
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
-
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
-
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
-
-    return spyObj;
-  }
-
-  freeze() {
-    this.freezed = true;
-  }
-
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
-  }
-}
-
-module.exports = DbRegistryMock;
+};

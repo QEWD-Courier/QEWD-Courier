@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +23,45 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const { BadRequestError } = require('../errors');
+const debug = require('debug')('helm:openehr:commands:post-respect-form');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
+class PostRespectFormCommand {
+  constructor(ctx) {
+    this.ctx = ctx;
   }
 
-  initialise(id) {
-    if (this.freezed) return;
+  /**
+   * @param  {string} patientId
+   * @param  {Object} data
+   * @return {Promise.<Object>}
+   */
+  async execute(patientId, data) {
+    debug('patientId: %s, data = %j', data);
 
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
+    if (!patientId) {
+      throw new BadRequestError('patientId was not defined');
+    }
 
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
+    const { respectFormVersionService } = this.ctx.services;
 
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
+    respectFormVersionService.create(patientId, null, data);
 
-    return spyObj;
-  }
+    const resultObj = respectFormVersionService.getByPatientId(patientId);
+    debug('resultObj = %j', resultObj);
 
-  freeze() {
-    this.freezed = true;
-  }
-
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
+    return {
+      api: 'getRespectFormVersions',
+      use: 'results',
+      results: resultObj
+    };
   }
 }
 
-module.exports = DbRegistryMock;
+module.exports = PostRespectFormCommand;

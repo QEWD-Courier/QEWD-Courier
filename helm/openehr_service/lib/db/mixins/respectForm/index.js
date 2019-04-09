@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,20 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  25 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const byId = require('./byId');
+const byPatientId = require('./byPatientId');
+const bySourceId = require('./bySourceId');
+const byVersion = require('./byVersion');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
-  }
-
-  initialise(id) {
-    if (this.freezed) return;
-
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
-
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
-
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
-
-    return spyObj;
-  }
-
-  freeze() {
-    this.freezed = true;
-  }
-
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
-  }
-}
-
-module.exports = DbRegistryMock;
+module.exports = {
+  byId,
+  byPatientId,
+  bySourceId,
+  byVersion
+};

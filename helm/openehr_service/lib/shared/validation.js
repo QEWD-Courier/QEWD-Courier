@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  27 March 2019
 
 */
 
@@ -198,5 +198,6 @@ module.exports = {
   isHeadingValid,
   isGuid,
   isSiteValid,
-  isSourceIdValid
+  isSourceIdValid,
+  respondErr
 };

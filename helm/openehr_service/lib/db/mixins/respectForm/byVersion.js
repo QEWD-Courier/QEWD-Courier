@@ -1,8 +1,9 @@
 /*
 
  ----------------------------------------------------------------------------
+ | ripple-cdr-discovery: Ripple Discovery Interface                         |
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2017-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -23,44 +24,40 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  27 March 2019
 
 */
 
 'use strict';
 
-const { lazyLoadAdapter } = require('@lib/shared/utils');
-const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
+const { logger } = require('../../../core');
 
-class DbRegistryMock {
-  constructor() {
-    this.freezed = false;
-  }
+module.exports = (db) => {
+  return {
 
-  initialise(id) {
-    if (this.freezed) return;
+    /**
+     * Checks if source id and version exists
+     *
+     * @param  {string} sourceId
+     * @return {bool}
+     */
+    exists: (sourceId, version) => {
+      logger.debug('db/respectFormDb/mixins/respectForm/byVersion|exists', { sourceId, version });
 
-    const methods = getMethods(id, 'db');
-    const spyObj = createSpyObj(id, methods);
+      return db.respectFormIndex.$(['by_uid', sourceId, version]).exists;
+    },
 
-    const mixins = getMixins(id, 'db');
-    Object.keys(mixins).forEach(key => {
-      const mixin = mixins[key]();
-      const mixinMethods = Reflect.ownKeys(mixin);
+    /**
+     * Gets composition id by source id and version
+     *
+     * @param  {string} sourceId
+     * @param  {int} version
+     * @return {int}
+     */
+    getCompositionId: (sourceId, version) => {
+      logger.debug('db/respectFormDb/mixins/respectForm/byVersion|getCompositionId', { sourceId, version });
 
-      spyObj[key] = createSpyObj(key, mixinMethods);
-    });
-
-    return spyObj;
-  }
-
-  freeze() {
-    this.freezed = true;
-  }
-
-  static create() {
-    return lazyLoadAdapter(new DbRegistryMock());
-  }
-}
-
-module.exports = DbRegistryMock;
+      return db.respectFormIndex.$(['by_uid', sourceId, version]).value;
+    }
+  };
+};

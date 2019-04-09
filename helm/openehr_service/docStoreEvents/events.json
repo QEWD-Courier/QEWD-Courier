@@ -1,0 +1,17 @@
+{
+  "documents": {
+    "RespectForm": {
+      "pathsToIndex": {
+        "by_id/:id/version/:version/patientId": {
+          "documentName": "RespectFormIndex",
+          "path": "by_patientId/:value/:id/:version"
+        },
+        "by_id/:id/version/:version/uuid": {
+          "documentName": "RespectFormIndex",
+          "path": "by_uid/:value/:version",
+          "value": "id"
+        }
+      }
+    }
+  }
+}
