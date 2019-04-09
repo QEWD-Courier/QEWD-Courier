@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
- 27 March 2019
+ 9 April 2019
 
 */
 
@@ -83,7 +83,7 @@ describe('apis/onMsResponse', () => {
   });
 
   it('should do nothing when DDS missed', () => {
-    delete q.userDefined.globalConfig.DDS
+    delete q.userDefined.globalConfig.DDS;
 
     const actual = onMsResponse.call(q, message, forward, sendBack);
 

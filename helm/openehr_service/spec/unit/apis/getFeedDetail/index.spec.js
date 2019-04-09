@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -83,7 +83,7 @@ describe('apis/getFeedDetail', () => {
         name: 'BBC News',
         landingPageUrl: 'https://www.bbc.co.uk/news',
         rssFeedUrl: 'https://www.bbc.co.uk/rss',
-        email: 'jane.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76',
         dateCreated: 1514764800000
       }

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -47,12 +47,12 @@ class PhrFeedService {
    * Gets phr feed by source id
    *
    * @param  {string} sourceId
-   * @return {Promise.<Object>}
+   * @return {Object}
    */
-  async getBySourceId(sourceId) {
+  getBySourceId(sourceId) {
     logger.info('services/phrFeedService|getBySourceId', { sourceId });
 
-    const dbData = await this.phrFeedDb.getBySourceId(sourceId);
+    const dbData = this.phrFeedDb.getBySourceId(sourceId);
 
     if (!dbData) {
       throw new NotFoundError('Invalid sourceId');
@@ -62,15 +62,15 @@ class PhrFeedService {
   }
 
   /**
-   * Gets phr feeds by email
+   * Gets phr feeds by nhs number
    *
-   * @param  {string} email
-   * @return {Promise.<Object[]>}
+   * @param  {string|int} nhsNumber
+   * @return {Object[]}
    */
-  async getByEmail(email) {
-    logger.info('services/phrFeedService|getByEmail', { email });
+  getByNhsNumber(nhsNumber) {
+    logger.info('services/phrFeedService|getByNhsNumber', { nhsNumber });
 
-    const dbData = await this.phrFeedDb.getByEmail(email);
+    const dbData = this.phrFeedDb.getByNhsNumber(nhsNumber);
 
     return dbData.map(x =>
       ({
@@ -85,20 +85,21 @@ class PhrFeedService {
   /**
    * Creates a new phr feed
    *
+   * @param  {string|int} nhsNumber
    * @param  {Object} feed
-   * @return {Promise.<Object>}
+   * @return {Object}
    */
-  async create(feed) {
-    logger.info('services/phrFeedService|create', { feed });
+  create(nhsNumber, feed) {
+    logger.info('services/phrFeedService|create', { nhsNumber, feed });
 
     let dbData = null;
 
-    dbData = await this.phrFeedDb.getByName(feed.email, feed.name);
+    dbData = this.phrFeedDb.getByName(nhsNumber, feed.name);
     if (dbData) {
       return dbData.sourceId;
     }
 
-    dbData = await this.phrFeedDb.getByLandingPageUrl(feed.email, feed.landingPageUrl);
+    dbData = this.phrFeedDb.getByLandingPageUrl(nhsNumber, feed.landingPageUrl);
     if (dbData) {
       return dbData.sourceId;
     }
@@ -107,11 +108,12 @@ class PhrFeedService {
     const now = new Date().getTime();
     dbData = {
       ...feed,
+      nhsNumber,
       sourceId,
       dateCreated: now
     };
 
-    await this.phrFeedDb.insert(dbData);
+    this.phrFeedDb.insert(dbData);
 
     return sourceId;
   }
@@ -119,20 +121,23 @@ class PhrFeedService {
   /**
    * Updates an existing phr feed by source id
    *
+   * @param  {string|int} nhsNumber
+   * @param  {string} sourceId
    * @param  {Object} feed
-   * @return {Promise.<Object>}
+   * @return {void}
    */
-  async update(sourceId, feed) {
-    logger.info('services/phrFeedService|update', { sourceId, feed });
+  update(nhsNumber, sourceId, feed) {
+    logger.info('services/phrFeedService|update', { nhsNumber, sourceId, feed });
 
     const now = new Date().getTime();
     const dbData = {
       ...feed,
+      nhsNumber,
       sourceId,
       dateCreated: now
     };
 
-    await this.phrFeedDb.update(sourceId, dbData);
+    this.phrFeedDb.update(sourceId, dbData);
   }
 }
 

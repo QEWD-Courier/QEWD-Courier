@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isHeadingValid, isPatientIdValid } = require('../shared/validation');
-const { Role, Heading } = require('../shared/enums');
+const { Role } = require('../shared/enums');
 const debug = require('debug')('helm:openehr:commands:get-patient-heading-synopsis');
 
 class GetPatientHeadingSynopsisCommand {
