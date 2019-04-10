@@ -362,7 +362,7 @@ class HeadingService {
       results
     };
   }
-
+  
   /**
    * @TODO Need to think about refactoring this method to style of all architecture concept
    * @param  {string|int} patientId
@@ -372,15 +372,44 @@ class HeadingService {
    */
   async getLatestTop3ThingsSynopsis(patientId, heading, limit) {
     logger.info('services/headingService|getSynopsis', { patientId, heading, limit });
-
+    
     const { results } = await this.getSummary(patientId, heading);
-
-    if (results.length === 0) {
+    
+    return this.formatResultTop3ThingsLatest(results)
+  }
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * Transform data for top3things
+   * @param {object} record
+   * @param {string} host
+   * @returns {Promise<void>}
+   */
+  async   transformTop3ThingsHscn(record, host) {
+    const heading = Heading.TOP_3_THINGS;
+    const helpers = headingHelpers(host, heading, 'get');
+    const headingMap = getHeadingMap(heading, 'get');
+    
+    if (!headingMap) {
+      throw new UnprocessableEntityError(`heading ${heading} not recognised, or no GET definition available`);
+    }
+    
+    return transform(headingMap.transformTemplate, record, helpers);
+  }
+  
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * Get the latest data from array
+   * @param {array} result
+   * @returns {*}
+   */
+  formatResultTop3ThingsLatest(result) {
+    if (result.length === 0) {
       return [];
     }
-
-    let data = results.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
-
+    
+    let data = result.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
     return [
       {
         sourceId: data.sourceId,

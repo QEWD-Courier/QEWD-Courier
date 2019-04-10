@@ -29,9 +29,11 @@
 
 'use strict';
 
+const P = require('bluebird');
 const { BadRequestError, ForbiddenError } = require('../errors');
 const { parseAccessToken } = require('../shared/utils');
 const { isPatientIdValid, isSiteValid } = require('../shared/validation');
+const { Heading } = require('../shared/enums');
 const debug = require('debug')('helm:openehr:commands:get-patient-top3things-hscn-detail');
 
 class GetPatientTop3ThingsHscnDetailCommand {
@@ -73,8 +75,17 @@ class GetPatientTop3ThingsHscnDetailCommand {
       throw new BadRequestError(valid.error);
     }
 
-    const { top3ThingsService } = this.ctx.services;
-    const responseObj = top3ThingsService.getLatestDetailByPatientId(patientId);
+    // const { top3ThingsService } = this.ctx.services;
+    // const responseObj = top3ThingsService.getLatestDetailByPatientId(patientId);
+  
+    const { headingService } = this.ctx.services;
+    const host = this.ctx.defaultHost;
+    const result = await headingService.query(host, patientId, Heading.TOP_3_THINGS);
+    if (result.length === 0) {
+      return [];
+    }
+    const transformData = await P.mapSeries(result, x => headingService.transformTop3ThingsHscn(x, host));
+    const responseObj = await headingService.formatResultTop3ThingsLatest(transformData);
 
     return responseObj;
   }
