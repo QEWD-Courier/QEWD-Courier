@@ -23,14 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
 'use strict';
 
 const { logger } = require('../core');
-const debug = require('debug')('helm:openehr:db:phr-feeds');
 
 class PhrFeedDb {
   constructor(ctx) {
@@ -59,20 +58,20 @@ class PhrFeedDb {
   /**
    * Gets phr feed by name
    *
-   * @param  {string} email
+   * @param  {string|int} nhsNumber
    * @param  {string} name
    * @return {Object|null}
    */
-  getByName(email, name) {
-    logger.info('db/phrFeedDb|getByName', { email, name });
+  getByName(nhsNumber, name) {
+    logger.info('db/phrFeedDb|getByName', { nhsNumber, name });
 
-    const byEmailNode = this.phrFeeds.$(['byEmail', email]);
+    const byNhsNumberNode = this.phrFeeds.$(['by_nhsNumber', nhsNumber]);
     const bySourceIdNode = this.phrFeeds.$('bySourceId');
 
     let dbFeed = null;
 
-    if (byEmailNode.exists) {
-      byEmailNode.forEachChild((sourceId) => {
+    if (byNhsNumberNode.exists) {
+      byNhsNumberNode.forEachChild((sourceId) => {
         const data = bySourceIdNode.$(sourceId).getDocument();
         if (data.name === name) {
           dbFeed = {
@@ -91,20 +90,20 @@ class PhrFeedDb {
   /**
    * Gets phr feed by landing page url
    *
-   * @param  {string} email
+   * @param  {string|int} nhsNumber
    * @param  {string} landingPageUrl
    * @return {Object|null}
    */
-  getByLandingPageUrl(email, landingPageUrl) {
-    logger.info('db/phrFeedDb|getByLandingPageUrl', { email, landingPageUrl });
+  getByLandingPageUrl(nhsNumber, landingPageUrl) {
+    logger.info('db/phrFeedDb|getByLandingPageUrl', { nhsNumber, landingPageUrl });
 
-    const byEmailNode = this.phrFeeds.$(['byEmail', email]);
+    const byNhsNumberNode = this.phrFeeds.$(['by_nhsNumber', nhsNumber]);
     const bySourceIdNode = this.phrFeeds.$('bySourceId');
 
     let dbFeed = null;
 
-    if (byEmailNode.exists) {
-      byEmailNode.forEachChild((sourceId) => {
+    if (byNhsNumberNode.exists) {
+      byNhsNumberNode.forEachChild((sourceId) => {
         const data = bySourceIdNode.$(sourceId).getDocument();
         if (data.landingPageUrl === landingPageUrl) {
           dbFeed = {
@@ -121,37 +120,37 @@ class PhrFeedDb {
   }
 
   /**
-   * Gets phr feeds by email
+   * Gets phr feeds by nhs number
    *
-   * @param  {string} email
+   * @param  {string|int} nhsNumber
    * @return {Object[]}
    */
-  getByEmail(email) {
-    logger.info('db/phrFeedDb|getByEmail', { email });
+  getByNhsNumber(nhsNumber) {
+    logger.info('db/phrFeedDb|getByNhsNumber', { nhsNumber });
 
-    const byEmailNode = this.phrFeeds.$(['byEmail', email]);
+    const byNhsNumberNode = this.phrFeeds.$(['by_nhsNumber', nhsNumber]);
     const bySourceIdNode = this.phrFeeds.$('bySourceId');
 
     const dbFeeds = [];
     const names = {};
     const urls = {};
 
-    if (byEmailNode.exists) {
-      byEmailNode.forEachChild((sourceId) => {
+    if (byNhsNumberNode.exists) {
+      byNhsNumberNode.forEachChild((sourceId) => {
         const dbData = bySourceIdNode.$(sourceId).getDocument();
 
         // duplicate - delete it
         if (names[dbData.name]) {
-          debug('duplicate phr feed found by name', dbData.name);
-          byEmailNode.$(sourceId).delete();
+          logger.debug('duplicate phr feed found by name', { name: dbData.name });
+          byNhsNumberNode.$(sourceId).delete();
           bySourceIdNode.$(sourceId).delete();
           return;
         }
 
         // duplicate found - delete it
         if (urls[dbData.landingPageUrl]) {
-          debug('duplicate phr feed found by landing page url', dbData.landingPageUrl);
-          byEmailNode.$(sourceId).delete();
+          logger.debug('duplicate phr feed found by landing page url', { landingPageUrl: dbData.landingPageUrl });
+          byNhsNumberNode.$(sourceId).delete();
           bySourceIdNode.$(sourceId).delete();
           return;
         }
@@ -178,7 +177,7 @@ class PhrFeedDb {
   insert(data) {
     logger.info('db/phrFeedDb|insert', { data });
 
-    this.phrFeeds.$(['byEmail', data.email, data.sourceId]).value = 'true';
+    this.phrFeeds.$(['by_nhsNumber', data.nhsNumber, data.sourceId]).value = '';
     this.phrFeeds.$(['bySourceId', data.sourceId]).setDocument(data);
   }
 

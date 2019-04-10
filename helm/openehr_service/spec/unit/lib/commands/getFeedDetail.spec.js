@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -44,12 +44,12 @@ describe('lib/commands/getFeedDetail', () => {
     sourceId = 'eaf394a9-5e05-49c0-9c69-c710c77eda76';
     phrFeedService = ctx.services.phrFeedService;
 
-    phrFeedService.getBySourceId.and.resolveValue({
+    phrFeedService.getBySourceId.and.returnValue({
       author: 'ivor.cox@phr.leeds.nhs',
       name: 'ABC News',
       landingPageUrl: 'https://www.abc.co.uk/news',
       rssFeedUrl: 'https://www.abc.co.uk/rss',
-      email: 'john.doe@example.org',
+      nhsNumber: 9999999000,
       sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76',
       dateCreated: 1483228800000 // Date.UTC(2017, 0, 1)
     });
@@ -67,7 +67,7 @@ describe('lib/commands/getFeedDetail', () => {
   });
 
   it('should throw invalid sourceId error', async () => {
-    phrFeedService.getBySourceId.and.rejectValue(new NotFoundError('Invalid sourceId'));
+    phrFeedService.getBySourceId.and.throwError(new NotFoundError('Invalid sourceId'));
 
     const command = new GetFeedDetailCommand(ctx);
     const actual = command.execute(sourceId);
@@ -82,7 +82,7 @@ describe('lib/commands/getFeedDetail', () => {
         name: 'ABC News',
         landingPageUrl: 'https://www.abc.co.uk/news',
         rssFeedUrl: 'https://www.abc.co.uk/rss',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76',
         dateCreated: 1483228800000
       }

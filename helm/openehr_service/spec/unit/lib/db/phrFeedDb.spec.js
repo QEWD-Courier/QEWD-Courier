@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -41,24 +41,24 @@ describe('lib/db/phrFeedDb', () => {
     [
       {
         sourceId: '188a6bbe-d823-4fca-a79f-11c64af5c2e6',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         name: 'Leeds Live - Whats On',
         landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/'
       },
       {
         sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         name: 'CNN News',
         landingPageUrl: 'https://www.cnn.com/top-news/'
       },
       {
-        sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-        email: 'jane.doe@example.org',
+        sourceId: '0f903095-f038-49a4-ac84-77cc273bc343',
+        nhsNumber: 9999999111,
         name: 'Abc news',
         landingPageUrl: 'https://www.abc.co.uk/foo/bar/'
       }
     ].forEach(x => {
-      phrFeeds.$(['byEmail', x.email, x.sourceId]).value = 'true';
+      phrFeeds.$(['by_nhsNumber', x.nhsNumber, x.sourceId]).value = '';
       phrFeeds.$(['bySourceId', x.sourceId]).setDocument(x);
     });
   }
@@ -96,13 +96,13 @@ describe('lib/db/phrFeedDb', () => {
 
     it('should return data', async () => {
       const expected = {
-        sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-        email: 'jane.doe@example.org',
+        sourceId: '0f903095-f038-49a4-ac84-77cc273bc343',
+        nhsNumber: 9999999111,
         name: 'Abc news',
         landingPageUrl: 'https://www.abc.co.uk/foo/bar/'
       };
 
-      const sourceId = '260a7be5-e00f-4b1e-ad58-27d95604d010';
+      const sourceId = '0f903095-f038-49a4-ac84-77cc273bc343';
       const actual = phrFeedDb.getBySourceId(sourceId);
 
       expect(actual).toEqual(expected);
@@ -113,19 +113,19 @@ describe('lib/db/phrFeedDb', () => {
     it('should return null', async () => {
       const expected = null;
 
-      const email = 'john.doe@example.org';
+      const nhsNumber = 9999999111;
       const name = 'foo';
-      const actual = phrFeedDb.getByName(email, name);
+      const actual = phrFeedDb.getByName(nhsNumber, name);
 
       expect(actual).toEqual(expected);
     });
 
-    it('should return null (unknown email)', async () => {
+    it('should return null (unknown nhsNumber)', async () => {
       const expected = null;
 
-      const email = 'quux@example.org';
+      const nhsNumber = 9999999222;
       const name = 'foo';
-      const actual = phrFeedDb.getByName(email, name);
+      const actual = phrFeedDb.getByName(nhsNumber, name);
 
       expect(actual).toEqual(expected);
     });
@@ -133,14 +133,14 @@ describe('lib/db/phrFeedDb', () => {
     it('should return data', async () => {
       const expected = {
         sourceId: '188a6bbe-d823-4fca-a79f-11c64af5c2e6',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         name: 'Leeds Live - Whats On',
         landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/'
       };
 
-      const email = 'john.doe@example.org';
+      const nhsNumber = 9999999000;
       const name = 'Leeds Live - Whats On';
-      const actual = phrFeedDb.getByName(email, name);
+      const actual = phrFeedDb.getByName(nhsNumber, name);
 
       expect(actual).toEqual(expected);
     });
@@ -150,19 +150,19 @@ describe('lib/db/phrFeedDb', () => {
     it('should return null', async () => {
       const expected = null;
 
-      const email = 'john.doe@example.org';
+      const nhsNumber = 9999999000;
       const landingPageUrl = 'https://www.quux.co.uk/baz1/baz2';
-      const actual = phrFeedDb.getByLandingPageUrl(email, landingPageUrl);
+      const actual = phrFeedDb.getByLandingPageUrl(nhsNumber, landingPageUrl);
 
       expect(actual).toEqual(expected);
     });
 
-    it('should return null (unknown email)', async () => {
+    it('should return null (unknown nhsNumber)', async () => {
       const expected = null;
 
-      const email = 'foo@example.org';
+      const nhsNumber = 9999999222;
       const landingPageUrl = 'https://www.quux.co.uk/baz1/baz2';
-      const actual = phrFeedDb.getByLandingPageUrl(email, landingPageUrl);
+      const actual = phrFeedDb.getByLandingPageUrl(nhsNumber, landingPageUrl);
 
       expect(actual).toEqual(expected);
     });
@@ -170,25 +170,25 @@ describe('lib/db/phrFeedDb', () => {
     it('should return data', async () => {
       const expected = {
         sourceId: '188a6bbe-d823-4fca-a79f-11c64af5c2e6',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         name: 'Leeds Live - Whats On',
         landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/'
       };
 
-      const email = 'john.doe@example.org';
+      const nhsNumber = 9999999000;
       const landingPageUrl = 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/';
-      const actual = phrFeedDb.getByLandingPageUrl(email, landingPageUrl);
+      const actual = phrFeedDb.getByLandingPageUrl(nhsNumber, landingPageUrl);
 
       expect(actual).toEqual(expected);
     });
   });
 
-  describe('#getByEmail', () => {
-    it('should return empty (unknown email)', async () => {
+  describe('#getByNhsNumber', () => {
+    it('should return empty (unknown nhsNumber)', async () => {
       const expected = [];
 
-      const email = 'quux@example.org';
-      const actual = phrFeedDb.getByEmail(email);
+      const nhsNumber = 9999999222;
+      const actual = phrFeedDb.getByNhsNumber(nhsNumber);
 
       expect(actual).toEqual(expected);
     });
@@ -196,31 +196,31 @@ describe('lib/db/phrFeedDb', () => {
     it('should return data', async () => {
       const expected = [
         {
-          email: 'john.doe@example.org',
+          nhsNumber: 9999999000,
           landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
           name: 'Leeds Live - Whats On',
           sourceId: '188a6bbe-d823-4fca-a79f-11c64af5c2e6'
          },
          {
-           email: 'jane.doe@example.org',
-           landingPageUrl: 'https://www.abc.co.uk/foo/bar/',
-           name: 'Abc news',
+           nhsNumber: 9999999000,
+           landingPageUrl: 'https://www.cnn.com/top-news/',
+           name: 'CNN News',
            sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010'
          }
       ];
 
-      const email = 'john.doe@example.org';
-      const actual = phrFeedDb.getByEmail(email);
+      const nhsNumber = 9999999000;
+      const actual = phrFeedDb.getByNhsNumber(nhsNumber);
 
       expect(actual).toEqual(expected);
     });
 
     describe('name duplications', () => {
       beforeEach(() => {
-        phrFeeds.$(['byEmail', 'jane.doe@example.org', '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).value = 'true';
+        phrFeeds.$(['by_nhsNumber', 9999999111, '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).value = '';
         phrFeeds.$(['bySourceId', '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).setDocument({
-          sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-          email: 'jane.doe@example.org',
+          sourceId: '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8',
+          nhsNumber: 9999999111,
           name: 'Abc news',
           landingPageUrl: 'https://www.xyz.co.uk/foo/bar/'
         });
@@ -229,15 +229,15 @@ describe('lib/db/phrFeedDb', () => {
       it('should delete duplications found by name', async () => {
         const expected = [
           {
-            sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-            email: 'jane.doe@example.org',
+            sourceId: '0f903095-f038-49a4-ac84-77cc273bc343',
+            nhsNumber: 9999999111,
             name: 'Abc news',
             landingPageUrl: 'https://www.abc.co.uk/foo/bar/'
           }
         ];
 
-        const email = 'jane.doe@example.org';
-        const actual = phrFeedDb.getByEmail(email);
+        const nhsNumber = 9999999111;
+        const actual = phrFeedDb.getByNhsNumber(nhsNumber);
 
         expect(actual).toEqual(expected);
       });
@@ -245,10 +245,10 @@ describe('lib/db/phrFeedDb', () => {
 
     describe('landingPageUrl duplications', () => {
       beforeEach(() => {
-        phrFeeds.$(['byEmail', 'jane.doe@example.org', '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).value = 'true';
+        phrFeeds.$(['by_nhsNumber', 9999999111, '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).value = '';
         phrFeeds.$(['bySourceId', '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8']).setDocument({
-          sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-          email: 'jane.doe@example.org',
+          sourceId: '2f1bcc58-c29e-414f-bff9-2d0ea24ed3f8',
+          nhsNumber: 9999999111,
           name: 'Xyz news',
           landingPageUrl: 'https://www.abc.co.uk/foo/bar/'
         });
@@ -257,15 +257,15 @@ describe('lib/db/phrFeedDb', () => {
       it('should delete duplications found by landing page url', async () => {
         const expected = [
           {
-            sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
-            email: 'jane.doe@example.org',
+            sourceId: '0f903095-f038-49a4-ac84-77cc273bc343',
+            nhsNumber: 9999999111,
             name: 'Abc news',
             landingPageUrl: 'https://www.abc.co.uk/foo/bar/'
           }
         ];
 
-        const email = 'jane.doe@example.org';
-        const actual = phrFeedDb.getByEmail(email);
+        const nhsNumber = 9999999111;
+        const actual = phrFeedDb.getByNhsNumber(nhsNumber);
 
         expect(actual).toEqual(expected);
       });
@@ -275,18 +275,18 @@ describe('lib/db/phrFeedDb', () => {
   describe('#insert', () => {
     it('should insert new db record', async () => {
       const data = {
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       };
 
       phrFeedDb.insert(data);
 
-      const byEmail = phrFeeds.$(['byEmail', 'john.doe@example.org', '0f7192e9-168e-4dea-812a-3e1d236ae46d']);
-      expect(byEmail.value).toEqual(true);
+      const byNhsNumber = phrFeeds.$(['by_nhsNumber', 9999999000, '0f7192e9-168e-4dea-812a-3e1d236ae46d']);
+      expect(byNhsNumber.value).toEqual('');
 
       const bySourceId = phrFeeds.$(['bySourceId', '0f7192e9-168e-4dea-812a-3e1d236ae46d']);
       expect(bySourceId.getDocument()).toEqual({
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       });
     });
@@ -295,7 +295,7 @@ describe('lib/db/phrFeedDb', () => {
   describe('#update', () => {
     it('should update / replace existing db record', async () => {
       const data = {
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
         foo: 'bar'
       };
@@ -304,7 +304,7 @@ describe('lib/db/phrFeedDb', () => {
 
       const bySourceId = phrFeeds.$(['bySourceId', '260a7be5-e00f-4b1e-ad58-27d95604d010']);
       expect(bySourceId.getDocument()).toEqual({
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010',
         foo: 'bar'
       });
