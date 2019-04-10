@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -58,7 +58,7 @@ describe('lib/services/phrFeedService', () => {
   });
 
   describe('#create (static)', () => {
-    it('should initialize a new instance', async () => {
+    it('should initialize a new instance', () => {
       const actual = PhrFeedService.create(ctx);
 
       expect(actual).toEqual(jasmine.any(PhrFeedService));
@@ -68,23 +68,25 @@ describe('lib/services/phrFeedService', () => {
   });
 
   describe('#getBySourceId', () => {
-    it('should throw invalid sourceId error', async () => {
-      phrFeedDb.getBySourceId.and.resolveValue();
+    it('should throw invalid sourceId error', () => {
+      phrFeedDb.getBySourceId.and.returnValue();
 
       const sourceId = 'eaf394a9-5e05-49c0-9c69-c710c77eda76';
-      const actual = phrFeedService.getBySourceId(sourceId);
 
-      await expectAsync(actual).toBeRejectedWith(new NotFoundError('Invalid sourceId'));
+      expect(() => {
+        phrFeedService.getBySourceId(sourceId);
+      }).toThrow(new NotFoundError('Invalid sourceId'));
+
       expect(phrFeedDb.getBySourceId).toHaveBeenCalledWith('eaf394a9-5e05-49c0-9c69-c710c77eda76');
     });
 
-    it('should return feed', async () => {
+    it('should return feed', () => {
       const expected = {
         author: 'ivor.cox@phr.leeds.nhs',
         name: 'ABC News',
         landingPageUrl: 'https://www.abc.co.uk/news',
         rssFeedUrl: 'https://www.abc.co.uk/rss',
-        email: 'john.doe@example.org',
+        nhsNumber: 9999999000,
         sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76',
         dateCreated: 1483228800000 // Date.UTC(2017, 0, 1)
       };
@@ -92,18 +94,18 @@ describe('lib/services/phrFeedService', () => {
       const dbData = {
         ...expected
       };
-      phrFeedDb.getBySourceId.and.resolveValue(dbData);
+      phrFeedDb.getBySourceId.and.returnValue(dbData);
 
       const sourceId = 'eaf394a9-5e05-49c0-9c69-c710c77eda76';
-      const actual = await phrFeedService.getBySourceId(sourceId);
+      const actual = phrFeedService.getBySourceId(sourceId);
 
       expect(phrFeedDb.getBySourceId).toHaveBeenCalledWith('eaf394a9-5e05-49c0-9c69-c710c77eda76');
       expect(actual).toEqual(expected);
     });
   });
 
-  describe('#getByEmail', () => {
-    it('should return feeds', async () => {
+  describe('#getByNhsNumber', () => {
+    it('should return feeds', () => {
       const expected = [
         {
           landingPageUrl: 'https://www.nytimes.com/section/health',
@@ -123,7 +125,7 @@ describe('lib/services/phrFeedService', () => {
         {
           author: 'bob.smith@gmail.com',
           dateCreated: 1527663973204,
-          email: 'ivor.cox@ripple.foundation',
+          nhsNumber: 9999999000,
           landingPageUrl: 'https://www.nytimes.com/section/health',
           name: 'NYTimes.com',
           rssFeedUrl: 'http://rss.nytimes.com/services/xml/rss/nyt/Health.xml',
@@ -132,19 +134,19 @@ describe('lib/services/phrFeedService', () => {
         {
           author: 'bob.smith@gmail.com',
           dateCreated: 1527605220395,
-          email: 'ivor.cox@ripple.foundation',
+          nhsNumber: 9999999000,
           landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
           name: 'Leeds Live - Whats on',
           rssFeedUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/?service=rss',
           sourceId: '260a7be5-e00f-4b1e-ad58-27d95604d010'
         }
       ];
-      phrFeedDb.getByEmail.and.resolveValue(dbData);
+      phrFeedDb.getByNhsNumber.and.returnValue(dbData);
 
-      const email = 'ivor.cox@ripple.foundation';
-      const actual = await phrFeedService.getByEmail(email);
+      const nhsNumber = 9999999000;
+      const actual = phrFeedService.getByNhsNumber(nhsNumber);
 
-      expect(phrFeedDb.getByEmail).toHaveBeenCalledWith('ivor.cox@ripple.foundation');
+      expect(phrFeedDb.getByNhsNumber).toHaveBeenCalledWith(9999999000);
       expect(actual).toEqual(expected);
     });
   });
@@ -155,56 +157,59 @@ describe('lib/services/phrFeedService', () => {
     beforeEach(() => {
       feed = {
         author: 'bob.smith@gmail.com',
-        email: 'ivor.cox@ripple.foundation',
+        nhsNumber: 9999999000,
         landingPageUrl: 'https://www.nytimes.com/section/health',
         name: 'NYTimes.com',
         rssFeedUrl: 'http://rss.nytimes.com/services/xml/rss/nyt/Health.xml'
       };
     });
 
-    it('should return existing sourceId when there is a feed found by name', async () => {
+    it('should return existing sourceId when there is a feed found by name', () => {
       const expected = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
 
       const dbData = {
         sourceId: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       };
-      phrFeedDb.getByName.and.resolveValue(dbData);
+      phrFeedDb.getByName.and.returnValue(dbData);
 
-      const actual = await phrFeedService.create(feed);
+      const nhsNumber = 9999999000;
+      const actual = phrFeedService.create(nhsNumber, feed);
 
-      expect(phrFeedDb.getByName).toHaveBeenCalledWith('ivor.cox@ripple.foundation', 'NYTimes.com');
+      expect(phrFeedDb.getByName).toHaveBeenCalledWith(9999999000, 'NYTimes.com');
 
       expect(actual).toEqual(expected);
     });
 
-    it('should return existing sourceId when there is a feed found by landingPageUrl', async () => {
+    it('should return existing sourceId when there is a feed found by landingPageUrl', () => {
       const expected = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
 
       const dbData = {
         sourceId: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       };
-      phrFeedDb.getByName.and.resolveValue();
-      phrFeedDb.getByLandingPageUrl.and.resolveValue(dbData);
+      phrFeedDb.getByName.and.returnValue();
+      phrFeedDb.getByLandingPageUrl.and.returnValue(dbData);
 
-      const actual = await phrFeedService.create(feed);
+      const nhsNumber = 9999999000;
+      const actual = phrFeedService.create(nhsNumber, feed);
 
-      expect(phrFeedDb.getByName).toHaveBeenCalledWith('ivor.cox@ripple.foundation', 'NYTimes.com');
-      expect(phrFeedDb.getByLandingPageUrl).toHaveBeenCalledWith('ivor.cox@ripple.foundation', 'https://www.nytimes.com/section/health');
+      expect(phrFeedDb.getByName).toHaveBeenCalledWith(nhsNumber, 'NYTimes.com');
+      expect(phrFeedDb.getByLandingPageUrl).toHaveBeenCalledWith(nhsNumber, 'https://www.nytimes.com/section/health');
 
       expect(actual).toEqual(expected);
     });
 
-    it('should create feed and return new sourceId', async () => {
-      phrFeedDb.getByName.and.resolveValue();
-      phrFeedDb.getByLandingPageUrl.and.resolveValue();
+    it('should create feed and return new sourceId', () => {
+      phrFeedDb.getByName.and.returnValue();
+      phrFeedDb.getByLandingPageUrl.and.returnValue();
 
-      const actual = await phrFeedService.create(feed);
+      const nhsNumber = 9999999000;
+      const actual = phrFeedService.create(nhsNumber, feed);
 
-      expect(phrFeedDb.getByName).toHaveBeenCalledWith('ivor.cox@ripple.foundation', 'NYTimes.com');
-      expect(phrFeedDb.getByLandingPageUrl).toHaveBeenCalledWith('ivor.cox@ripple.foundation', 'https://www.nytimes.com/section/health');
+      expect(phrFeedDb.getByName).toHaveBeenCalledWith(9999999000, 'NYTimes.com');
+      expect(phrFeedDb.getByLandingPageUrl).toHaveBeenCalledWith(9999999000, 'https://www.nytimes.com/section/health');
       expect(phrFeedDb.insert).toHaveBeenCalledWith({
         author: 'bob.smith@gmail.com',
-        email: 'ivor.cox@ripple.foundation',
+        nhsNumber: 9999999000,
         landingPageUrl: 'https://www.nytimes.com/section/health',
         name: 'NYTimes.com',
         rssFeedUrl: 'http://rss.nytimes.com/services/xml/rss/nyt/Health.xml',
@@ -217,22 +222,23 @@ describe('lib/services/phrFeedService', () => {
   });
 
   describe('#update', () => {
-    it('should update phr feed', async () => {
+    it('should update phr feed', () => {
       const sourceId = 'eaf394a9-5e05-49c0-9c69-c710c77eda76';
       const feed = {
-        author: 'bob.smith@gmail.com',
+        nhsNumber: 9999999000,
         email: 'ivor.cox@ripple.foundation',
         landingPageUrl: 'https://www.nytimes.com/section/health',
         name: 'NYTimes.com',
         rssFeedUrl: 'http://rss.nytimes.com/services/xml/rss/nyt/Health.xml'
       };
 
-      await phrFeedService.update(sourceId, feed);
+      const nhsNumber = 9999999000;
+      phrFeedService.update(nhsNumber, sourceId, feed);
 
       expect(phrFeedDb.update).toHaveBeenCalledWith(
         'eaf394a9-5e05-49c0-9c69-c710c77eda76',
         {
-          author: 'bob.smith@gmail.com',
+          nhsNumber: 9999999000,
           email: 'ivor.cox@ripple.foundation',
           landingPageUrl: 'https://www.nytimes.com/section/health',
           name: 'NYTimes.com',

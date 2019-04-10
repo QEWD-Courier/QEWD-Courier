@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
 'use strict';
 
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:get-feed-detail');
+const { logger } = require('../core');
 
 class GetFeedDetailCommand {
   constructor(ctx) {
@@ -42,14 +42,14 @@ class GetFeedDetailCommand {
    * @return {Promise.<Object>}
    */
   async execute(sourceId) {
-    debug('sourceId: %s', sourceId);
+    logger.info('commands/getFeedDetail', { sourceId });
 
     if (!sourceId || sourceId === '') {
       throw new BadRequestError('Missing or empty sourceId');
     }
 
     const { phrFeedService } = this.ctx.services;
-    const responseObj = await phrFeedService.getBySourceId(sourceId);
+    const responseObj = phrFeedService.getBySourceId(sourceId);
 
     return {
       feed: responseObj

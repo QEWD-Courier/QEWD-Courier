@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -119,17 +119,16 @@ describe('lib/commands/postFeed', () => {
     };
 
     const sourceId = 'eaf394a9-5e05-49c0-9c69-c710c77eda76';
-    phrFeedService.create.and.resolveValues(sourceId);
+    phrFeedService.create.and.returnValue(sourceId);
 
     const command = new PostFeedCommand(ctx, session);
     const actual = await command.execute(payload);
 
-    expect(phrFeedService.create).toHaveBeenCalledWith({
+    expect(phrFeedService.create).toHaveBeenCalledWith(9999999000, {
       author: 'ivor.cox@phr.leeds.nhs',
       name: 'BBC News',
       landingPageUrl: 'https://www.bbc.co.uk/news',
-      rssFeedUrl: 'https://www.bbc.co.uk/rss',
-      email: 'john.doe@example.org'
+      rssFeedUrl: 'https://www.bbc.co.uk/rss'
     });
 
     expect(actual).toEqual(expected);
