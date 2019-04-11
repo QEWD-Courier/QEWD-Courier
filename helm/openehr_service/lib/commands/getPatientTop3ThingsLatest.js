@@ -69,7 +69,7 @@ class GetPatientTop3ThingsLatestCommand {
       return [];
     }
     
-    const { headingService } = this.ctx.services;
+    const { headingService, top3ThingsService } = this.ctx.services;
     const result = await headingService.fetchOne(patientId, heading);
     if (!result.ok) {
       debug('No results could be returned from the OpenEHR servers for heading %s', heading);
@@ -79,13 +79,13 @@ class GetPatientTop3ThingsLatestCommand {
     
     debug('heading %s for %s is cached', heading, patientId);
     
-    const synopsisConfig = this.ctx.synopsisConfig;
-    debug('synopsis config: %j', synopsisConfig);
+    // const synopsisConfig = this.ctx.synopsisConfig;
+    // debug('synopsis config: %j', synopsisConfig);
+    //
+    // const synopsisCount = query.maximum || synopsisConfig.maximum;
+    // debug('synopsis max count: %s', synopsisCount);
     
-    const synopsisCount = query.maximum || synopsisConfig.maximum;
-    debug('synopsis max count: %s', synopsisCount);
-    
-    const results = await headingService.getLatestTop3ThingsSynopsis(patientId, heading, synopsisCount);
+    const results = await top3ThingsService.getLatestTop3ThingsSynopsis(patientId, heading);
     
     
     debug('results:%j', results);

@@ -31,6 +31,10 @@
 
 const uuid = require('uuid/v4');
 const { logger } = require('../core');
+const P = require('bluebird');
+const { Heading, Top3ThingFormat } = require('../shared/enums');
+const { headingHelpers, getHeadingMap } = require('../shared/headings');
+const { transform } = require('qewd-transform-json');
 
 class Top3ThingsService {
   constructor(ctx) {
@@ -154,6 +158,95 @@ class Top3ThingsService {
     this.top3ThingsDb.setLatestSourceId(patientId, sourceId);
 
     return sourceId;
+  }
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * @param  {string|int} patientId
+   * @param  {string} heading
+   * @param  {int} limit
+   * @returns {Promise<*[]>}
+   */
+  async getLatestTop3ThingsSynopsis(patientId, heading) {
+    logger.info('services/headingService|getSynopsis', { patientId, heading});
+    const { headingService } = this.ctx.services;
+    
+    const { results } = await headingService.getSummary(patientId, heading);
+    
+    return this.formatResultTop3ThingsLatest(results, Top3ThingFormat.LATEST)
+  }
+  
+  async getLatest(patientId, heading) {
+    const { headingService } = this.ctx.services;
+    const host = this.ctx.defaultHost;
+    
+    const top3Things = await headingService.query(host, patientId, heading);
+    if (top3Things && top3Things.length === 0) {
+      return [];
+    }
+    
+    const transformData = await P.mapSeries(top3Things, x => this.transformTop3ThingsHscn(x, host));
+    const result = this.formatResultTop3ThingsLatest(transformData, Top3ThingFormat.HSCN);
+    
+    return result;
+  }
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * Transform data for top3things
+   * @param {object} record
+   * @param {string} host
+   * @returns {Promise<void>}
+   */
+  async transformTop3ThingsHscn(record, host) {
+    const heading = Heading.TOP_3_THINGS;
+    const helpers = headingHelpers(host, heading, 'get');
+    const headingMap = getHeadingMap(heading, 'get');
+    
+    if (!headingMap) {
+      throw new UnprocessableEntityError(`heading ${heading} not recognised, or no GET definition available`);
+    }
+    
+    return transform(headingMap.transformTemplate, record, helpers);
+  }
+  
+  
+  /**
+   * @TODO Need to think about refactoring this method to style of all architecture concept
+   * Get the latest data from array
+   * @param {array} result
+   * @param {string} format
+   * @returns {*}
+   */
+  formatResultTop3ThingsLatest(result, format) {
+    if (result && result.length === 0) {
+      return [];
+    }
+    
+    let data = result.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
+  
+    return format === Top3ThingFormat.LATEST ? [
+      {
+        sourceId: data.sourceId,
+        text: data.name1
+      }, {
+        sourceId: data.sourceId,
+        text: data.name2
+      }, {
+        sourceId: data.sourceId,
+        text: data.name3
+      }
+    ] : format === Top3ThingFormat.HSCN ? {
+      source: data.source,
+      sourceId: data.sourceId,
+      dateCreated: data.dateCreated,
+      name1: data.name1,
+      description1: data.description1,
+      name2: data.name2,
+      description2: data.description2,
+      name3: data.name3,
+      description3: data.description3,
+    } : [];
   }
 }
 

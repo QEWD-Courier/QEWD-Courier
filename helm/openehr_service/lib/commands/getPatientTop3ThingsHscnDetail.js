@@ -33,6 +33,8 @@ const { logger } = require('../../lib/core');
 const { BadRequestError, ForbiddenError } = require('../errors');
 const { parseAccessToken } = require('../shared/utils');
 const { isPatientIdValid, isSiteValid } = require('../shared/validation');
+const { Heading } = require('../shared/enums');
+const debug = require('debug')('helm:openehr:commands:get-patient-top3things-hscn-detail');
 
 class GetPatientTop3ThingsHscnDetailCommand {
   constructor(ctx) {
@@ -76,7 +78,10 @@ class GetPatientTop3ThingsHscnDetailCommand {
     }
 
     const { top3ThingsService } = this.ctx.services;
-    const responseObj = top3ThingsService.getLatestDetailByPatientId(patientId);
+    // const responseObj = top3ThingsService.getLatestDetailByPatientId(patientId);
+  
+   
+    const responseObj = await top3ThingsService.getLatest(patientId, Heading.TOP_3_THINGS);
 
     return responseObj;
   }

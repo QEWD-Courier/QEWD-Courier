@@ -39,6 +39,11 @@ const Heading = Object.freeze({
   TOP_3_THINGS: 'top3Things'
 });
 
+const Top3ThingFormat = Object.freeze({
+  LATEST: 'latest',
+  HSCN: 'hscn',
+});
+
 const PostHeadingFormat = Object.freeze({
   JUMPER: 'openehr-jumper',
   PULSETILE: 'pulsetile'
@@ -70,5 +75,6 @@ module.exports = {
   RecordStatus,
   ResponseFormat,
   Role,
-  UserMode
+  UserMode,
+  Top3ThingFormat
 };
