@@ -42,8 +42,10 @@ describe('lib/services/openidRestService', () => {
   beforeEach(() => {
     ctx = new ExecutionContextMock();
     hostConfig = {
-      url: 'https://178.128.40.14',
-      pathPrefix: '/oidc',
+      host: 'https://178.128.40.14',
+      urls: {
+        introspection_endpoint: '/openid/token/introspect'
+      },
       strictSSL: false
     };
 
@@ -69,7 +71,7 @@ describe('lib/services/openidRestService', () => {
       };
 
       nock('https://178.128.40.14')
-        .post('/oidc/token/introspection', {
+        .post('/openid/token/introspect', {
           token: 'quux'
         })
         .matchHeader('authorization', 'Basic 123456')
@@ -87,7 +89,7 @@ describe('lib/services/openidRestService', () => {
       const expected = {};
 
       nock('https://178.128.40.14')
-        .post('/oidc/token/introspection', {
+        .post('/openid/token/introspect', {
           token: 'quux'
         })
         .matchHeader('authorization', 'Basic 123456')

@@ -2,6 +2,11 @@
   "oidc_client": {
     "hosts": {
       "oidc_server": "http://oidc.ripple.foundation:8000"
+    },
+    "urls": {
+      "oidc_server": {
+        "introspection_endpoint": "/openid/token/introspect"
+      }
     }
   },
   "DDS": {
@@ -24,7 +29,8 @@
     },
     "sites": {
       "ltht": {
-        "credentials": "5ebe2294ecd0e0f08eab7690d2a6ee69"
+        "client_id": "xxxxxx",
+        "client_secret": "yyyyyyyyyy"
       }
     },
     "defaultPostHost": "ethercis",

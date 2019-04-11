@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
@@ -76,8 +76,8 @@ class ExecutionContext {
 
   get oidcServerConfig() {
     return {
-      url: this.userDefined.globalConfig.oidc_client.hosts.oidc_server,
-      pathPrefix: '/oidc',
+      host: this.userDefined.globalConfig.oidc_client.hosts.oidc_server,
+      urls: this.userDefined.globalConfig.oidc_client.urls.oidc_server,
       strictSSL: false
     };
   }

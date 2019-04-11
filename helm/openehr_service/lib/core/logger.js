@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 'use strict';
@@ -34,8 +34,8 @@ const config = require('../config');
 
 const { combine, timestamp, colorize, printf, metadata } = format;
 const printLog = (info) => info.metadata && Object.keys(info.metadata).length > 0
-  ? `${info.timestamp} ${info.level}: ${info.message} - ${jsonStringify(info.metadata)}`
-  : `${info.timestamp} ${info.level}: ${info.message}`;
+  ? `${process.pid}: ${info.timestamp} ${info.level}: ${info.message} - ${jsonStringify(info.metadata)}`
+  : `${process.pid}: ${info.timestamp} ${info.level}: ${info.message}`;
 const logger = createLogger({
   transports: [
     new transports.Console({
