@@ -31,7 +31,6 @@
 
 const request = require('request');
 const logger = require('../core/logger');
-const debug = require('debug')('helm:openehr:services:openid-rest');
 
 function requestAsync(options) {
   return new Promise((resolve, reject) => {
@@ -63,8 +62,10 @@ class OpenidRestService {
   async getTokenIntrospection(token, credentials) {
     logger.info('services/openidRestService|getTokenIntrospection', { token, credentials });
 
+    logger.debug('hostConfig:', this.hostConfig);
+
     const options = {
-      url: `${this.hostConfig.url}${this.hostConfig.pathPrefix}/token/introspection`,
+      url: `${this.hostConfig.host}${this.hostConfig.urls.introspection_endpoint}`,
       method: 'POST',
       headers: {
         Authorization: `Basic ${credentials}`
@@ -75,12 +76,13 @@ class OpenidRestService {
       strictSSL: this.hostConfig.strictSSL
     };
 
-    const results = await requestAsync(options);
-    debug('results: %s', results);
+    logger.debug('options:', options);
+    const result = await requestAsync(options);
+    logger.debug('result:', result);
 
     let parsed;
     try {
-      parsed = JSON.parse(results);
+      parsed = JSON.parse(result);
     } catch (err) {
       parsed = {};
     }

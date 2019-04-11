@@ -23,12 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../../lib/core');
 const { BadRequestError, ForbiddenError } = require('../errors');
 const { parseAccessToken } = require('../shared/utils');
 const { isPatientIdValid, isSiteValid } = require('../shared/validation');
@@ -47,8 +48,9 @@ class GetPatientTop3ThingsHscnDetailCommand {
    * @return {Promise.<Object>}
    */
   async execute(site, patientId, headers) {
-    debug('site: %s, patientId: %s', site, patientId);
-    debug('headers: %j', headers);
+    logger.info('commands/getPatientTop3ThingsHscnDetail', { site, patientId });
+
+    logger.debug('headers:', headers);
 
     // Exteral request for Top 3 Things, eg from LTHT
     // Must be authenticated with an Access Token
@@ -64,8 +66,9 @@ class GetPatientTop3ThingsHscnDetailCommand {
 
     const siteConfig = sitesConfig[site];
     const token = parseAccessToken(headers.authorization);
-    const results = await openidRestService.getTokenIntrospection(token, siteConfig.credentials);
-    if (results.active !== true) {
+    const credentials = Buffer.from(`${siteConfig.client_id}:${siteConfig.client_secret}`).toString('base64');
+    const result = await openidRestService.getTokenIntrospection(token, credentials);
+    if (result.active !== true) {
       throw new ForbiddenError('Invalid request');
     }
 
