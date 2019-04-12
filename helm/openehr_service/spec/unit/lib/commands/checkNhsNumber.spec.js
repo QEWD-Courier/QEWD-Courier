@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  12 April 2019
 
 */
 
@@ -173,8 +173,7 @@ describe('lib/commands/checkNhsNumber', () => {
       requestNo: 1
     });
     expect(patientService.check).toHaveBeenCalledWith('ethercis', 9999999000);
-    expect(phrFeedService.create).toHaveBeenCalledWith({
-      email: 'john.doe@example.org',
+    expect(phrFeedService.create).toHaveBeenCalledWith(9999999000, {
       author: 'Helm PHR service',
       name: 'Leeds Live - Whats On',
       landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',

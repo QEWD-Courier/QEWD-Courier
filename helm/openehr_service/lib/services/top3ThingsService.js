@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  12 April 2019
 
 */
 
@@ -33,6 +33,7 @@ const uuid = require('uuid/v4');
 const { logger } = require('../core');
 const P = require('bluebird');
 const { Heading, Top3ThingFormat } = require('../shared/enums');
+const { UnprocessableEntityError } = require('../errors');
 const { headingHelpers, getHeadingMap } = require('../shared/headings');
 const { transform } = require('qewd-transform-json');
 
@@ -159,7 +160,7 @@ class Top3ThingsService {
 
     return sourceId;
   }
-  
+
   /**
    * @TODO Need to think about refactoring this method to style of all architecture concept
    * @param  {string|int} patientId
@@ -170,27 +171,27 @@ class Top3ThingsService {
   async getLatestTop3ThingsSynopsis(patientId, heading) {
     logger.info('services/headingService|getSynopsis', { patientId, heading});
     const { headingService } = this.ctx.services;
-    
+
     const { results } = await headingService.getSummary(patientId, heading);
-    
-    return this.formatResultTop3ThingsLatest(results, Top3ThingFormat.LATEST)
+
+    return this.formatResultTop3ThingsLatest(results, Top3ThingFormat.LATEST);
   }
-  
+
   async getLatest(patientId, heading) {
     const { headingService } = this.ctx.services;
     const host = this.ctx.defaultHost;
-    
+
     const top3Things = await headingService.query(host, patientId, heading);
     if (top3Things && top3Things.length === 0) {
       return [];
     }
-    
+
     const transformData = await P.mapSeries(top3Things, x => this.transformTop3ThingsHscn(x, host));
     const result = this.formatResultTop3ThingsLatest(transformData, Top3ThingFormat.HSCN);
-    
+
     return result;
   }
-  
+
   /**
    * @TODO Need to think about refactoring this method to style of all architecture concept
    * Transform data for top3things
@@ -202,15 +203,15 @@ class Top3ThingsService {
     const heading = Heading.TOP_3_THINGS;
     const helpers = headingHelpers(host, heading, 'get');
     const headingMap = getHeadingMap(heading, 'get');
-    
+
     if (!headingMap) {
       throw new UnprocessableEntityError(`heading ${heading} not recognised, or no GET definition available`);
     }
-    
+
     return transform(headingMap.transformTemplate, record, helpers);
   }
-  
-  
+
+
   /**
    * @TODO Need to think about refactoring this method to style of all architecture concept
    * Get the latest data from array
@@ -222,9 +223,9 @@ class Top3ThingsService {
     if (result && result.length === 0) {
       return [];
     }
-    
+
     let data = result.sort((n, p) => new Date(p.dateCreated).getTime() - new Date(n.dateCreated).getTime())[0];
-  
+
     return format === Top3ThingFormat.LATEST ? [
       {
         sourceId: data.sourceId,
