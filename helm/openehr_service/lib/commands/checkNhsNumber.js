@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  12 April 2019
 
 */
 
+const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
 const { RecordStatus } = require('../shared/enums');
 const { isPatientIdValid } = require('../shared/validation');
-const debug = require('debug')('helm:openehr:commands:check-nhs-number');
 
 class CheckNhsNumberCommand {
   constructor(ctx, session) {
@@ -43,10 +43,12 @@ class CheckNhsNumberCommand {
    * @return {Promise.<Object>}
    */
   async execute() {
+    logger.info('commands/checkNhsNumber');
+
     let state = null;
 
     const patientId = this.session.nhsNumber;
-    debug('patientId: %s', patientId);
+    logger.debug('patientId:', { patientId });
 
     const valid = isPatientIdValid(patientId);
     if (!valid.ok) {
@@ -54,7 +56,7 @@ class CheckNhsNumberCommand {
     }
 
     state = await this.statusService.check();
-    debug('state: %j', state);
+    logger.debug('state:', { state });
 
     if (state && state.status === RecordStatus.LOADING) {
       return {
@@ -75,7 +77,7 @@ class CheckNhsNumberCommand {
     // see index.js for workerResponseHandler that is invoked when this has completed
     // where it will next fetch any new heading data from Discovery and write it into EtherCIS record
 
-    debug('first time this API has been called in this user session');
+    logger.debug('first time this API has been called in this user session');
     const initialState = {
       status: RecordStatus.LOADING,
       new_patient: 'not_known_yet',
@@ -88,19 +90,18 @@ class CheckNhsNumberCommand {
 
     if (created) {
       const feed = {
-        email: this.session.email,
         author: 'Helm PHR service',
         name: 'Leeds Live - Whats On',
         landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
         rssFeedUrl: 'https://www.leeds-live.co.uk/news/?service=rss'
       };
-      debug('add the standard feed: %j', feed);
 
-      await this.ctx.services.phrFeedService.create(feed);
+      logger.debug('add the standard feed:', { patientId, feed });
+      this.ctx.services.phrFeedService.create(patientId, feed);
     }
 
     state = await this.statusService.get();
-    debug('record state: %j', state);
+    logger.debug('record state:', { state });
     state.new_patient = created;
     await this.statusService.update(state);
 
