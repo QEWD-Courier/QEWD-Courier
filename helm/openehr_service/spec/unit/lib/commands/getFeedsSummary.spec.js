@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -83,12 +83,12 @@ describe('lib/commands/getFeedsSummary', () => {
       }
     ];
 
-    phrFeedService.getByEmail.and.resolveValue(feeds);
+    phrFeedService.getByNhsNumber.and.returnValue(feeds);
 
     const command = new GetFeedsSummaryCommand(ctx, session);
     const actual = await command.execute();
 
-    expect(phrFeedService.getByEmail).toHaveBeenCalledWith('john.doe@example.org');
+    expect(phrFeedService.getByNhsNumber).toHaveBeenCalledWith(9999999000);
 
     expect(actual).toEqual(expected);
   });

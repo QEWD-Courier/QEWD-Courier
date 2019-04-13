@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -111,7 +111,7 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('Heading missing or empty'));
   });
 
-  it('should return patient top3things synopsis', async () => {
+  xit('should return patient top3things synopsis', async () => {
     const expected = {
       heading: 'top3Things',
       synopsis: [
@@ -140,7 +140,7 @@ describe('lib/commands/getPatientHeadingSynopsis', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should return patient top3things synopsis (phr user)', async () => {
+  xit('should return patient top3things synopsis (phr user)', async () => {
     const expected = {
       heading: 'top3Things',
       synopsis: [

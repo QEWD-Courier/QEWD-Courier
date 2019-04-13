@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
@@ -91,7 +91,7 @@ function lazyLoadAdapter(target) {
   });
 }
 
-function parseAccessToken(authorization) {
+function parseAccessToken(authorization = '') {
   return authorization.split('AccessToken ')[1];
 }
 

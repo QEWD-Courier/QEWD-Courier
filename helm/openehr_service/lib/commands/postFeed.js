@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
@@ -31,7 +31,7 @@
 
 const { BadRequestError } = require('../errors');
 const { isFeedPayloadValid } = require('../shared/validation');
-const debug = require('debug')('helm:openehr:commands:post-feed');
+const { logger } = require('../core');
 
 class PostFeedCommand {
   constructor(ctx, session) {
@@ -44,20 +44,16 @@ class PostFeedCommand {
    * @return {Promise.<Object>}
    */
   async execute(payload) {
-    debug('payload: %j', payload);
+    logger.info('commands/postFeed', { payload });
 
     const valid = isFeedPayloadValid(payload);
     if (!valid.ok) {
       throw new BadRequestError(valid.error);
     }
 
-    const feed = {
-      ...payload,
-      email: this.session.email
-    };
-    debug('create a new feed: %j', feed);
     const { phrFeedService } = this.ctx.services;
-    const sourceId = await phrFeedService.create(feed);
+    const nhsNumber = this.session.nhsNumber;
+    const sourceId = phrFeedService.create(nhsNumber, payload);
 
     return {
       sourceId

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  10 April 2019
 
 */
 
@@ -31,7 +31,6 @@
 
 const nock = require('nock');
 const { ExecutionContextMock } = require('@tests/mocks');
-const config = require('@lib/config');
 const OpenidRestService = require('@lib/services/openidRestService');
 
 describe('lib/services/openidRestService', () => {
@@ -43,8 +42,10 @@ describe('lib/services/openidRestService', () => {
   beforeEach(() => {
     ctx = new ExecutionContextMock();
     hostConfig = {
-      url: 'https://178.128.40.14',
-      pathPrefix: '/oidc',
+      host: 'https://178.128.40.14',
+      urls: {
+        introspection_endpoint: '/openid/token/introspect'
+      },
       strictSSL: false
     };
 
@@ -59,7 +60,7 @@ describe('lib/services/openidRestService', () => {
 
       expect(actual).toEqual(jasmine.any(OpenidRestService));
       expect(actual.ctx).toBe(ctx);
-      expect(actual.hostConfig).toEqual(config.oidcServerConfig);
+      expect(actual.hostConfig).toEqual(ctx.oidcServerConfig);
     });
   });
 
@@ -70,7 +71,7 @@ describe('lib/services/openidRestService', () => {
       };
 
       nock('https://178.128.40.14')
-        .post('/oidc/token/introspection', {
+        .post('/openid/token/introspect', {
           token: 'quux'
         })
         .matchHeader('authorization', 'Basic 123456')
@@ -88,7 +89,7 @@ describe('lib/services/openidRestService', () => {
       const expected = {};
 
       nock('https://178.128.40.14')
-        .post('/oidc/token/introspection', {
+        .post('/openid/token/introspect', {
           token: 'quux'
         })
         .matchHeader('authorization', 'Basic 123456')

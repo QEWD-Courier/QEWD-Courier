@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  9 April 2019
 
 */
 
 'use strict';
 
-const debug = require('debug')('helm:openehr:commands:get-feeds-summary');
+const { logger } = require('../core');
 
 class GetFeedsSummaryCommand {
   constructor(ctx, session) {
@@ -38,13 +38,14 @@ class GetFeedsSummaryCommand {
   }
 
   /**
-   * @return {Promise.<Object[]>}
+   * @return {Promise.<Object>}
    */
   async execute() {
-    debug('execute get feeds summary');
+    logger.info('commands/getFeedsSummary');
 
     const { phrFeedService } = this.ctx.services;
-    const responseObj = await phrFeedService.getByEmail(this.session.email);
+    const nhsNumber = this.session.nhsNumber;
+    const responseObj = phrFeedService.getByNhsNumber(nhsNumber);
 
     return {
       feeds: responseObj
