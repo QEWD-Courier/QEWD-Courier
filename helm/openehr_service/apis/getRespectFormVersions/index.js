@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  15 April 2019
 
 */
 
@@ -41,7 +41,7 @@ const { getResponseError } = require('../../lib/errors');
  */
 module.exports = async function getRespectFormVersions(args, finished) {
   try {
-    const command = new GetRespectFormVersionsCommand(args.req.ctx);
+    const command = new GetRespectFormVersionsCommand(args.req.ctx, args.session);
     const responseObj = await command.execute(args.patientId);
 
     finished(responseObj);

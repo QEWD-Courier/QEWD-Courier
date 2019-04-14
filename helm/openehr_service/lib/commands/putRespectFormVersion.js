@@ -23,59 +23,73 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  15 April 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:put-respect-form-version');
+const { Heading, Role } = require('../shared/enums');
+const { isEmpty, isPatientIdValid, isSourceIdValid } = require('../shared/validation');
 
 class PutRespectFormVersionCommand {
-  constructor(ctx) {
+  constructor(ctx, session) {
     this.ctx = ctx;
+    this.session = session;
   }
 
   /**
    * @param  {string} patientId
    * @param  {string} sourceId
    * @param  {string} version
-   * @param  {data} data
+   * @param  {Object} payload
    * @return {Promise.<Object>}
    */
-  async execute(patientId, sourceId, version, data) {
-    debug('patientId: %s, sourceId = %s, version = %s, data = %j', patientId, sourceId, version, data);
+  async execute(patientId, sourceId, version, payload) {
+    logger.info('commands/putRespectForm', { patientId, sourceId, version, payload });
 
-    if (!patientId) {
-      throw new BadRequestError('patientId was not defined');
+    if (this.session.role === Role.PHR_USER) {
+      logger.debug('override patientId for PHR Users - only allowed to see their own data');
+      patientId = this.session.nhsNumber;
     }
 
-    if (!sourceId) {
-      throw new BadRequestError('sourceId was not defined');
+    const patientValid = isPatientIdValid(patientId);
+    if (!patientValid.ok) {
+      throw new BadRequestError(patientValid.error);
+    }
+
+    const sourceIdValid = isSourceIdValid(sourceId);
+    if (!sourceIdValid.ok) {
+      return {};
     }
 
     if (!version) {
       throw new BadRequestError('version was not defined');
     }
 
-    const { respectFormVersionService } = this.ctx.services;
-
-    const valid = respectFormVersionService.validateUpdate(patientId, sourceId, version);
-    if (!valid.ok) {
-      throw new BadRequestError(valid.error);
+    if (isEmpty(payload)) {
+      throw new BadRequestError('No body content was posted for heading respectforms');
     }
 
-    respectFormVersionService.update(patientId, sourceId, version, data);
+    const { headingService, cacheService } = this.ctx.services;
 
-    const resultObj = respectFormVersionService.getByPatientId(patientId);
-    debug('resultObj = %j', resultObj);
+    // todo pass version
+    const host = this.ctx.defaultHost;
+    const heading = Heading.RESPECT_FORMS;
+    const responseObj = await headingService.put(host, patientId, heading, payload);
+    logger.debug('responseObj: %j', { responseObj });
 
-    return {
-      api: 'getRespectFormVersions',
-      use: 'results',
-      results: resultObj
-    };
+    await cacheService.delete(host, patientId, heading);
+
+    return responseObj;
+
+    // return {
+    //   api: 'getRespectFormVersions',
+    //   use: 'results',
+    //   results: responseObj
+    // };
   }
 }
 

@@ -3,9 +3,12 @@
   "fast-safe-stringify",
   "fs-extra",
   "jsonschema",
-  "openid-client",
   "moment-timezone",
+  "traverse",
+  "object-path",
+  "openid-client",
   "qewd-template",
   "valid-url",
+  "qewd-transform-json",
   "winston"
 ]

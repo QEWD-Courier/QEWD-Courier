@@ -1,15 +1,14 @@
 /*
 
  ----------------------------------------------------------------------------
- | qewd-ripple: QEWD-based Middle Tier for Ripple OSI                       |
  |                                                                          |
- | Copyright (c) 2016-19 Ripple Foundation Community Interest Company       |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -24,34 +23,222 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-27 March 2019
+  15 April 2019
 
 */
 
-var dateTime = require('../../lib/shared/dateTime');
+const dateTime = require('../../lib/shared/dateTime');
 
-var heading = {
+module.exports = {
   name: 'respectforms',
   textFieldName: 'dateCreated',
-  headingTableFields: ['dateCreated'],
+  headingTableFields: ['author', 'dateCreated', 'status'],
 
   get: {
+    helperFunctions: {
+      getCprValue: (code) => {
+        switch (code) {
+          case 'at0004':
+            return 'CPRRecommended';
+
+          case 'at0005':
+            return 'NotforCPR';
+
+          case 'at0027':
+            return 'ModifiedCPR';
+
+          default:
+            return 'N/A';
+        }
+      },
+      getLegalProxyValue: (code) => {
+        switch (code) {
+          case 'at0004':
+            return 'Yes';
+
+          case 'at0005':
+            return 'No';
+
+          case 'at0006':
+            return 'Unknown';
+
+          default:
+            return 'N/A';
+        }
+      },
+      getInvolvementValue: (code)=> {
+        switch (code) {
+          case 'at0003':
+            return 'valueSetA';
+
+          case 'at0004':
+            return 'valueSetB';
+
+          case 'at0005':
+            return 'valueSetC1';
+
+          case 'at0011':
+            return 'valueSetC2';
+
+          case 'at0012':
+            return 'valueSetC3';
+
+          case 'at0013':
+            return 'valueSetD';
+
+          default:
+            return 'N/A';
+        }
+      }
+    },
 
     transformTemplate: {
-      author:              '{{author}}',
-      dateCreated:          '=> getRippleTime(date_created)',
-      source:              '=> getSource()',
-      sourceId:            '=> getUid(uid)'
+      author: '{{nss_respect_form["composer|name"]}}',
+      dateCreated: '=> getRippleTime(nss_respect_form.context.start_time)',
+      status: '{{nss_respect_form.context.status}}',
+      summaryInformation: {
+        dateCompleted: '22-Mar-2019',
+        summary: '{{nss_respect_form.respect_headings["a2._summary_of_relevant_information"]["a2.0_relevant_information"].respect_summary.narrative_summary}}',
+        details: '...', // details missed?
+        status: 'Completed'
+      },
+      personalPreferences: {
+        dateCompleted: '22-Mar-2019',
+        preferencesText: '{{nss_respect_form.respect_headings["a3._personal_preferences"].preferred_priorities_of_care.patient_care_priority}}',
+        preferencesValue: '...', // care_priority_scale missed?
+        status: 'Completed'
+      },
+      clinicalRecommendation: {
+        clinicalGuidance: '...',
+        clinicalSignature: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_focus}}',
+        focusValue: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_guidance_on_interventions}}',
+        cprValue: '=> getCprValue(nss_respect_form.respect_headings["a4._clinical_recommendations"].cpr_decision["cpr_decision|code"])',
+        dateDecision: '=> getRippleTime(nss_respect_form.respect_headings["a4._clinical_recommendations"].cpr_decision.date_of_cpr_decision)',
+        dateCompleted: '10-Apr-2019',
+        status: 'Completed'
+      },
+      capacityAndRepresentation: {
+        dateCompleted: '22-Mar-2019',
+        capacityFirst: '{{nss_respect_form.respect_headings["a5._capacity_and_representation"].capacity_respect.sufficient_capacity}}',
+        legalProxyValue: '=> getLegalProxyValue(nss_respect_form.respect_headings["a5._capacity_and_representation"].capacity_respect["legal_proxy|code"])',
+        status: 'Completed'
+      },
+      involvement: {
+        dateCompleted: '22-Mar-2019',
+        notSelectingReason: '...',
+        involvementValue: '=> getInvolvementValue(nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.involvement_in_recommendations["involvement|code"])',
+        documentExplanation: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].name_and_role_of_those_involved_in_decision_making}}',
+        status: 'Completed'
+      },
+      clinicalSignatures: {
+        dateCompleted: '22-Mar-2019',
+        signaturesArray: [
+          '{{nss_respect_form.respect_headings["a7._clinician_signatures"].clinician_signature}}',
+          {
+            clinicalSignature: '',
+            designation: '{{signing_clinician.practitioner_role.designation}}',
+            clinicialName: '{{signing_clinician.name.text}}',
+            gmcNumber: '{{signing_clinician.identifier.value}}',
+            isSrc: '',
+            dateSigned: '=> getRippleTime(time)'
+          }
+        ],
+        status: 'Completed'
+      },
+      emergencyContacts: {
+        dateCompleted: '22-Mar-2019',
+        contactsArray: [
+          '{{nss_respect_form.respect_headings["a8._emergency_contacts"].emergency_contacts.participant}}',
+          {
+            role: '{{role}}',
+            name: '{{contact.name.text}}',
+            phone: '{{contact.telephone.telephone_number}}',
+          }
+        ],
+        details: '{{nss_respect_form.respect_headings["a8._emergency_contacts"].emergency_contacts.other_details}}',
+        status: 'Completed'
+      },
+      confirmation: {
+        dateCompleted: '22-Mar-2019',
+        confirmationsArray: [
+          '{{nss_respect_form.respect_headings["a9._confirmation_of_validity"].service}}',
+          {
+            clinicalSignature: '',
+            designation: '{{responsible_clinician.practitioner_role.designation}}',
+            clinicialName: '{{responsible_clinician.name.text}}',
+            gmcNumber: '{{responsible_clinician.identifier.value}}',
+            reviewDate: '=> getRippleTime(review_date)',
+          }
+        ],
+        status: 'Completed'
+      }
     }
-
   },
 
   post: {
     templateId: 'RESPECT_NSS-v0',
 
     helperFunctions: {
-      formatDate: function(date) {
+      formatDate: (date) => {
+        if (!date) return '';
         return dateTime.format(new Date(date));
+      },
+      toBoolean: (value) => {
+        return Boolean(value);
+      },
+      getCprCode: (value) => {
+        switch (value) {
+          case 'CPRRecommended':
+            return 'at0004';
+
+          case 'NotforCPR':
+            return 'at0005';
+
+          case 'ModifiedCPR':
+            return 'at0027';
+
+          default:
+            return '';
+        }
+      },
+      getLegalProxyCode: (value) => {
+        switch (value) {
+          case 'at0004':
+            return 'Yes';
+
+          case 'at0005':
+            return 'No';
+
+          case 'at0006':
+            return 'Unknown';
+
+          default:
+            return '';
+        }
+      },
+      getInvolvementCode: (value) => {
+        switch (value) {
+          case 'valueSetA':
+            return 'at0003';
+
+          case 'valueSetB':
+            return 'at0004';
+
+          case 'valueSetC1':
+            return 'at0005';
+
+          case 'valueSetC2':
+            return 'at0011';
+
+          case 'valueSetC3':
+            return 'at0012';
+
+          case 'valueSetD':
+            return 'at0013';
+
+          default:
+            return '';
+        }
       }
     },
 
@@ -70,11 +257,11 @@ var heading = {
           '_health_care_facility|id_scheme':    'NHSScotland',
           '_health_care_facility|id_namespace': 'NHSScotland',
           '_health_care_facility|name':         '=> either(healthcareFacility, "Forth Valley DGH")',
-          start_time:                           '=> formatDate(dateUpdated)',
+          start_time:                           '=> now()',
           'setting|code':                       '238',
           'setting|value':                      'other care',
           'setting|terminology':                'openehr',
-          status:                              '{{formStatus}}' //Started|Incomplete| Complete and Signed
+          status:                              '{{status}}' //Started|Incomplete| Complete and Signed
         },
         'composer|name':         '{{author}}',
         'composer|id':           '=> either(author_id, "12345")',
@@ -84,42 +271,43 @@ var heading = {
           'a2._summary_of_relevant_information': {
             'a2.0_relevant_information': {
               respect_summary: {
-                narrative_summary:                '{{narrativeSummary}}'
+                narrative_summary:                '{{summaryInformation.summary}}'
               }
             }
           },
           'a3._personal_preferences': {
             preferred_priorities_of_care: {
-              patient_care_priority:              '{{mostImportantToYou}}'
+              patient_care_priority:              '{{personalPreferences.preferencesText}}'
             }
           },
           'a4._clinical_recommendations': {
             recommendation: {
-              clinical_focus:                     '{{clinicalFocus}}',
-              clinical_guidance_on_interventions: '{{clinicalGuidance}}',
+              clinical_focus:                     '{{clinicalRecommendation.focusValue}}',
+              clinical_guidance_on_interventions: '{{clinicalRecommendation.clinicalGuidance}}',
             },
             cpr_decision: {
-              'cpr_decision|code':                '{{cprDecisionCode}}',  // at0004 | at0005 | at0027
-              date_of_cpr_decision:               '=> formatDate(cprDecisionDate)'
+              'cpr_decision|code':                '=> getCprCode(clinicalRecommendation.cprValue)',
+              date_of_cpr_decision:               '=> formatDate(clinicalRecommendation.dateDecision)'
             }
           },
           'a5._capacity_and_representation': {
             capacity_respect: {
-              sufficient_capacity:                '=> toBoolean(capacity)',
-              'legal_proxy|code':                 '{{legalProxyCode}}' // at0004 | at0005 | at0006
+              sufficient_capacity:                '=> toBoolean(capacityAndRepresentation.capacityFirst)',
+              'legal_proxy|code':                 '=> getLegalProxyCode({{capacityAndRepresentation.legalProxyValue}}'
             }
           },
           'a6._involvement_in_making_plan': {
             involvement_respect: {
               involvement_in_recommendations: {
-                'involvement|code':               '{{involvementCode}}', // at0003 | 04 | 05 | 11 | 12 | 13
-                reason_for_not_selecting_options_a_or_b_or_c:     '{{notSelectingReason}}',
+                'involvement|code':                               '=> getLegalProxyCode({{involvement.involvementValue}}',
+                reason_for_not_selecting_options_a_or_b_or_c:     '{{involvement.notSelectingReason}}',
               },
-              name_and_role_of_those_involved_in_decision_making: '{{decisionMakers}}'
+              name_and_role_of_those_involved_in_decision_making: '{{involvement.documentExplanation}}'
             }
           },
           'a7._clinician_signatures': {
             clinician_signature: [
+              '{{clinicalSignatures.signaturesArray}}',
               {
                 ism_transition: {
                   'current_state|value': 'completed'
@@ -127,12 +315,12 @@ var heading = {
                 service_name: 'ReSPECT clinician signature',
                 signing_clinician: {
                   practitioner_role: {
-                    designation: '{{practitionerDesignation}}'
+                    designation: '{{designation}}'
                   },
                   'name/use|code': 'at0002',
-                  text: '{{signingClinicianName}}',
+                  text: '{{clinicialName}}',
                   identifier: {
-                    value:            '{{signingClinicianId}}',
+                    value:            '{{gmcNumber}}',
                     'value|issuer':   'ProfessionalID',
                     'value|assigner': 'ProfessionalID'
                   }
@@ -151,50 +339,50 @@ var heading = {
             emergency_contacts: {
               name: 'ReSPECT emergency contacts',
               participant: [
+                '{{emergencyContacts.contactsArray}}',
                 {
-                  role: '{{emergencyContactRole}}',  // Legal proxy or parent|Family or friend or other|GP|Lead consultant
+                  role:                   '{{role}}',
                   contact: {
                     name: {
-                      'use|code': '{{useCode}}'
-                    },
-                    'name:0': {
-                      text: '{{emergencyContactName}}'
+                      'use|code':         'at0002',
+                      text:               '{{name}}'
                     },
                     telephone: {
-                      'system|code': '{{telephoneSystemCode}}',  // at0002
-                      telephone_number: '{{emergencyContactTelNo}}'
+                      'system|code':      'at0012',
+                      telephone_number:   '{{phone}}'
                     }
                   }
                 }
               ],
-              other_details: '{{emergencyContactsOtherDetails}}',
+              other_details:              '{{emergencyContacts.details}}',
             }
           },
           'a9._confirmation_of_validity': {
             service: [
+              '{{confirmation.confirmationsArray}}',
               {
+                service_name: 'Respect form - confirmation of validity',
                 ism_transition: {
-                  'current_state|value': 'completed',
-                  service_name:          'Respect form - confirmation of validity',
+                  'current_state|value': 'completed'
                 },
                 responsible_clinician: {
                   practitioner_role: {
-                    designation:         '{{responsibleClinicianRole}}'
+                    designation:          '{{designation}}'
                   },
                   name: {
-                    'use|code': '{{responsibleClinicianNameUseCode}}',  // "at0002"
-                    text:       '{{responsibleClinicianName}}'
+                    'use|code':           'at0002',
+                    text:                 '{{clinicialName}}'
                   },
                   identifier: {
-                    value:            '{{responsibleClinicianId}}',
-                    'value|issuer':   'ProfessionalID',
-                    'value|assigner': 'ProfessionalID',
-                    'value|type':     'ProfessionalID',
-                    'use|code':       'at0004',
+                    value:                '{{gmcNumber}}',
+                    'value|issuer':       'ProfessionalID',
+                    'value|assigner':     'ProfessionalID',
+                    'value|type':         'ProfessionalID',
+                    'use|code':           'at0004',
                   }
                 },
-                review_date: '{{validityReviewDate}}',  // "2019-04-23",
-                time: '=> formatDate(validityDateSigned)'
+                review_date:              '=> formatDate(reviewDate)',
+                time:                     '=> formatDate(dateCompleted)'  //????
               }
             ]
           }
@@ -203,5 +391,3 @@ var heading = {
     }
   }
 };
-
-module.exports = heading;

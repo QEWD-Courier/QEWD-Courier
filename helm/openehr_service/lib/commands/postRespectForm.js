@@ -23,44 +23,61 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  15 April 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:post-respect-form');
+const { Heading, Role, PostHeadingFormat } = require('../shared/enums');
+const { isPatientIdValid } = require('../shared/validation');
 
 class PostRespectFormCommand {
-  constructor(ctx) {
+  constructor(ctx, session) {
     this.ctx = ctx;
+    this.session = session;
   }
 
   /**
    * @param  {string} patientId
-   * @param  {Object} data
+   * @param  {Object} payload
    * @return {Promise.<Object>}
    */
-  async execute(patientId, data) {
-    debug('patientId: %s, data = %j', data);
+  async execute(patientId, payload) {
+    logger.info('commands/postRespectForm', { patientId, payload });
 
-    if (!patientId) {
-      throw new BadRequestError('patientId was not defined');
+    if (this.session.role === Role.PHR_USER) {
+      logger.debug('override patientId for PHR Users - only allowed to see their own data');
+      patientId = this.session.nhsNumber;
     }
 
-    const { respectFormVersionService } = this.ctx.services;
+    const patientValid = isPatientIdValid(patientId);
+    if (!patientValid.ok) {
+      throw new BadRequestError(patientValid.error);
+    }
 
-    respectFormVersionService.create(patientId, null, data);
+    const { headingService, cacheService } = this.ctx.services;
 
-    const resultObj = respectFormVersionService.getByPatientId(patientId);
-    debug('resultObj = %j', resultObj);
-
-    return {
-      api: 'getRespectFormVersions',
-      use: 'results',
-      results: resultObj
+    const host = this.ctx.defaultHost;
+    const heading = Heading.RESPECT_FORMS;
+    const data = {
+      data: payload,
+      format: PostHeadingFormat.PULSETILE
     };
+    const responseObj = await headingService.post(host, patientId, heading, data);
+    logger.debug('responseObj = %j', { responseObj });
+
+    await cacheService.delete(host, patientId, heading);
+
+    return responseObj;
+
+    // return {
+    //   api: 'getRespectFormVersions',
+    //   use: 'results',
+    //   results: resultObj
+    // };
   }
 }
 

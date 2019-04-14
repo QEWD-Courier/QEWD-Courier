@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  15 April 2019
 
 */
 
@@ -32,69 +32,71 @@
 
 const { logger } = require('../../../core');
 
-module.exports = (db) => {
+module.exports = (adapter) => {
   return {
 
     /**
-     * Gets next compositionid
+     * Gets data
      *
-     * @return {int}
-     */
-    nextCompositionId() {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|nextCompositionId');
-
-      return db.respectForm.$('next_id').increment();
-    },
-
-    /**
-     * Gets next version
-     *
-     * @param  {int} id
-     * @return {int}
-     */
-    nextVersion(id) {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|nextVersion', { id });
-
-      return db.respectForm.$(['by_id', id, 'next_version']).increment();
-    },
-
-    /**
-     * Gets data by composition id and version
-     *
-     * @param  {int} id
+     * @param  {string} sourceId
      * @param  {int} version
      * @return {Object}
      */
-    get: (id, version) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|get', { id, version });
+    get: (sourceId, version) => {
+      logger.info('cache/headingCache|byVersion|get', { sourceId, version });
 
-      return db.respectForm.$(['by_id', id, 'version', version]).getDocument(true);
+      const key = ['headings', 'bySourceId', sourceId, 'versions', version];
+
+      return adapter.getObjectWithArrays(key);
     },
 
     /**
-     * Sets data by composition id and version
+     * Sets data
      *
-     * @param  {int} id
+     * @param  {string} sourceId
      * @param  {int} version
+     * @param  {Object} data
      * @return {void}
      */
-    set: (id, version, data) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|set', { id, version, data });
+    set: (sourceId, version, data) => {
+      logger.info('cache/headingCache|byVersion|set', { sourceId, version, data });
 
-      db.respectForm.$(['by_id', id, 'version', version]).setDocument(data);
+      const key = ['headings', 'bySourceId', sourceId, 'versions', version];
+      adapter.putObject(key, data);
     },
 
     /**
-     * Deletes data by composition id and version
+     * Deletes data
      *
-     * @param  {int} id
+     * @param  {string} sourceId
      * @param  {int} version
      * @return {void}
      */
-    delete: (id, version) => {
-      logger.debug('db/respectFormDb/mixins/respectForm/byId|delete', { id, version });
+    delete: (sourceId, version) => {
+      logger.info('cache/headingCache|byVersion|delete', { sourceId, version });
 
-      db.respectForm.$(['by_id', id, 'version', version]).delete();
+      const key = ['headings', 'bySourceId', sourceId, 'versions', version];
+      adapter.delete(key);
     },
+
+    /**
+     * Gets all versions
+     *
+     * @param  {string} sourceId
+     * @return {int[]}
+     */
+    getAllVersions: (sourceId) => {
+      logger.info('cache/headingCache|byVersion|getAllVersions', { sourceId });
+
+      const versions = [];
+      const qewdSession = adapter.qewdSession;
+      const bySourceId = qewdSession.data.$(['headings', 'bySourceId', sourceId, 'versions']);
+
+      bySourceId.forEachChild((version) => {
+        versions.push(parseInt(version, 10));
+      });
+
+      return versions;
+    }
   };
 };

@@ -23,18 +23,21 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  15 April 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:get-respect-form-versions');
+const { Role } = require('../shared/enums');
+const { isPatientIdValid } = require('../shared/validation');
 
 class GetRespectFormVersionsCommand {
-  constructor(ctx) {
+  constructor(ctx, session) {
     this.ctx = ctx;
+    this.session = session;
   }
 
   /**
@@ -42,16 +45,31 @@ class GetRespectFormVersionsCommand {
    * @return {Promise.<Object>}
    */
   async execute(patientId) {
-    debug('patientId: %s', patientId);
+    logger.info('commands/getRespectFormVersions', { patientId });
 
-    if (!patientId) {
-      throw new BadRequestError('patientId was not defined');
+    if (this.session.role === Role.PHR_USER) {
+      logger.debug('override patientId for PHR Users - only allowed to see their own data');
+      patientId = this.session.nhsNumber;
     }
 
-    const { respectFormVersionService } = this.ctx.services;
+    const patientValid = isPatientIdValid(patientId);
+    if (!patientValid.ok) {
+      throw new BadRequestError(patientValid.error);
+    }
 
-    const resultObj = respectFormVersionService.getByPatientId(patientId);
-    debug('resultObj = %j', resultObj);
+    const { respectFormsService } = this.ctx.services;
+
+    const result = await respectFormsService.fetchOne(patientId);
+    logger.debug('result:', { result });
+
+    if (!result.ok) {
+      logger.debug('No results could be returned from the OpenEHR servers for respectforms heading');
+
+      return [];
+    }
+
+    const resultObj = respectFormsService.getSummary(patientId);
+    logger.debug('resultObj:', { resultObj });
 
     return {
       api: 'getRespectFormVersions',

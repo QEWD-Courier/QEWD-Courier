@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 April 2019
+  15 April 2019
 
 */
 
@@ -80,11 +80,24 @@ class HeadingService {
 
     const { ehrSessionService, patientService } = this.ctx.services;
     const { sessionId } = await ehrSessionService.start(host);
+    // const ehrId = '91faff0b-cb5d-4f93-bf37-a99165aba439';
     const ehrId = await patientService.getEhrId(host, patientId);
 
     const helpers = headingHelpers(host, heading, 'post');
     const output = transform(headingMap.transformTemplate, data.data, helpers);
     const postData = flatten(output);
+
+    // console.log(JSON.stringify(postData, null ,2))
+    // TODO: fix me (hack)
+    Object.keys(postData).forEach(x => {
+      if (Array.isArray(postData[x])) {
+        if (postData[x].length === 0) {
+          delete postData[x];
+        }
+      }
+    });
+    // console.log(JSON.stringify(postData, null ,2))
+
     const ehrRestService = this.ctx.rest[host];
     const responseObj = await ehrRestService.postComposition(sessionId, ehrId, headingMap.templateId, postData);
     debug('response: %j', responseObj);
@@ -190,21 +203,41 @@ class HeadingService {
     const { ehrSessionService, patientService } = this.ctx.services;
     const { sessionId } = await ehrSessionService.start(host);
     const ehrId = await patientService.getEhrId(host, patientId);
+    // const ehrId = '91faff0b-cb5d-4f93-bf37-a99165aba439';
 
     const aql = getHeadingAql(heading);
     const subs = {
       ehrId
     };
     const query = template.replace(aql, subs);
+    logger.debug('query:', { query });
 
     const ehrRestService = this.ctx.rest[host];
     const responseObj = await ehrRestService.query(sessionId, query);
+    logger.debug('responseObj:', { responseObj });
 
     await ehrSessionService.stop(host, sessionId);
 
     return responseObj && responseObj.resultSet
       ? responseObj.resultSet
       : [];
+  }
+
+  async get(host, compositionId) {
+    logger.info('services/headingService|get', { host, compositionId });
+
+    const { ehrSessionService } = this.ctx.services;
+    const { sessionId } = await ehrSessionService.start(host);
+
+    const ehrRestService = this.ctx.rest[host];
+    const responseObj = await ehrRestService.getComposition(sessionId, compositionId);
+    logger.debug('responseObj:', { responseObj });
+
+    await ehrSessionService.stop(host, sessionId);
+
+    return responseObj && responseObj.composition
+      ? responseObj.composition
+      : null;
   }
 
   /**
@@ -362,7 +395,7 @@ class HeadingService {
       results
     };
   }
-  
+
   /**
    * Fetch records from OpenEHR servers for multiple headings
    *

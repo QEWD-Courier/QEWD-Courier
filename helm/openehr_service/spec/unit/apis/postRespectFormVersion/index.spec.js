@@ -32,7 +32,7 @@
 const mockery = require('mockery');
 const { CommandMock, ExecutionContextMock } = require('@tests/mocks');
 
-describe('apis/postRespectFormVersion', () => {
+xdescribe('apis/postRespectFormVersion', () => {
   let args;
   let finished;
 

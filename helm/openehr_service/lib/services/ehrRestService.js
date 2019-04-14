@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  15 April 2019
 
 */
 
@@ -32,19 +32,29 @@
 const request = require('request');
 const config = require('../config');
 const logger = require('../core/logger');
-const debug = require('debug')('helm:openehr:services:ehr-rest');
+const { parseJsonFormatter } = require('../shared/utils');
 
-function requestAsync(options) {
+/**
+ * NOTE: Ehr-Session header must capitalized
+ */
+
+function requestAsync(args) {
   return new Promise((resolve, reject) => {
-    request(options, (err, response, body) => {
-      if (err) return reject(err);
+    request(args, (err, response, body) => {
+      if (err) {
+        logger.error('services/ehrRestService|err:', err);
+        return reject(err);
+      }
 
-      return resolve(body);
+      if (body && typeof body === 'string' && body.substring(0, 6) === '<html>') {
+        logger.error('services/ehrRestService|err:', { err: body });
+        return reject(body);
+      }
+
+      return resolve(parseJsonFormatter(body));
     });
   });
 }
-
-// NOTE: Ehr-Session header must capitalized
 
 class EhrRestService {
   constructor(ctx, host, hostConfig) {
@@ -71,8 +81,7 @@ class EhrRestService {
       headers: {
         'x-max-session': config.openehr.sessionMaxNumber,
         'x-session-timeout': config.openehr.sessionTimeout
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -92,8 +101,7 @@ class EhrRestService {
       method: 'DELETE',
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -118,8 +126,7 @@ class EhrRestService {
       },
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -135,6 +142,12 @@ class EhrRestService {
   async postEhr(sessionId, patientId) {
     logger.info(`services/ehrRestService|${this.host}|getEhr`, { sessionId, patientId });
 
+    const body = {
+      subjectId: patientId,
+      subjectNamespace: 'uk.nhs.nhs_number',
+      queryable: 'true',
+      modifiable: 'true'
+    };
     const options = {
       url: `${this.hostConfig.url}/rest/v1/ehr`,
       method: 'POST',
@@ -142,16 +155,36 @@ class EhrRestService {
         subjectId: patientId,
         subjectNamespace: 'uk.nhs.nhs_number'
       },
-      body: {
-        subjectId: patientId,
-        subjectNamespace: 'uk.nhs.nhs_number',
-        queryable: 'true',
-        modifiable: 'true'
+      body: JSON.stringify(body),
+      headers: {
+        'Ehr-Session': sessionId
+      }
+    };
+
+    return await requestAsync(options);
+  }
+
+  /**
+   * Sends a request to get an existing composition
+   *
+   * @param  {string} sessionId
+   * @param  {string} compositionId
+   * @param  {string} templateId
+   * @param  {Object} data
+   * @return {Promise.<Object>}
+   */
+  async getComposition(sessionId, compositionId) {
+    logger.info(`services/ehrRestService|${this.host}|getComposition`, { sessionId, compositionId });
+
+    const options = {
+      url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
+      method: 'GET',
+      qs: {
+        format: 'FLAT'
       },
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -167,9 +200,7 @@ class EhrRestService {
    * @return {Promise.<Object>}
    */
   async postComposition(sessionId, ehrId, templateId, data) {
-    logger.info(`services/ehrRestService|${this.host}|postComposition`, { sessionId, ehrId, templateId, data: typeof data });
-
-    debug('data: %j', data);
+    logger.info(`services/ehrRestService|${this.host}|postComposition`, { sessionId, ehrId, templateId, data });
 
     const options = {
       url: `${this.hostConfig.url}/rest/v1/composition`,
@@ -179,11 +210,10 @@ class EhrRestService {
         ehrId: ehrId,
         format: 'FLAT'
       },
-      body: data,
+      body: JSON.stringify(data),
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -199,9 +229,7 @@ class EhrRestService {
    * @return {Promise.<Object>}
    */
   async putComposition(sessionId, compositionId, templateId, data) {
-    logger.info(`services/ehrRestService|${this.host}|putHeading`, { sessionId, compositionId, templateId, data: typeof data });
-
-    debug('data: %j', data);
+    logger.info(`services/ehrRestService|${this.host}|putComposition`, { sessionId, compositionId, templateId, data });
 
     const options = {
       url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
@@ -210,11 +238,10 @@ class EhrRestService {
         templateId: templateId,
         format: 'FLAT'
       },
-      body: data,
+      body: JSON.stringify(data),
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -238,8 +265,7 @@ class EhrRestService {
       },
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);
@@ -260,8 +286,7 @@ class EhrRestService {
       method: 'DELETE',
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
     return await requestAsync(options);

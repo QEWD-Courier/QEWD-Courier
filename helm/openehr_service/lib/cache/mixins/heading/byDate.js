@@ -76,7 +76,7 @@ module.exports = (adapter) => {
      * @param  {int} options.limit
      * @return {string[]}
      */
-    getAllSourceIds: (patientId, heading, { direction = 'reverse', limit = 1 } = {}) => {
+    getAllSourceIds: (patientId, heading, { direction = 'reverse', limit = 0 } = {}) => {
       logger.info('cache/headingCache|byDate|getAllSourceIds', { patientId, heading, direction, limit });
 
       const sourceIds = [];
@@ -90,10 +90,10 @@ module.exports = (adapter) => {
           sourceIds.push(sourceId);
           count++;
 
-          if (count === limit) return true;
+          if (limit && count === limit) return true;
         });
 
-        if (count === limit) return true;
+        if (limit && count === limit) return true;
       });
 
       return sourceIds;

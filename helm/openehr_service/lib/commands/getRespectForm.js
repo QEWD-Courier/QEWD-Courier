@@ -23,18 +23,21 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  15 April 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
-const debug = require('debug')('helm:openehr:commands:get-respect-form');
+const { Role } = require('../shared/enums');
+const { isPatientIdValid, isSourceIdValid } = require('../shared/validation');
 
 class GetRespectFormCommand {
-  constructor(ctx) {
+  constructor(ctx, session) {
     this.ctx = ctx;
+    this.session = session;
   }
 
   /**
@@ -44,29 +47,36 @@ class GetRespectFormCommand {
    * @return {Promise.<Object>}
    */
   async execute(patientId, sourceId, version) {
-    debug('patientId: %s, sourceId = %s, version = %s', patientId, sourceId, version);
+    logger.info('commands/getRespectForm', { patientId, sourceId, version });
 
-    if (!patientId) {
-      throw new BadRequestError('patientId was not defined');
+    if (this.session.role === Role.PHR_USER) {
+      logger.debug('override patientId for PHR Users - only allowed to see their own data');
+      patientId = this.session.nhsNumber;
     }
 
-    if (!sourceId) {
-      throw new BadRequestError('sourceId was not defined');
+    const patientValid = isPatientIdValid(patientId);
+    if (!patientValid.ok) {
+      throw new BadRequestError(patientValid.error);
     }
 
-    if (!version) {
-      throw new BadRequestError('version was not defined');
+    const sourceIdValid = isSourceIdValid(sourceId);
+    if (!sourceIdValid.ok) {
+      return {};
     }
 
-    const { respectFormVersionService } = this.ctx.services;
+    const { respectFormsService } = this.ctx.services;
 
-    const valid = respectFormVersionService.validateGet(patientId, sourceId, version);
-    if (!valid.ok) {
-      throw new BadRequestError(valid.error);
+    const result = await respectFormsService.fetchOne(patientId);
+    logger.debug('result:', { result });
+
+    if (!result.ok) {
+      logger.debug('No results could be returned from the OpenEHR servers for respectforms heading');
+
+      return [];
     }
 
-    const resultObj = respectFormVersionService.get(sourceId, version);
-    debug('resultObj = %j', resultObj);
+    const resultObj = respectFormsService.getBySourceIdAndVersion(sourceId, version);
+    logger.debug('resultObj:', { resultObj });
 
     return {
       respect_form: resultObj

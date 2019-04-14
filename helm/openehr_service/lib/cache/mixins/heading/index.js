@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  15 April 2019
 
 */
 
@@ -34,6 +34,7 @@ const byDate = require('./byDate');
 const byHeading = require('./byHeading');
 const byHost = require('./byHost');
 const bySourceId = require('./bySourceId');
+const byVersion = require('./byVersion');
 const fetchCount = require('./fetchCount');
 
 module.exports = {
@@ -41,5 +42,6 @@ module.exports = {
   byHeading,
   byHost,
   bySourceId,
+  byVersion,
   fetchCount
 };

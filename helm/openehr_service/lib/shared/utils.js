@@ -23,13 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 April 2019
+  15 April 2019
 
 */
 
 'use strict';
 
 const traverse = require('traverse');
+const objectPath = require('object-path');
 const { isNumeric } = require('./validation');
 
 function buildSourceId(host, compositionId) {
@@ -69,8 +70,24 @@ function flatten(obj) {
   return flatObj;
 }
 
+function flatMap(arr, callback) {
+  return arr.reduce((acc, x, i) => acc.concat(callback(x, i)), []);
+}
+
 function equals(l, r) {
   return l.toString() === r.toString();
+}
+
+function getCompositionVersions(compositionId) {
+  try {
+    const parts = compositionId.split('::');
+    const version = parseInt(parts[2], 10);
+    const versions = [...Array(version).keys()].map(x => x + 1);
+
+    return versions.map(x => `${parts[0]}::${parts[1]}::${x}`);
+  } catch(err) {
+    return [];
+  }
 }
 
 function lazyLoadAdapter(target) {
@@ -95,10 +112,48 @@ function parseAccessToken(authorization = '') {
   return authorization.split('AccessToken ')[1];
 }
 
+function parseJsonFormatter(result) {
+  let jsonResult;
+
+  try {
+    jsonResult = JSON.parse(result);
+  } catch (err) {
+    jsonResult = {};
+  }
+
+  return jsonResult;
+}
+
+function parseVersion(compositionId) {
+  try {
+    return parseInt(compositionId.split('::')[2], 10);
+  } catch (err) {
+    return null;
+  }
+}
+
+function unflatten(flatObj) {
+  return Object.keys(flatObj).reduce((acc, key) => {
+    const paths = key.split(/:|\//).map(x => isNaN(Number(x))
+      ? x
+      : Number(x)
+    );
+
+    objectPath.set(acc, paths, flatObj[key]);
+
+    return acc;
+  }, {});
+}
+
 module.exports = {
   buildSourceId,
   flatten,
+  flatMap,
   equals,
+  getCompositionVersions,
   lazyLoadAdapter,
-  parseAccessToken
+  parseAccessToken,
+  parseJsonFormatter,
+  parseVersion,
+  unflatten
 };

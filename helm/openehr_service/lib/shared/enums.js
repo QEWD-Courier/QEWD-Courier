@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  15 April 2019
 
 */
 
@@ -36,7 +36,8 @@ const ExtraHeading = Object.freeze({
 const Heading = Object.freeze({
   COUNTS: 'counts',
   FEEDS: 'feeds',
-  TOP_3_THINGS: 'top3Things'
+  TOP_3_THINGS: 'top3Things',
+  RESPECT_FORMS: 'respectforms',
 });
 
 const Top3ThingFormat = Object.freeze({
