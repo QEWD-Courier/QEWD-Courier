@@ -57,6 +57,10 @@ class DemographicService {
     const { resourceService } = this.ctx.services;
 
     const patientUuid = patientCache.byNhsNumber.getPatientUuid(nhsNumber);
+    if (!patientUuid) {
+      return {};
+    }
+    
     const patient = patientCache.byPatientUuid.get(patientUuid);
     const practitionerUuid = patientCache.byPatientUuid.getPractitionerUuid(patientUuid);
     const practitioner = resourceCache.byUuid.get(ResourceName.PRACTITIONER, practitionerUuid);
