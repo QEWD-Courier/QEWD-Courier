@@ -9,6 +9,5 @@
   "openid-client",
   "qewd-template",
   "valid-url",
-  "qewd-transform-json",
   "winston"
 ]

@@ -23,17 +23,19 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  16 April 2019
 
 */
 
 const path = require('path');
 const fs = require('fs');
+const logger = require('../core/logger');
 const dateTime = require('./dateTime');
-const debug = require('debug')('helm:openehr:shared:headings');
+const { QueryFormat } = require('./enums');
 
 const headings = {};
-const aql = {};
+const queries = {};
+
 
 function getHeadingDir() {
   return process.env.NODE_ENV === 'test'
@@ -42,14 +44,14 @@ function getHeadingDir() {
 }
 
 function loadHeadingModule(heading) {
-  debug('loading heading: %s', heading);
+  logger.debug('loading heading: %s', heading);
 
   const headingsDir = getHeadingDir();
 
   try {
     return require(`${headingsDir}/${heading}/${heading}`);
   } catch (err) {
-    debug('error loading heading %s module: %s', heading, err);
+    logger.error('error loading heading module:', err);
   }
 }
 
@@ -103,17 +105,22 @@ function headingHelpers(host, heading, method = 'get') {
   return helpers;
 }
 
-function getHeadingAql(heading) {
-  if (!aql[heading]) {
-    const headingsDir = getHeadingDir();
-    const filename = path.join(__dirname, `${headingsDir}/${heading}/${heading}.aql`);
-    debug('loading aql file: %s', filename);
-    aql[heading] = fs.existsSync(filename)
+function getHeadingQuery(heading, { format = QueryFormat.AQL, templateId = '',  } = {}) {
+  const headingsDir = getHeadingDir();
+  const key = templateId ? `${format}:${templateId}` : `${format}:${heading}`;
+
+  if (!queries[key]) {
+    const basename = templateId ? templateId : heading;
+    const filename = path.join(__dirname, `${headingsDir}/${heading}/${basename}.${format}`);
+
+    logger.debug('loading file: %s', filename);
+
+    queries[key] = fs.existsSync(filename)
       ? fs.readFileSync(filename).toString().split(/\r?\n/).join(' ')
       : '';
   }
 
-  return aql[heading];
+  return queries[key];
 }
 
 function getHeadingDefinition(heading) {
@@ -134,7 +141,7 @@ function getHeadingMap(heading, method = 'get') {
 
 module.exports = {
   headingHelpers,
-  getHeadingAql,
   getHeadingDefinition,
-  getHeadingMap
+  getHeadingMap,
+  getHeadingQuery
 };

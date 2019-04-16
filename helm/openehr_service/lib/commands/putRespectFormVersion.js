@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
@@ -73,12 +73,11 @@ class PutRespectFormVersionCommand {
       throw new BadRequestError('No body content was posted for heading respectforms');
     }
 
-    const { headingService, cacheService } = this.ctx.services;
+    const { respectFormsService, cacheService } = this.ctx.services;
 
-    // todo pass version
     const host = this.ctx.defaultHost;
     const heading = Heading.RESPECT_FORMS;
-    const responseObj = await headingService.put(host, patientId, heading, payload);
+    const responseObj = await respectFormsService.put(host, heading, sourceId, version, payload);
     logger.debug('responseObj: %j', { responseObj });
 
     await cacheService.delete(host, patientId, heading);

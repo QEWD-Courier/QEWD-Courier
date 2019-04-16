@@ -32,7 +32,7 @@
 const nock = require('nock');
 const template = require('qewd-template');
 const { Worker } = require('@tests/mocks');
-const { getHeadingAql } = require('@lib/shared/headings');
+const { getHeadingQuery } = require('@lib/shared/headings');
 const fetchAndCacheHeading = require('@openehr/fetchAndCacheHeading');
 
 describe('utils/openehr/fetchAndCacheHeading', () => {
@@ -102,7 +102,7 @@ describe('utils/openehr/fetchAndCacheHeading', () => {
   beforeAll(() => {
     [
       'procedures'
-    ].forEach(x => aql[x] = getHeadingAql(x));
+    ].forEach(x => aql[x] = getHeadingQuery(x));
   });
 
   beforeEach(() => {

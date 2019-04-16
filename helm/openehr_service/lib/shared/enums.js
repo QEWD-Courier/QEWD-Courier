@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
@@ -50,6 +50,11 @@ const PostHeadingFormat = Object.freeze({
   PULSETILE: 'pulsetile'
 });
 
+const QueryFormat = Object.freeze({
+  AQL: 'aql',
+  SQL: 'sql'
+});
+
 const RecordStatus = Object.freeze({
   LOADING: 'loading_data',
   READY: 'ready'
@@ -73,6 +78,7 @@ module.exports = {
   ExtraHeading,
   Heading,
   PostHeadingFormat,
+  QueryFormat,
   RecordStatus,
   ResponseFormat,
   Role,

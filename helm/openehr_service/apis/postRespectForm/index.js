@@ -42,7 +42,7 @@ const { getResponseError } = require('../../lib/errors');
 module.exports = async function postRespectForm(args, finished) {
   try {
     const command = new PostRespectFormCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute(args.patientId, args.req.body);
+    const responseObj = await command.execute(args.patientId);
 
     finished(responseObj);
   } catch (err) {

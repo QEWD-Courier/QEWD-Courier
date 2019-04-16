@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 April 2019
+  16 April 2019
 
 */
 'use strict';
@@ -32,7 +32,7 @@ const { createLogger, format, transports } = require('winston');
 const jsonStringify = require('fast-safe-stringify');
 const config = require('../config');
 
-const { combine, timestamp, colorize, printf, metadata } = format;
+const { combine, splat, timestamp, colorize, printf, metadata } = format;
 const printLog = (info) => info.metadata && Object.keys(info.metadata).length > 0
   ? `${process.pid}: ${info.timestamp} ${info.level}: ${info.message} - ${jsonStringify(info.metadata)}`
   : `${process.pid}: ${info.timestamp} ${info.level}: ${info.message}`;
@@ -42,6 +42,7 @@ const logger = createLogger({
       level: config.logging.defaultLevel,
       format: combine(
         colorize(),
+        splat(),
         metadata(),
         timestamp(),
         printf(printLog)

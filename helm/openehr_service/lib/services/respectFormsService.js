@@ -23,19 +23,20 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
 'use strict';
 
 const P = require('bluebird');
+const template = require('qewd-template');
 const { transform } = require('qewd-transform-json');
 const { logger } = require('../core');
-const { UnprocessableEntityError } = require('../errors');
-const { Heading, ResponseFormat } = require('../shared/enums');
-const { headingHelpers, getHeadingDefinition, getHeadingMap } = require('../shared/headings');
-const { buildSourceId, getCompositionVersions, flatMap, parseVersion, unflatten } = require('../shared/utils');
+const { NotFoundError, UnprocessableEntityError } = require('../errors');
+const { Heading, QueryFormat, ResponseFormat } = require('../shared/enums');
+const { headingHelpers, getHeadingDefinition, getHeadingMap, getHeadingQuery } = require('../shared/headings');
+const { buildCompositionId, buildSourceId, flatMap, parseCompositionId, flatten, unflatten } = require('../shared/utils');
 
 const ok = () => ({ ok: true });
 const fail = (err) => ({ ok: false, error: err });
@@ -59,8 +60,8 @@ class RespectFormsService {
    * @param  {string} format
    * @return {Object}
    */
-  getBySourceIdAndVersion(sourceId, version, format = ResponseFormat.DETAIL) {
-    logger.info('services/respectFormsService|getBySourceIdAndVersion', { sourceId, version, format });
+  getBySourceId(sourceId, version, format = ResponseFormat.DETAIL) {
+    logger.info('services/respectFormsService|getBySourceId', { sourceId, version, format });
 
     let responseObj = {};
 
@@ -127,7 +128,62 @@ class RespectFormsService {
   }
 
   /**
-   * Fetch records from OpenEHR servers for respect forms heading
+   * Creates a new form version
+   *
+   * @param  {string} host
+   * @param  {string} heading
+   * @param  {string} sourceId
+   * @param  {string} version
+   * @param  {Object} data
+   * @return {Promise.<Object>}
+   */
+  async put(host, heading, sourceId, version, data) {
+    logger.info('services/respectFormsService|put', { host, heading, sourceId, version, data });
+
+    const { headingCache } = this.ctx.cache;
+    const dbData = headingCache.byVersion.get(sourceId, version);
+    if (!dbData) {
+      throw new NotFoundError(`No existing ${heading} record found for sourceId: ${sourceId} and version: ${version}`);
+    }
+
+    const compositionId = dbData.uid;
+    if (!compositionId) {
+      throw new NotFoundError(`Composition Id not found for sourceId: ${sourceId}`);
+    }
+
+    const headingMap = getHeadingMap(heading, 'post');
+    if (!headingMap) {
+      throw new UnprocessableEntityError(`heading ${heading} not recognised, or no POST definition available`);
+    }
+
+    const { ehrSessionService } = this.ctx.services;
+    const { sessionId } = await ehrSessionService.start(host);
+
+    const helpers = headingHelpers(host, heading, 'post');
+    const output = transform(headingMap.transformTemplate, data, helpers);
+    const postData = flatten(output);
+
+    const ehrRestService = this.ctx.rest[host];
+    const responseObj = await ehrRestService.putComposition(sessionId, compositionId, headingMap.templateId, postData);
+    logger.debug('response: %j', responseObj);
+
+    await ehrSessionService.stop(host, sessionId);
+
+    return responseObj && responseObj.compositionUid
+      ? {
+        ok: true,
+        host: host,
+        heading: heading,
+        compositionUid: responseObj.compositionUid,
+        action: responseObj.action
+      }
+      : {
+        ok: false
+      };
+  }
+
+  /**
+   * Fetch records from OpenEHR servers
    *
    * @param  {string|int} patientId
    * @return {Promise.<Object>}
@@ -153,7 +209,7 @@ class RespectFormsService {
 
     const heading = Heading.RESPECT_FORMS;
     const { headingCache } = this.ctx.cache;
-    const { headingService } = this.ctx.services;
+    const { headingService, queryService } = this.ctx.services;
 
     const exists = headingCache.byHost.exists(patientId, heading, host);
     if (exists) return null;
@@ -161,16 +217,26 @@ class RespectFormsService {
     try {
       const data = await headingService.query(host, patientId, heading);
 
-      // data can be empty when query handled by jumper module
       await P.each(data || [], async (result) => {
         if (result.uid) {
           const sourceId = buildSourceId(host, result.uid);
-          const compositionIds = getCompositionVersions(result.uid);
+          const { uuid, host: compositionHost } = parseCompositionId(result.uid);
           const dateCreated = result.date_created || result.dateCreated;
           const date = new Date(dateCreated).getTime();
 
-          await P.each(compositionIds, async (compositionId) =>  {
-            const version = parseVersion(compositionId);
+          const format = QueryFormat.SQL;
+          const templateId = 'respectforms_versions';
+          const headingQuery = getHeadingQuery(heading, { format, templateId });
+          const subs = {
+            uuid
+          };
+          const query = template.replace(headingQuery, subs);
+          logger.debug('query: %s', query);
+
+          const versionsData = await queryService.postQuery(host, query, { format });
+
+          await P.each(versionsData, async (x) => {
+            const compositionId = buildCompositionId(x.id, compositionHost, x.version);
             const compositionObj = await headingService.get(host, compositionId);
 
             const dbData = {
@@ -184,7 +250,7 @@ class RespectFormsService {
 
             headingCache.byHost.set(patientId, heading, host, sourceId);
             headingCache.byDate.set(patientId, heading, date, sourceId);
-            headingCache.byVersion.set(sourceId, version, dbData);
+            headingCache.byVersion.set(sourceId, x.version, dbData);
           });
         }
       });
@@ -222,7 +288,7 @@ class RespectFormsService {
       );
     });
 
-    return mappedVersions.map(x => this.getBySourceIdAndVersion(x.sourceId, x.version, ResponseFormat.SUMMARY));
+    return mappedVersions.map(x => this.getBySourceId(x.sourceId, x.version, ResponseFormat.SUMMARY));
   }
 }
 

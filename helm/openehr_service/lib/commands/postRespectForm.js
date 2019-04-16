@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
@@ -42,11 +42,10 @@ class PostRespectFormCommand {
 
   /**
    * @param  {string} patientId
-   * @param  {Object} payload
    * @return {Promise.<Object>}
    */
-  async execute(patientId, payload) {
-    logger.info('commands/postRespectForm', { patientId, payload });
+  async execute(patientId) {
+    logger.info('commands/postRespectForm', { patientId });
 
     if (this.session.role === Role.PHR_USER) {
       logger.debug('override patientId for PHR Users - only allowed to see their own data');
@@ -63,7 +62,7 @@ class PostRespectFormCommand {
     const host = this.ctx.defaultHost;
     const heading = Heading.RESPECT_FORMS;
     const data = {
-      data: payload,
+      data: {},
       format: PostHeadingFormat.PULSETILE
     };
     const responseObj = await headingService.post(host, patientId, heading, data);

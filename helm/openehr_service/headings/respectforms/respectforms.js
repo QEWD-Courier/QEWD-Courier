@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
@@ -48,7 +48,7 @@ module.exports = {
             return 'ModifiedCPR';
 
           default:
-            return 'N/A';
+            return 'Not known';
         }
       },
       getLegalProxyValue: (code) => {
@@ -60,10 +60,8 @@ module.exports = {
             return 'No';
 
           case 'at0006':
-            return 'Unknown';
-
           default:
-            return 'N/A';
+            return 'Unknown';
         }
       },
       getInvolvementValue: (code)=> {
@@ -87,7 +85,7 @@ module.exports = {
             return 'valueSetD';
 
           default:
-            return 'N/A';
+            return 'Not known';
         }
       }
     },
@@ -105,7 +103,7 @@ module.exports = {
       personalPreferences: {
         dateCompleted: '22-Mar-2019',
         preferencesText: '{{nss_respect_form.respect_headings["a3._personal_preferences"].preferred_priorities_of_care.patient_care_priority}}',
-        preferencesValue: '...', // care_priority_scale missed?
+        preferencesValue: '{{nss_respect_form.respect_headings["a3._personal_preferences"].preferred_priorities_of_care.care_priority_scale}}',
         status: 'Completed'
       },
       clinicalRecommendation: {
@@ -125,7 +123,7 @@ module.exports = {
       },
       involvement: {
         dateCompleted: '22-Mar-2019',
-        notSelectingReason: '...',
+        notSelectingReason: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.involvement_in_recommendations.reason_for_not_selecting_options_a_or_b_or_c}}',
         involvementValue: '=> getInvolvementValue(nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.involvement_in_recommendations["involvement|code"])',
         documentExplanation: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].name_and_role_of_those_involved_in_decision_making}}',
         status: 'Completed'
@@ -135,7 +133,7 @@ module.exports = {
         signaturesArray: [
           '{{nss_respect_form.respect_headings["a7._clinician_signatures"].clinician_signature}}',
           {
-            clinicalSignature: '',
+            clinicalSignature: '...',
             designation: '{{signing_clinician.practitioner_role.designation}}',
             clinicialName: '{{signing_clinician.name.text}}',
             gmcNumber: '{{signing_clinician.identifier.value}}',
@@ -267,6 +265,12 @@ module.exports = {
         'composer|id':           '=> either(author_id, "12345")',
         'composer|id_scheme':    'NHSScotland',
         'composer|id_namespace': 'NHSScotland',
+      // test: () => {
+      //   return '<!delete>';
+      // },
+      // test2: () => {
+      //   return '123';
+      // },
         respect_headings: {
           'a2._summary_of_relevant_information': {
             'a2.0_relevant_information': {
@@ -277,7 +281,8 @@ module.exports = {
           },
           'a3._personal_preferences': {
             preferred_priorities_of_care: {
-              patient_care_priority:              '{{personalPreferences.preferencesText}}'
+              patient_care_priority:              '{{personalPreferences.preferencesText}}',
+              care_priority_scale:                '{{personalPreferences.preferencesValue}}'
             }
           },
           'a4._clinical_recommendations': {
@@ -293,13 +298,13 @@ module.exports = {
           'a5._capacity_and_representation': {
             capacity_respect: {
               sufficient_capacity:                '=> toBoolean(capacityAndRepresentation.capacityFirst)',
-              'legal_proxy|code':                 '=> getLegalProxyCode({{capacityAndRepresentation.legalProxyValue}}'
+              'legal_proxy|code':                 '=> getLegalProxyCode(capacityAndRepresentation.legalProxyValue)'
             }
           },
           'a6._involvement_in_making_plan': {
             involvement_respect: {
               involvement_in_recommendations: {
-                'involvement|code':                               '=> getLegalProxyCode({{involvement.involvementValue}}',
+                'involvement|code':                               '=> getLegalProxyCode(involvement.involvementValue)',
                 reason_for_not_selecting_options_a_or_b_or_c:     '{{involvement.notSelectingReason}}',
               },
               name_and_role_of_those_involved_in_decision_making: '{{involvement.documentExplanation}}'
@@ -317,16 +322,14 @@ module.exports = {
                   practitioner_role: {
                     designation: '{{designation}}'
                   },
-                  'name/use|code': 'at0002',
-                  text: '{{clinicialName}}',
+                  name:{
+                    'use|code': 'at0002',
+                    text: '{{clinicialName}}',
+                  },
                   identifier: {
                     value:            '{{gmcNumber}}',
                     'value|issuer':   'ProfessionalID',
-                    'value|assigner': 'ProfessionalID'
-                  }
-                },
-                'signing_clinician:0': {
-                  identifier: {
+                    'value|assigner': 'ProfessionalID',
                     'value|type': 'ProfessionalID',
                     'use|code':   'at0004'
                   }
@@ -382,7 +385,7 @@ module.exports = {
                   }
                 },
                 review_date:              '=> formatDate(reviewDate)',
-                time:                     '=> formatDate(dateCompleted)'  //????
+                time:                     '=> formatDate(dateCompleted)'
               }
             ]
           }

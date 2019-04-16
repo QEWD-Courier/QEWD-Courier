@@ -10,24 +10,24 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
+    "bluebird": "^3.5.4",
     "fast-safe-stringify": "^2.0.6",
     "fs-extra": "^7.0.1",
     "moment-timezone": "^0.5.23",
     "qewd-router": "^1.13.1",
     "qewd-template": "^1.1.2",
-    "qewd-transform-json": "^1.10.0",
+    "qewd-transform-json": "^1.10.1",
     "request": "^2.88.0",
     "valid-url": "^1.0.9",
     "winston": "^3.2.1"
   },
   "devDependencies": {
     "coveralls": "^3.0.3",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "ewd-document-store": "^1.24.0",
     "ewd-memory-globals": "^1.0.3",
     "ewd-session": "^2.19.0",
-    "jasmine": "^3.3.1",
+    "jasmine": "^3.4.0",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-spy-matchers": "^2.2.0",
     "mock-fs": "^4.8.0",

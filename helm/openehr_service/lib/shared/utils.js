@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  16 April 2019
 
 */
 
@@ -32,6 +32,10 @@
 const traverse = require('traverse');
 const objectPath = require('object-path');
 const { isNumeric } = require('./validation');
+
+function buildCompositionId(uuid, host, version) {
+  return `${uuid}::${host}::${version}`;
+}
 
 function buildSourceId(host, compositionId) {
   return `${host}-${compositionId.split('::')[0]}`;
@@ -78,18 +82,6 @@ function equals(l, r) {
   return l.toString() === r.toString();
 }
 
-function getCompositionVersions(compositionId) {
-  try {
-    const parts = compositionId.split('::');
-    const version = parseInt(parts[2], 10);
-    const versions = [...Array(version).keys()].map(x => x + 1);
-
-    return versions.map(x => `${parts[0]}::${parts[1]}::${x}`);
-  } catch(err) {
-    return [];
-  }
-}
-
 function lazyLoadAdapter(target) {
   if (!target.initialise) {
     throw new Error('target must has initialise method defined.');
@@ -124,11 +116,30 @@ function parseJsonFormatter(result) {
   return jsonResult;
 }
 
-function parseVersion(compositionId) {
+function parseCompositionId(compositionId) {
   try {
-    return parseInt(compositionId.split('::')[2], 10);
+    const [ uuid, host, version ] = compositionId.split('::');
+
+    return {
+      uuid,
+      host,
+      version
+    };
   } catch (err) {
-    return null;
+    return {};
+  }
+}
+
+function parseSourceId(sourceId) {
+  try {
+    const [ source, ...others ] = sourceId.split('-');
+
+    return {
+      source,
+      uuid: others.join('-')
+    };
+  } catch (err) {
+    return {};
   }
 }
 
@@ -146,14 +157,15 @@ function unflatten(flatObj) {
 }
 
 module.exports = {
+  buildCompositionId,
   buildSourceId,
   flatten,
   flatMap,
   equals,
-  getCompositionVersions,
   lazyLoadAdapter,
   parseAccessToken,
   parseJsonFormatter,
-  parseVersion,
+  parseCompositionId,
+  parseSourceId,
   unflatten
 };
