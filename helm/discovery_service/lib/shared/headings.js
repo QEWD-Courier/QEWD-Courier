@@ -45,6 +45,9 @@ function headingHelpers() {
       console.log('\n msAfterMidnight: e.setHours(0,0,0,0) = ' + e.setHours(0,0,0,0) + '; e = ' + e.getTime());
       return e.getTime() - e.setHours(0,0,0,0);
     },
+    fhirDateTime: function(d) {
+      return new Date(d).toISOString();
+    },
     getNarrative: function(name, route, doseAmount, doseTiming) {
       return name + 'Route: ' + route + '; Dose: ' + doseAmount + '; Timing: ' + doseTiming;
     },
@@ -81,15 +84,14 @@ function headingHelpers() {
     },
     useSnomed: function(arr, property) {
       console.log('*!*!*!* using useSnomed function for ' + property + ' with arr ' + JSON.stringify(arr));
-      return 'Testing';
-    
+      
       var obj;
       var value = '';
       for (var i = 0; i < arr.length; i++) {
         obj = arr[i];
         if (obj.system && obj.system.indexOf('snomed') !== -1) {
           if (obj[property]) {
-            value = obj[property];
+            value = obj[property].toString();
             break;
           }
         }
@@ -121,7 +123,7 @@ function headingHelpers() {
       // if value property defined, but neither code nor terminology are defined, then return the
       //  value and make sure it can't be used for the |value Flat JSON field that will follow in the
       //  template
-    
+      
       if (typeof inputObj === 'string') {
         if (inputObj === '') {
           return '<!delete>';
@@ -185,7 +187,7 @@ function headingHelpers() {
       return value;
     }
   };
-
+  
   return helpers;
 }
 

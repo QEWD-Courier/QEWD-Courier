@@ -1,8 +1,8 @@
 {
   "oidc_client": {
     "hosts": {
-      "oidc_server": "https://helm-dev.ripple.foundation:443",
-      "orchestrator": "https://helm-dev.ripple.foundation:443"
+      "oidc_server": "https://onelondon.ripple.foundation:443",
+      "orchestrator": "https://onelondon.ripple.foundation:443"
     },
     "type": "OpenID Connect",
     "client_id": "foo",
@@ -55,8 +55,8 @@
     },
     "transformations": {
       "pulsetile": {
-        "source": "openehr",
-        "destination": "pulsetile"
+        "source": "openEHR",
+        "destination": "Pulsetile"
       },
       "defaults": {
         "source": "discovery",
@@ -129,7 +129,7 @@
       "personalnotes": true,
       "problems": {
         "template": {
-          "name": "IDCR - Problem List.v1"
+          "name": "IDCR Problem List.v1"
         },
         "fhir": {
           "name": "Condition"
