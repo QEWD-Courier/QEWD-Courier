@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  25 March 2019
+  17 April 2019
 
 */
 
@@ -47,7 +47,6 @@ const PostFeedCommand = require('./postFeed');
 const PostPatientHeadingCommand = require('./postPatientHeading');
 const PostPatientTop3ThingsCommand = require('./postPatientTop3Things');
 const PostRespectFormCommand = require('./postRespectForm');
-const PostRespectFormVersionCommand = require('./postRespectFormVersion');
 const PutFeedCommand = require('./putFeed');
 const PutPatientHeadingCommand = require('./putPatientHeading');
 const PutRespectFormVersionCommand = require('./putRespectFormVersion');
@@ -74,7 +73,6 @@ module.exports = {
   PostPatientHeadingCommand,
   PostPatientTop3ThingsCommand,
   PostRespectFormCommand,
-  PostRespectFormVersionCommand,
   PutFeedCommand,
   PutPatientHeadingCommand,
   PutRespectFormVersionCommand,

@@ -54,7 +54,7 @@ function requestAsync(args) {
         return reject(body);
       }
 
-      // TODO: log headers, there is error
+      // TODO: log headers, there is error x-error-message  / x-error-code
 
       return resolve(parseJsonFormatter(body));
     });
