@@ -41,8 +41,6 @@ const { buildCompositionId, buildSourceId, flatMap, parseCompositionId, flatten,
 const ok = () => ({ ok: true });
 const fail = (err) => ({ ok: false, error: err });
 
-// fix status
-
 class RespectFormsService {
   constructor(ctx) {
     this.ctx = ctx;
@@ -148,7 +146,7 @@ class RespectFormsService {
 
     const compositionId = dbData.uid;
     if (!compositionId) {
-      throw new NotFoundError(`Composition Id not found for sourceId: ${sourceId}`);
+      throw new NotFoundError(`Composition Id not found for sourceId: ${sourceId} and version: ${version}`);
     }
 
     const headingMap = getHeadingMap(heading, 'post');
@@ -235,23 +233,29 @@ class RespectFormsService {
 
           const versionsData = await queryService.postQuery(host, query, { format });
 
-          await P.each(versionsData, async (x) => {
+          const dbData = await P.mapSeries(versionsData, async (x) => {
             const compositionId = buildCompositionId(x.id, compositionHost, x.version);
             const compositionObj = await headingService.get(host, compositionId);
 
-            const dbData = {
+            return {
               heading: heading,
               host: host,
               patientId: patientId,
+              version: x.version,
               date: date,
               data: compositionObj,
-              uid: result.uid
+              uid: compositionId
             };
+          });
 
+          if (dbData && dbData.length > 0) {
             headingCache.byHost.set(patientId, heading, host, sourceId);
             headingCache.byDate.set(patientId, heading, date, sourceId);
-            headingCache.byVersion.set(sourceId, x.version, dbData);
-          });
+
+            dbData.forEach(y => {
+              headingCache.byVersion.set(sourceId, y.version, y);
+            });
+          }
         }
       });
 
@@ -267,17 +271,16 @@ class RespectFormsService {
    * Gets summary data
    *
    * @param  {string|int} patientId
-   * @return {Object[]}
+   * @return {Promise.<Object[]>}
    */
-  getSummary(patientId) {
+  async getSummary(patientId) {
     logger.info('services/respectFormsService|getSummary', { patientId });
 
     const { headingCache } = this.ctx.cache;
 
     const heading = Heading.RESPECT_FORMS;
-    const sourceIds = headingCache.byDate.getAllSourceIds(patientId, heading);
-
-    const mappedVersions = flatMap(sourceIds, (sourceId) => {
+    const sourceIds = headingCache.byHost.getAllSourceIds(patientId, heading);
+    const data = flatMap(sourceIds, (sourceId) => {
       const versions = headingCache.byVersion.getAllVersions(sourceId);
 
       return versions.map(version =>
@@ -288,7 +291,13 @@ class RespectFormsService {
       );
     });
 
-    return mappedVersions.map(x => this.getBySourceId(x.sourceId, x.version, ResponseFormat.SUMMARY));
+    const results = await P.mapSeries(data, (x) => this.getBySourceId(x.sourceId, x.version, ResponseFormat.SUMMARY));
+    const fetchCount = headingCache.fetchCount.increment(patientId, heading);
+
+    return {
+      results,
+      fetchCount
+    };
   }
 }
 

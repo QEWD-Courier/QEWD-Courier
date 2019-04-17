@@ -38,5 +38,25 @@ module.exports = {
       dateCreated: '=> getRippleTime(nss_respect_form.context.start_time)',
       status: '{{nss_respect_form.context.status}}'
     }
+  },
+
+  post: {
+    templateId: 'RESPECT_NSS-v0',
+
+    helperFunctions: {
+      formatDate: function(date) {
+        return new Date(date).toISOString();
+      }
+    },
+
+    transformTemplate: {
+      nss_respect_form: {
+        'composer|name': '{{author}}',
+        context: {
+          start_time: '=> formatDate(dateCreated)',
+          status: '{{status}}'
+        }
+      }
+    }
   }
 };
