@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  17 April 2019
 
 */
 
@@ -31,75 +31,89 @@
 
 const { ExecutionContextMock } = require('@tests/mocks');
 const { BadRequestError } = require('@lib/errors');
+const { Role } = require('@lib/shared/enums');
 const { PostRespectFormCommand } = require('@lib/commands');
 
-xdescribe('lib/commands/postRespectForm', () => {
+describe('lib/commands/postRespectForm', () => {
   let ctx;
+  let session;
 
   let patientId;
-  let data;
 
-  let respectFormsService;
+  let cacheService;
+  let headingService;
 
   beforeEach(() => {
     ctx = new ExecutionContextMock();
-
-    patientId = 9999999111;
-    data = {
-      foo: 'bar'
+    session = {
+      nhsNumber: 9999999000,
+      role: 'IDCR'
     };
 
-    respectFormsService = ctx.services.respectFormsService;
-    respectFormsService.getByPatientId.and.returnValue([
-      {
-        version: 5,
-        author: 'Tony Shannon',
-        dateCreated: 1514808000000,
-        status: 'foo',
-        sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-        source: 'ethercis'
-      }
-    ]);
+    patientId = 9999999111;
+
+    cacheService = ctx.services.cacheService;
+    headingService = ctx.services.headingService;
 
     ctx.services.freeze();
   });
 
-  it('should throw patientId was not defined error', async () => {
-    patientId = '';
+  it('should throw patientId is invalid', async () => {
+    patientId = 'test';
 
-    const command = new PostRespectFormCommand(ctx);
-    const actual = command.execute(patientId, data);
+    const command = new PostRespectFormCommand(ctx, session);
+    const actual = command.execute(patientId);
 
-    await expectAsync(actual).toBeRejectedWith(new BadRequestError('patientId was not defined'));
+    await expectAsync(actual).toBeRejectedWith(new BadRequestError('patientId test is invalid'));
   });
 
-  it('should create new respect form version', async () => {
-    const command = new PostRespectFormCommand(ctx);
-    await command.execute(patientId, data);
-
-    expect(respectFormsService.create).toHaveBeenCalledWith(9999999111, null, { foo: 'bar' });
-  });
-
-  it('should return all respect form versions', async () => {
+  it('should post respectforms, delete cache and return response', async () => {
     const expected = {
-      api: 'getRespectFormVersions',
-      use: 'results',
-      results: [
-        {
-          version: 5,
-          author: 'Tony Shannon',
-          dateCreated: 1514808000000,
-          status: 'foo',
-          sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-          source: 'ethercis'
-        }
-      ]
+      ok: true,
+      host: 'ethercis',
+      heading: 'respectforms',
+      compositionUid: '188a6bbe-d823-4fca-a79f-11c64af5c2e6::vm01.ethercis.org::1'
     };
 
-    const command = new PostRespectFormCommand(ctx);
-    const actual = await command.execute(patientId, data);
+    headingService.post.and.resolveValue({
+      ok: true,
+      host: 'ethercis',
+      heading: 'respectforms',
+      compositionUid: '188a6bbe-d823-4fca-a79f-11c64af5c2e6::vm01.ethercis.org::1'
+    });
 
-    expect(respectFormsService.getByPatientId).toHaveBeenCalledWith(9999999111);
+    const command = new PostRespectFormCommand(ctx, session);
+    const actual = await command.execute(patientId);
+
+    expect(headingService.post).toHaveBeenCalledWith('ethercis', 9999999111, 'respectforms', { data: {}, format: 'pulsetile' });
+    expect(cacheService.delete).toHaveBeenCalledWith('ethercis', 9999999111, 'respectforms');
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should post respectforms, delete cache and return response (phr user)', async () => {
+    const expected = {
+      ok: true,
+      host: 'ethercis',
+      heading: 'respectforms',
+      compositionUid: '188a6bbe-d823-4fca-a79f-11c64af5c2e6::vm01.ethercis.org::1'
+    };
+
+    headingService.post.and.resolveValue({
+      ok: true,
+      host: 'ethercis',
+      heading: 'respectforms',
+      compositionUid: '188a6bbe-d823-4fca-a79f-11c64af5c2e6::vm01.ethercis.org::1'
+    });
+
+    session.role = Role.PHR_USER;
+
+    const command = new PostRespectFormCommand(ctx, session);
+    const actual = await command.execute(patientId);
+
+    expect(headingService.post).toHaveBeenCalledWith('ethercis', 9999999000, 'respectforms', { data: {}, format: 'pulsetile' });
+    expect(cacheService.delete).toHaveBeenCalledWith('ethercis', 9999999000, 'respectforms');
+
     expect(actual).toEqual(expected);
   });
 });

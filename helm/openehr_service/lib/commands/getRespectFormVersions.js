@@ -64,7 +64,6 @@ class GetRespectFormVersionsCommand {
 
     if (!result.ok) {
       logger.debug('No results could be returned from the OpenEHR servers for respectforms heading');
-
       return [];
     }
 

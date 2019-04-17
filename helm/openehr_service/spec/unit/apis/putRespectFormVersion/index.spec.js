@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  17 April 2019
 
 */
 
@@ -32,7 +32,7 @@
 const mockery = require('mockery');
 const { CommandMock, ExecutionContextMock } = require('@tests/mocks');
 
-xdescribe('apis/putRespectFormVersion', () => {
+describe('apis/putRespectFormVersion', () => {
   let args;
   let finished;
 
@@ -61,6 +61,10 @@ xdescribe('apis/putRespectFormVersion', () => {
         body: {
           foo: 'bar'
         }
+      },
+      session: {
+        nhsNumber: 9999999000,
+        role: 'phrUser'
       }
     };
     finished = jasmine.createSpy();
@@ -80,18 +84,10 @@ xdescribe('apis/putRespectFormVersion', () => {
   it('should return response object', async () => {
     const responseObj = [
       {
-        api: 'getRespectFormVersions',
-        use: 'results',
-        results: [
-          {
-            version: 5,
-            author: 'Tony Shannon',
-            dateCreated: 1514808000000,
-            status: 'foo',
-            sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-            source: 'ethercis'
-          }
-        ]
+        ok: true,
+        host: 'ethercis',
+        heading: 'respectforms',
+        compositionUid: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7::vm01.ethercis.org::6'
       }
     ];
 
@@ -99,7 +95,7 @@ xdescribe('apis/putRespectFormVersion', () => {
 
     await handler(args, finished);
 
-    expect(PutRespectFormVersionCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(PutRespectFormVersionCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
     expect(command.execute).toHaveBeenCalledWith(args.patientId, args.sourceId, args.version, args.req.body);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
@@ -110,7 +106,7 @@ xdescribe('apis/putRespectFormVersion', () => {
 
     await handler(args, finished);
 
-    expect(PutRespectFormVersionCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(PutRespectFormVersionCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
     expect(command.execute).toHaveBeenCalledWith(args.patientId, args.sourceId, args.version, args.req.body);
 
     expect(finished).toHaveBeenCalledWith({

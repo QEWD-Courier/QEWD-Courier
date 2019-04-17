@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  17 April 2019
 
 */
 
@@ -32,7 +32,7 @@
 const mockery = require('mockery');
 const { CommandMock, ExecutionContextMock } = require('@tests/mocks');
 
-xdescribe('apis/postRespectForm', () => {
+describe('apis/postRespectForm', () => {
   let args;
   let finished;
 
@@ -55,10 +55,11 @@ xdescribe('apis/postRespectForm', () => {
     args = {
       patientId: 9999999111,
       req: {
-        ctx: new ExecutionContextMock(),
-        body: {
-          foo: 'bar'
-        }
+        ctx: new ExecutionContextMock()
+      },
+      session: {
+        nhsNumber: 9999999000,
+        role: 'phrUser'
       }
     };
     finished = jasmine.createSpy();
@@ -78,18 +79,10 @@ xdescribe('apis/postRespectForm', () => {
   it('should return response object', async () => {
     const responseObj = [
       {
-        api: 'getRespectFormVersions',
-        use: 'results',
-        results: [
-          {
-            version: 5,
-            author: 'Tony Shannon',
-            dateCreated: 1514808000000,
-            status: 'foo',
-            sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-            source: 'ethercis'
-          }
-        ]
+        ok: true,
+        host: 'ethercis',
+        heading: 'respectforms',
+        compositionUid: '188a6bbe-d823-4fca-a79f-11c64af5c2e6::vm01.ethercis.org::1'
       }
     ];
 
@@ -97,8 +90,8 @@ xdescribe('apis/postRespectForm', () => {
 
     await handler(args, finished);
 
-    expect(PostRespectFormCommand).toHaveBeenCalledWith(args.req.ctx);
-    expect(command.execute).toHaveBeenCalledWith(args.patientId, args.req.body);
+    expect(PostRespectFormCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
+    expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
   });
@@ -108,8 +101,8 @@ xdescribe('apis/postRespectForm', () => {
 
     await handler(args, finished);
 
-    expect(PostRespectFormCommand).toHaveBeenCalledWith(args.req.ctx);
-    expect(command.execute).toHaveBeenCalledWith(args.patientId, args.req.body);
+    expect(PostRespectFormCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
+    expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith({
       error: 'custom error'

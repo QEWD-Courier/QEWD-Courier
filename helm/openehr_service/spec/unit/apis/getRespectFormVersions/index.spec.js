@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  26 March 2019
+  17 April 2019
 
 */
 
@@ -32,7 +32,7 @@
 const mockery = require('mockery');
 const { CommandMock, ExecutionContextMock } = require('@tests/mocks');
 
-xdescribe('apis/getRespectFormVersions', () => {
+describe('apis/getRespectFormVersions', () => {
   let args;
   let finished;
 
@@ -54,10 +54,12 @@ xdescribe('apis/getRespectFormVersions', () => {
   beforeEach(() => {
     args = {
       patientId: 9999999111,
-      sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-      version: 5,
       req: {
         ctx: new ExecutionContextMock()
+      },
+      session: {
+        nhsNumber: 9999999000,
+        role: 'phrUser'
       }
     };
     finished = jasmine.createSpy();
@@ -96,7 +98,7 @@ xdescribe('apis/getRespectFormVersions', () => {
 
     await handler(args, finished);
 
-    expect(GetRespectFormVersionsCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(GetRespectFormVersionsCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
     expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
@@ -107,7 +109,7 @@ xdescribe('apis/getRespectFormVersions', () => {
 
     await handler(args, finished);
 
-    expect(GetRespectFormVersionsCommand).toHaveBeenCalledWith(args.req.ctx);
+    expect(GetRespectFormVersionsCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
     expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith({

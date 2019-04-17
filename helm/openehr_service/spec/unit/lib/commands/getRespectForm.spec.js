@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  17 April 2019
 
 */
 
@@ -31,10 +31,12 @@
 
 const { ExecutionContextMock } = require('@tests/mocks');
 const { BadRequestError } = require('@lib/errors');
+const { Role } = require('@lib/shared/enums');
 const { GetRespectFormCommand } = require('@lib/commands');
 
-xdescribe('lib/commands/getRespectForm', () => {
+describe('lib/commands/getRespectForm', () => {
   let ctx;
+  let session;
 
   let patientId;
   let sourceId;
@@ -44,65 +46,59 @@ xdescribe('lib/commands/getRespectForm', () => {
 
   beforeEach(() => {
     ctx = new ExecutionContextMock();
+    session = {
+      nhsNumber: 9999999000,
+      role: 'IDCR'
+    };
 
     patientId = 9999999111;
-    sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
+    sourceId = 'ethercis-2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
     version = 5;
 
     respectFormsService = ctx.services.respectFormsService;
-    respectFormsService.validateGet.and.returnValue({ ok : true });
-    respectFormsService.get.and.returnValue({
-      version: 5,
-      author: 'Tony Shannon',
-      dateCreated: 1514808000000,
-      status: 'foo',
-      sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-      source: 'ethercis'
-    });
 
     ctx.services.freeze();
   });
 
-  it('should throw patientId was not defined error', async () => {
-    patientId = '';
+  it('should throw patientId is invalid error', async () => {
+    patientId = 'test';
 
-    const command = new GetRespectFormCommand(ctx);
+    const command = new GetRespectFormCommand(ctx, session);
     const actual = command.execute(patientId, sourceId, version);
 
-    await expectAsync(actual).toBeRejectedWith(new BadRequestError('patientId was not defined'));
+    await expectAsync(actual).toBeRejectedWith(new BadRequestError('patientId test is invalid'));
   });
 
-  it('should throw sourceId was not defined error', async () => {
-    sourceId = '';
+  it('should return empty obj if sourceId is invalid', async () => {
+    const expected = {};
 
-    const command = new GetRespectFormCommand(ctx);
-    const actual = command.execute(patientId, sourceId, version);
+    sourceId = 'foo';
 
-    await expectAsync(actual).toBeRejectedWith(new BadRequestError('sourceId was not defined'));
+    const command = new GetRespectFormCommand(ctx, session);
+    const actual = await command.execute(patientId, sourceId, version);
+
+    expect(actual).toEqual(expected);
   });
 
   it('should throw version was not defined error', async () => {
     version = '';
 
-    const command = new GetRespectFormCommand(ctx);
+    const command = new GetRespectFormCommand(ctx, session);
     const actual = command.execute(patientId, sourceId, version);
 
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('version was not defined'));
   });
 
-  it('should throw validate get error', async () => {
-    respectFormsService.validateGet.and.returnValue({
-      error: 'custom error'
-    });
+  it('should return empty when no results from openehr', async () => {
+    const expected = {};
 
-    const command = new GetRespectFormCommand(ctx);
-    const actual = command.execute(patientId, sourceId, version);
+    respectFormsService.fetchOne.and.resolveValue({ ok: false });
 
-    await expectAsync(actual).toBeRejectedWith(new BadRequestError('custom error'));
+    const command = new GetRespectFormCommand(ctx, session);
+    const actual = await command.execute(patientId, sourceId, version);
 
-    expect(respectFormsService.validateGet).toHaveBeenCalledWith(
-      9999999111, '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5
-    );
+    expect(respectFormsService.fetchOne).toHaveBeenCalledWith(9999999111);
+    expect(actual).toEqual(expected);
   });
 
   it('should return respect form data', async () => {
@@ -117,11 +113,54 @@ xdescribe('lib/commands/getRespectForm', () => {
       }
     };
 
-    const command = new GetRespectFormCommand(ctx);
+    respectFormsService.fetchOne.and.resolveValue({ ok: true });
+    respectFormsService.getBySourceId.and.resolveValue({
+      version: 5,
+      author: 'Tony Shannon',
+      dateCreated: 1514808000000,
+      status: 'foo',
+      sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
+      source: 'ethercis'
+    });
+
+    const command = new GetRespectFormCommand(ctx, session);
     const actual = await command.execute(patientId, sourceId, version);
 
-    expect(respectFormsService.validateGet).toHaveBeenCalledWith(9999999111, '2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-    expect(respectFormsService.get).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
+    expect(respectFormsService.fetchOne).toHaveBeenCalledWith(9999999111);
+    expect(respectFormsService.getBySourceId).toHaveBeenCalledWith('ethercis-2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should return respect form data (phr user)', async () => {
+    const expected = {
+      respect_form: {
+        version: 5,
+        author: 'Tony Shannon',
+        dateCreated: 1514808000000,
+        status: 'foo',
+        sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
+        source: 'ethercis'
+      }
+    };
+
+    respectFormsService.fetchOne.and.resolveValue({ ok: true });
+    respectFormsService.getBySourceId.and.resolveValue({
+      version: 5,
+      author: 'Tony Shannon',
+      dateCreated: 1514808000000,
+      status: 'foo',
+      sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
+      source: 'ethercis'
+    });
+
+    session.role = Role.PHR_USER;
+
+    const command = new GetRespectFormCommand(ctx, session);
+    const actual = await command.execute(patientId, sourceId, version);
+
+    expect(respectFormsService.fetchOne).toHaveBeenCalledWith(9999999000);
+    expect(respectFormsService.getBySourceId).toHaveBeenCalledWith('ethercis-2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
 
     expect(actual).toEqual(expected);
   });

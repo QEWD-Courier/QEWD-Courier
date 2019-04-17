@@ -64,6 +64,10 @@ class GetRespectFormCommand {
       return {};
     }
 
+    if (!version) {
+      throw new BadRequestError('version was not defined');
+    }
+
     const { respectFormsService } = this.ctx.services;
 
     const result = await respectFormsService.fetchOne(patientId);
@@ -71,8 +75,7 @@ class GetRespectFormCommand {
 
     if (!result.ok) {
       logger.debug('No results could be returned from the OpenEHR servers for respectforms heading');
-
-      return [];
+      return {};
     }
 
     const resultObj = await respectFormsService.getBySourceId(sourceId, version);

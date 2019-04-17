@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  17 April 2019
 
 */
 
@@ -71,12 +71,6 @@ class PostRespectFormCommand {
     await cacheService.delete(host, patientId, heading);
 
     return responseObj;
-
-    // return {
-    //   api: 'getRespectFormVersions',
-    //   use: 'results',
-    //   results: resultObj
-    // };
   }
 }
 
