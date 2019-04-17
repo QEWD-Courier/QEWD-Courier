@@ -30,7 +30,6 @@
 'use strict';
 
 const { ExecutionContextMock } = require('@tests/mocks');
-const { NotFoundError, UnprocessableEntityError } = require('@lib/errors');
 const QueryService = require('@lib/services/queryService');
 
 describe('lib/services/queryService', () => {
@@ -80,7 +79,7 @@ describe('lib/services/queryService', () => {
       });
 
       const host = 'ethercis';
-      const query = 'foo'
+      const query = 'foo';
       const actual = await queryService.query(host, query);
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
@@ -96,7 +95,7 @@ describe('lib/services/queryService', () => {
       ethercisEhrRestService.query.and.resolveValue({});
 
       const host = 'ethercis';
-      const query = 'foo'
+      const query = 'foo';
       const actual = await queryService.query(host, query);
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
@@ -112,8 +111,8 @@ describe('lib/services/queryService', () => {
       ethercisEhrRestService.query.and.resolveValue({});
 
       const host = 'ethercis';
-      const query = 'foo'
-      const format = 'sql'
+      const query = 'foo';
+      const format = 'sql';
       const actual = await queryService.query(host, query, { format });
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
@@ -141,7 +140,7 @@ describe('lib/services/queryService', () => {
       });
 
       const host = 'ethercis';
-      const query = 'foo'
+      const query = 'foo';
       const actual = await queryService.postQuery(host, query);
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
@@ -157,7 +156,7 @@ describe('lib/services/queryService', () => {
       ethercisEhrRestService.postQuery.and.resolveValue({});
 
       const host = 'ethercis';
-      const query = 'foo'
+      const query = 'foo';
       const actual = await queryService.postQuery(host, query);
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
@@ -173,8 +172,8 @@ describe('lib/services/queryService', () => {
       ethercisEhrRestService.postQuery.and.resolveValue({});
 
       const host = 'ethercis';
-      const query = 'foo'
-      const format = 'sql'
+      const query = 'foo';
+      const format = 'sql';
       const actual = await queryService.postQuery(host, query, { format });
 
       expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
