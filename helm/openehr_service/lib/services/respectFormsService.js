@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  17 April 2019
 
 */
 
@@ -56,11 +56,11 @@ class RespectFormsService {
    * Gets formatted data by source id and version
    *
    * @param  {string} sourceId
-   * @param  {int} number
+   * @param  {int} version
    * @param  {string} format
-   * @return {Object}
+   * @return {Promise.<Object>}
    */
-  getBySourceId(sourceId, version, format = ResponseFormat.DETAIL) {
+  async getBySourceId(sourceId, version, format = ResponseFormat.DETAIL) {
     logger.info('services/respectFormsService|getBySourceId', { sourceId, version, format });
 
     let responseObj = {};
@@ -98,7 +98,7 @@ class RespectFormsService {
       responseObj.version = version;
 
       dbData.pulsetile = responseObj;
-      headingCache.bySourceId.set(sourceId, dbData);
+      headingCache.byVersion.set(sourceId, version, dbData);
     }
 
     // only return the synopsis

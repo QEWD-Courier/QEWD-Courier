@@ -23,367 +23,394 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  17 April 2019
 
 */
 
 'use strict';
 
 const { ExecutionContextMock } = require('@tests/mocks');
-const { uuidV4Regex } = require('@tests/helpers/utils');
+const { UnprocessableEntityError } = require('@lib/errors');
 const RespectFormsService = require('@lib/services/respectFormsService');
 
-xdescribe('lib/services/respectFormsService', () => {
+describe('lib/services/respectFormsService', () => {
   let ctx;
   let respectFormsService;
 
-  let respectFormDb;
+  let headingCache;
 
   beforeEach(() => {
     ctx = new ExecutionContextMock();
     respectFormsService = new RespectFormsService(ctx);
 
-    respectFormDb = ctx.db.respectFormDb;
+    headingCache = ctx.cache.headingCache;
 
     ctx.freeze();
   });
 
   describe('#create (static)', () => {
     it('should initialize a new instance', async () => {
-      const actual = respectFormsService.create(ctx);
+      const actual = RespectFormsService.create(ctx);
 
-      expect(actual).toEqual(jasmine.any(respectFormsService));
+      expect(actual).toEqual(jasmine.any(RespectFormsService));
       expect(actual.ctx).toBe(ctx);
-      expect(actual.respectFormDb).toBe(respectFormDb);
     });
   });
 
-  describe('#getByPatientId', () => {
-    it('should return respect form versions', async () => {
-      const expected = [
-        {
-          version: 5,
-          author: 'Tony Shannon',
-          dateCreated: 1514808000000,
-          status: 'foo',
-          sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-          source: 'ethercis'
-        }
-      ];
+  describe('#getBySourceId', () => {
+    it('should return empty object when no data in cache', async () => {
+      const expected = {};
 
-      const dbData = [...expected];
-      respectFormDb.getByPatientId.and.returnValue(dbData);
+      const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      const version = 3;
+      const actual = await respectFormsService.getBySourceId(sourceId, version);
 
-      const patientId = 9999999000;
-      const actual = await respectFormsService.getByPatientId(patientId);
-
-      expect(respectFormDb.getByPatientId).toHaveBeenCalledWith(9999999000);
-      expect(actual).toEqual(expected);
-    });
-  });
-
-  describe('#validateGet', () => {
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The selected patient does not have any Respect Forms'
-      };
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateGet(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-
+      expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
       expect(actual).toEqual(expected);
     });
 
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The specified sourceId does not exist'
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateGet(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return the specified sourceId and version does not exist', () => {
-      const expected = {
-        error: 'The specified sourceId and version does not exist'
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-      respectFormDb.bySourceId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateGet(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-      expect(respectFormDb.byVersion.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return ok', () => {
-      const expected = {
-        ok: true
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-      respectFormDb.bySourceId.exists.and.returnValue(true);
-      respectFormDb.byVersion.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateGet(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-      expect(respectFormDb.byVersion.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-
-      expect(actual).toEqual(expected);
-    });
-  });
-
-  describe('#get', () => {
-    it('should return respect form version data', () => {
-      const expected = {
-        version: 5,
-        author: 'Tony Shannon',
-        dateCreated: 1514808000000,
-        status: 'foo',
-        sourceId: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7',
-        source: 'ethercis'
-      };
-
+    it('should throw unprocessable entity error when headings is not recognised', async () => {
       const dbData = {
-        ...expected
+        heading: 'test'
       };
-      respectFormDb.byVersion.getCompositionId.and.returnValue(16);
-      respectFormDb.byId.get.and.returnValue(dbData);
+      headingCache.byVersion.get.and.returnValue(dbData);
 
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.get(sourceId, version);
+      const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      const version = 3;
+      const actual = respectFormsService.getBySourceId(sourceId, version);
 
-      expect(respectFormDb.byVersion.getCompositionId).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-      expect(respectFormDb.byId.get).toHaveBeenCalledWith(16, 5);
+      await expectAsync(actual).toBeRejectedWith(
+        new UnprocessableEntityError('heading test not recognised')
+      );
 
-      expect(actual).toEqual(expected);
+      expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+    });
+
+    it('should throw unprocessable entity error when heading not recognised, or no GET definition availables', async () => {
+      const dbData = {
+        heading: 'respectforms-test',
+        host: 'ethercis',
+        data: {
+          uid: '0f7192e9-168e-4dea-812a-3e1d236ae46d::vm01.ethercis.org::3'
+        }
+      };
+
+      headingCache.byVersion.get.and.returnValue(dbData);
+
+      const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      const version = 3;
+      const actual = respectFormsService.getBySourceId(sourceId, version);
+
+      await expectAsync(actual).toBeRejectedWith(
+        new UnprocessableEntityError('heading respectforms-test not recognised, or no GET definition available')
+      );
+
+      expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+    });
+
+    describe('pulsetile', () => {
+      let dbData;
+
+      beforeEach(() => {
+        dbData = {
+          heading: 'respectforms',
+          pulsetile: {
+            source: 'ethercis',
+            sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+            version: 3,
+            author: 'Alexey K',
+            dateCreated: 1546300800000,
+            status: 'foo'
+          }
+        };
+      });
+
+      it('should return detail', async () => {
+        const expected = {
+          source: 'ethercis',
+          sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+          version: 3,
+          author: 'Alexey K',
+          dateCreated: 1546300800000,
+          status: 'foo'
+        };
+
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        const actual = await respectFormsService.getBySourceId(sourceId, version);
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return synopsis', async () => {
+        const expected = {
+          sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+          source: 'ethercis',
+          version: 3,
+          text: 1546300800000
+        };
+
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        const actual = await respectFormsService.getBySourceId(sourceId, version, 'synopsis');
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return synopsis (no values)', async () => {
+        const expected = {
+          sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+          source: 'ethercis',
+          version: 3,
+          text: ''
+        };
+
+        delete dbData.pulsetile.dateCreated;
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        const actual = await respectFormsService.getBySourceId(sourceId, version, 'synopsis');
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return summary', async () => {
+        const expected = {
+          sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+          source: 'ethercis',
+          version: 3,
+          author: 'Alexey K',
+          dateCreated: 1546300800000,
+          status: 'foo'
+        };
+
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        const actual = await respectFormsService.getBySourceId(sourceId, version, 'summary');
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return summary (no values)', async () => {
+        const expected = {
+          sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+          source: 'ethercis',
+          version: 3,
+          author: '',
+          dateCreated: '',
+          status: ''
+        };
+
+        ['author', 'dateCreated', 'status'].forEach(x => delete dbData.pulsetile[x]);
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        const actual = await respectFormsService.getBySourceId(sourceId, version, 'summary');
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('transform to pulsetile', () => {
+      let dbData;
+
+      beforeEach(() => {
+        dbData = {
+          heading: 'respectforms',
+          host: 'ethercis',
+          data: {
+            nss_respect_form: {
+              'composer|name': 'Alexey K',
+              context: {
+                start_time: '2019-04-16T00:00:00.000Z',
+                status: 'foo'
+              }
+            }
+          }
+        };
+      });
+
+      it('should transform data to pulsetile and cache it', async () => {
+        const expected = {
+          heading: 'respectforms',
+          host: 'ethercis',
+          data: {
+            nss_respect_form: {
+              'composer|name': 'Alexey K',
+              context: {
+                start_time: '2019-04-16T00:00:00.000Z',
+                status: 'foo'
+              }
+            }
+          },
+          pulsetile: {
+            source: 'ethercis',
+            sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+            version: 3,
+            author: 'Alexey K',
+            dateCreated: 1555369200000,
+            status: 'foo'
+          }
+        };
+
+        headingCache.byVersion.get.and.returnValue(dbData);
+
+        const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+        const version = 3;
+        await respectFormsService.getBySourceId(sourceId,version);
+
+        expect(headingCache.byVersion.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3);
+        expect(headingCache.byVersion.set).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', 3, expected);
+      });
+
+      // it('should return detail', async () => {
+      //   const expected = {
+      //     source: 'ethercis',
+      //     sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+      //     noteType: 'some type',
+      //     notes: 'some personal notes',
+      //     author: 'Foo Bar',
+      //     dateCreated: 1517486400000
+      //   };
+
+      //   headingCache.bySourceId.get.and.returnValue(dbData);
+      //   jumperService.check.and.returnValue({ ok: false });
+      //   discoveryDb.checkBySourceId.and.returnValue(false);
+
+      //   const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      //   const actual = await headingService.getBySourceId(sourceId);
+
+      //   expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+      //   expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'getBySourceId');
+      //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
+      //     'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', jasmine.any(Object)
+      //   );
+      //   expect(discoveryDb.checkBySourceId).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+
+      //   expect(actual).toEqual(expected);
+      // });
+
+      // it('should return synopsis', async () => {
+      //   const expected = {
+      //     source: 'ethercis',
+      //     sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+      //     text: 'some type'
+      //   };
+
+      //   headingCache.bySourceId.get.and.returnValue(dbData);
+      //   jumperService.check.and.returnValue({ ok: false });
+      //   discoveryDb.checkBySourceId.and.returnValue(false);
+
+      //   const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      //   const actual = await headingService.getBySourceId(sourceId, 'synopsis');
+
+      //   expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+      //   expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'getBySourceId');
+      //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
+      //     'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', jasmine.any(Object)
+      //   );
+      //   expect(discoveryDb.checkBySourceId).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+
+      //   expect(actual).toEqual(expected);
+      // });
+
+      // it('should return synopsis (no values)', async () => {
+      //   const expected = {
+      //     source: 'ethercis',
+      //     sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+      //     text: ''
+      //   };
+
+      //   delete dbData.data.type;
+
+      //   headingCache.bySourceId.get.and.returnValue(dbData);
+      //   jumperService.check.and.returnValue({ ok: false });
+      //   discoveryDb.checkBySourceId.and.returnValue(false);
+
+      //   const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      //   const actual = await headingService.getBySourceId(sourceId, 'synopsis');
+
+      //   expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+      //   expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'getBySourceId');
+      //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
+      //     'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', jasmine.any(Object)
+      //   );
+      //   expect(discoveryDb.checkBySourceId).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+
+      //   expect(actual).toEqual(expected);
+      // });
+
+      // it('should return summary', async () => {
+      //   const expected = {
+      //     source: 'ethercis',
+      //     sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+      //     noteType: 'some type',
+      //     author: 'Foo Bar',
+      //     dateCreated: 1517486400000
+      //   };
+
+      //   headingCache.bySourceId.get.and.returnValue(dbData);
+      //   jumperService.check.and.returnValue({ ok: false });
+      //   discoveryDb.checkBySourceId.and.returnValue(false);
+
+      //   const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      //   const actual = await headingService.getBySourceId(sourceId, 'summary');
+
+      //   expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+      //   expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'getBySourceId');
+      //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
+      //     'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', jasmine.any(Object)
+      //   );
+      //   expect(discoveryDb.checkBySourceId).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+
+      //   expect(actual).toEqual(expected);
+      // });
+
+      // it('should return summary (no values)', async () => {
+      //   const expected = {
+      //     source: 'ethercis',
+      //     sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
+      //     noteType: 'some type',
+      //     author: '',
+      //     dateCreated: 1517486400000
+      //   };
+
+      //   delete dbData.data.author;
+
+      //   headingCache.bySourceId.get.and.returnValue(dbData);
+      //   jumperService.check.and.returnValue({ ok: false });
+      //   discoveryDb.checkBySourceId.and.returnValue(false);
+
+      //   const sourceId = 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      //   const actual = await headingService.getBySourceId(sourceId, 'summary');
+
+      //   expect(headingCache.bySourceId.get).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+      //   expect(jumperService.check).toHaveBeenCalledWith('personalnotes', 'getBySourceId');
+      //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
+      //     'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d', jasmine.any(Object)
+      //   );
+      //   expect(discoveryDb.checkBySourceId).toHaveBeenCalledWith('ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d');
+
+      //   expect(actual).toEqual(expected);
+      // });
     });
   });
-
-  describe('#validateCreate', () => {
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The selected patient does not have any Respect Forms'
-      };
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const actual = respectFormsService.validateCreate(patientId, sourceId);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The specified sourceId does not exist'
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const actual = respectFormsService.validateCreate(patientId, sourceId);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return ok', () => {
-      const expected = {
-        ok: true
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-      respectFormDb.bySourceId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const actual = respectFormsService.validateCreate(patientId, sourceId);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-
-      expect(actual).toEqual(expected);
-    });
-  });
-
-  describe('#create', () => {
-    it('should create respect form version data (no sourceId)', () => {
-      respectFormDb.byId.nextCompositionId.and.returnValue(33);
-      respectFormDb.byId.nextVersion.and.returnValue(1);
-
-      const patientId = 9999999000;
-      const sourceId = null;
-      const data = {
-        foo: 'bar'
-      };
-      respectFormsService.create(patientId, sourceId, data);
-
-      expect(respectFormDb.byId.nextCompositionId).toHaveBeenCalledWith();
-      expect(respectFormDb.byId.nextVersion).toHaveBeenCalledWith(33);
-      expect(respectFormDb.byId.set).toHaveBeenCalledWith(33, 1, data);
-
-      expect(data.patientId).toEqual(9999999000);
-      expect(data.uuid).toMatch(uuidV4Regex);
-    });
-
-    it('should create respect form version data (with sourceId)', () => {
-      respectFormDb.bySourceId.getCompositionId.and.returnValue(45);
-      respectFormDb.byId.nextVersion.and.returnValue(10);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const data = {
-        foo: 'bar'
-      };
-      respectFormsService.create(patientId, sourceId, data);
-
-      expect(respectFormDb.bySourceId.getCompositionId).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-      expect(respectFormDb.byId.nextVersion).toHaveBeenCalledWith(45);
-      expect(respectFormDb.byId.set).toHaveBeenCalledWith(45, 10, data);
-
-      expect(data.patientId).toEqual(9999999000);
-      expect(data.uuid).toMatch('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-    });
-  });
-
-  describe('#validateUpdate', () => {
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The selected patient does not have any Respect Forms'
-      };
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateUpdate(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return the selected patient does not have any Respect Forms error', () => {
-      const expected = {
-        error: 'The specified sourceId does not exist'
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateUpdate(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return the specified sourceId and version does not exist', () => {
-      const expected = {
-        error: 'The specified sourceId and version does not exist'
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-      respectFormDb.bySourceId.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateUpdate(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-      expect(respectFormDb.byVersion.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return ok', () => {
-      const expected = {
-        ok: true
-      };
-
-      respectFormDb.byPatientId.exists.and.returnValue(true);
-      respectFormDb.bySourceId.exists.and.returnValue(true);
-      respectFormDb.byVersion.exists.and.returnValue(true);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 5;
-      const actual = respectFormsService.validateUpdate(patientId, sourceId, version);
-
-
-      expect(respectFormDb.byPatientId.exists).toHaveBeenCalledWith(9999999000);
-      expect(respectFormDb.bySourceId.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-      expect(respectFormDb.byVersion.exists).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 5);
-
-      expect(actual).toEqual(expected);
-    });
-  });
-
-  describe('#update', () => {
-    it('should update respect form version data', () => {
-      respectFormDb.byVersion.getCompositionId.and.returnValue(76);
-      respectFormDb.byId.nextVersion.and.returnValue(10);
-
-      const patientId = 9999999000;
-      const sourceId = '2d800bcb-4b17-4cd3-8ad0-e34a786158a7';
-      const version = 88;
-      const data = {
-        foo: 'bar'
-      };
-      respectFormsService.update(patientId, sourceId, version, data);
-
-      expect(respectFormDb.byVersion.getCompositionId).toHaveBeenCalledWith('2d800bcb-4b17-4cd3-8ad0-e34a786158a7', 88);
-      expect(respectFormDb.byId.delete).toHaveBeenCalledWith(76, 88);
-      expect(respectFormDb.byId.set).toHaveBeenCalledWith(76, 88, data);
-
-      expect(data.patientId).toEqual(9999999000);
-      expect(data.uuid).toMatch('2d800bcb-4b17-4cd3-8ad0-e34a786158a7');
-    });
-  });
-
 });

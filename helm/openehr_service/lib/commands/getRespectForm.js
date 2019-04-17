@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  17 April 2019
 
 */
 
@@ -75,7 +75,7 @@ class GetRespectFormCommand {
       return [];
     }
 
-    const resultObj = respectFormsService.getBySourceId(sourceId, version);
+    const resultObj = await respectFormsService.getBySourceId(sourceId, version);
     logger.debug('resultObj:', { resultObj });
 
     return {

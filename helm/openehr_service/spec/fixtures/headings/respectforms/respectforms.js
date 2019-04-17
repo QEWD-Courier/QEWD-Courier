@@ -2,7 +2,7 @@
 
  ----------------------------------------------------------------------------
  |                                                                          |
- | Copyright (c) 2019 Ripple Foundation Community Interest Company          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
  | All rights reserved.                                                     |
  |                                                                          |
  | http://rippleosi.org                                                     |
@@ -27,52 +27,16 @@
 
 */
 
-'use strict';
-
-const BadRequestError = require('./BadRequestError');
-const EhrIdNotFoundError = require('./EhrIdNotFoundError');
-const EhrSessionError = require('./EhrSessionError');
-const ForbiddenError = require('./ForbiddenError');
-const NotFoundError = require('./NotFoundError');
-const UnprocessableEntityError = require('./UnprocessableEntityError');
-
-function qewdifyError(err) {
-  return {
-    error: err.userMessage || err.message
-  };
-}
-
-function parseEthercisError(response) {
-  if (response.headers['x-error-message']) {
-    return {
-      code: response.headers['x-error-code'],
-      message: response.headers['x-error-message']
-    };
-  }
-
-  if (response.body && typeof response.body === 'string' && response.body.substring(0, 6) === '<html>') {
-    return {
-      message: response.body
-    };
-  }
-
-  return null;
-}
-
-function getResponseError(err = new Error('Unknown error')) {
-  const resultError = err.error ? err : qewdifyError(err);
-
-  return resultError;
-}
-
 module.exports = {
-  BadRequestError,
-  EhrIdNotFoundError,
-  EhrSessionError,
-  ForbiddenError,
-  NotFoundError,
-  UnprocessableEntityError,
-  getResponseError,
-  parseEthercisError,
-  qewdifyError
+  name: 'respectforms',
+  textFieldName: 'dateCreated',
+  headingTableFields: ['author', 'dateCreated', 'status'],
+
+  get: {
+    transformTemplate: {
+      author: '{{nss_respect_form["composer|name"]}}',
+      dateCreated: '=> getRippleTime(nss_respect_form.context.start_time)',
+      status: '{{nss_respect_form.context.status}}'
+    }
+  }
 };

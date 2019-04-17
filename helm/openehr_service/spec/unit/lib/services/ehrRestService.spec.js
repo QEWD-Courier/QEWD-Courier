@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -92,7 +92,26 @@ describe('lib/services/ehrRestService', () => {
          expect(err).toEqual(expected);
        }
     });
+
+    it('should send request to start session and handle html error response', async () => {
+      const expected = {
+        'message': '<html>some text</html>'
+      };
+
+      nock('http://178.62.71.220:8080')
+        .post('/rest/v1/session?username=bar&password=quux')
+        .matchHeader('x-max-session', 75)
+        .matchHeader('x-session-timeout', 120000)
+        .reply(403, '<html>some text</html>');
+
+       try {
+         await ehrRestService.startSession();
+       } catch (err) {
+         expect(err).toEqual(expected);
+       }
+    });
   });
+
 
   describe('#stopSession', () => {
     it('should send request to stop session', async () => {
@@ -231,8 +250,57 @@ describe('lib/services/ehrRestService', () => {
     });
   });
 
-  describe('#postHeading', () => {
-    it('should send request to post heading record', async () => {
+  describe('#getComposition', () => {
+    it('should send request to get composition record', async () => {
+      const expected = {
+        composition: {
+          foo: 'bar'
+        }
+      };
+
+      nock('http://178.62.71.220:8080')
+        .get('/rest/v1/composition/0f7192e9-168e-4dea-812a-3e1d236ae46d?format=FLAT')
+        .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
+        .reply(200, {
+          composition: {
+            foo: 'bar'
+          }
+        });
+
+      const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
+      const compositionId = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
+      const actual = await ehrRestService.getComposition(sessionId, compositionId);
+
+      expect(nock).toHaveBeenDone();
+      expect(actual).toEqual(expected);
+    });
+
+    it('should send request to get composition record and handle error', async () => {
+      const expected = {
+        'message': 'something awful',
+        'code': 'AWFUL_ERROR'
+      };
+
+      nock('http://178.62.71.220:8080')
+        .get('/rest/v1/composition/0f7192e9-168e-4dea-812a-3e1d236ae46d?format=FLAT')
+        .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
+        .replyWithError({
+          'message': 'something awful',
+          'code': 'AWFUL_ERROR'
+        });
+
+       try {
+         const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
+         const compositionId = '0f7192e9-168e-4dea-812a-3e1d236ae46d';
+         await ehrRestService.getComposition(sessionId, compositionId);
+       } catch (err) {
+         expect(err).toEqual(expected);
+       }
+    });
+  });
+
+  describe('#postComposition', () => {
+    it('should send request to post composition record', async () => {
       const expected = {
         compositionUid: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       };
@@ -276,37 +344,33 @@ describe('lib/services/ehrRestService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('should send request to post heading record and handle error', async () => {
+    it('should send request to post composition record and handle error', async () => {
       const expected = {
         'message': 'something awful',
         'code': 'AWFUL_ERROR'
       };
 
       nock('http://178.62.71.220:8080')
-        .post('/rest/v1/ehr?subjectId=9999999000&subjectNamespace=uk.nhs.nhs_number', {
-          subjectId: 9999999000,
-          subjectNamespace: 'uk.nhs.nhs_number',
-          queryable: 'true',
-          modifiable: 'true'
-        })
+        .post('/rest/v1/composition?templateId=RIPPLE%20-%20Personal%20Notes.v1&ehrId=74b6a24b-bd97-47f0-ac6f-a632d0cac60f&format=FLAT')
         .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
-        .replyWithError({
-          'message': 'something awful',
-          'code': 'AWFUL_ERROR'
+        .reply(200, {
+          compositionUid: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
         });
 
        try {
          const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
-         const patientId = 9999999000;
-         await ehrRestService.postEhr(sessionId, patientId);
+         const ehrId = '74b6a24b-bd97-47f0-ac6f-a632d0cac60f';
+         const templateId = 'RIPPLE - Personal Notes.v1';
+         const data = {};
+         await ehrRestService.postComposition(sessionId, ehrId, templateId, data);
        } catch (err) {
          expect(err).toEqual(expected);
        }
     });
   });
 
-  describe('#putHeading', () => {
-    it('should send request to put heading record', async () => {
+  describe('#putComposition', () => {
+    it('should send request to put composition record', async () => {
       const expected = {
         compositionUid: '0f7192e9-168e-4dea-812a-3e1d236ae46d'
       };
@@ -350,7 +414,7 @@ describe('lib/services/ehrRestService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('should send request to put heading record and handle error', async () => {
+    it('should send request to put composition record and handle error', async () => {
       const expected = {
         'message': 'something awful',
         'code': 'AWFUL_ERROR'
@@ -399,7 +463,7 @@ describe('lib/services/ehrRestService', () => {
   });
 
   describe('#query', () => {
-    it('should send request to query heading records', async () => {
+    it('should send get request to query records', async () => {
       const expected = {
         resultSet: [
           {
@@ -427,7 +491,7 @@ describe('lib/services/ehrRestService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('should send request to query heading records and handle error', async () => {
+    it('should send get request to query records and handle error', async () => {
       const expected = {
         'message': 'something awful',
         'code': 'AWFUL_ERROR'
@@ -451,8 +515,65 @@ describe('lib/services/ehrRestService', () => {
     });
   });
 
-  describe('#deleteHeading', () => {
-    it('should send request to delete heading record', async () => {
+  describe('#postQuery', () => {
+    it('should send post request to query records', async () => {
+      const expected = {
+        resultSet: [
+          {
+            foo: 'bar'
+          }
+        ]
+      };
+
+      nock('http://178.62.71.220:8080')
+        .post('/rest/v1/query', {
+          aql: 'quux'
+        })
+        .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
+        .reply(200, {
+          resultSet: [
+            {
+              foo: 'bar'
+            }
+          ]
+        });
+
+      const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
+      const query = 'quux';
+      const actual = await ehrRestService.postQuery(sessionId, query);
+
+      expect(nock).toHaveBeenDone();
+      expect(actual).toEqual(expected);
+    });
+
+    it('should send request to query records and handle error', async () => {
+      const expected = {
+        'message': 'something awful',
+        'code': 'AWFUL_ERROR'
+      };
+
+      nock('http://178.62.71.220:8080')
+        .post('/rest/v1/query', {
+          aql: 'quux'
+        })
+        .matchHeader('ehr-session', '03391e86-5085-4b99-89ff-79209f8d1f20')
+        .replyWithError({
+          'message': 'something awful',
+          'code': 'AWFUL_ERROR'
+        });
+
+       try {
+         const sessionId = '03391e86-5085-4b99-89ff-79209f8d1f20';
+         const query = 'quux';
+         await ehrRestService.postQuery(sessionId, query);
+       } catch (err) {
+         expect(err).toEqual(expected);
+       }
+    });
+  });
+
+  describe('#deleteComposition', () => {
+    it('should send request to delete composition record', async () => {
       const expected = {
         foo: 'bar'
       };
@@ -472,7 +593,7 @@ describe('lib/services/ehrRestService', () => {
       expect(actual).toEqual(expected);
     });
 
-    it('should send request to delete heading record and handle error', async () => {
+    it('should send request to delete composition record and handle error', async () => {
       const expected = {
         'message': 'something awful',
         'code': 'AWFUL_ERROR'

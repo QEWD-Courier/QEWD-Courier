@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  17 April 2019
 
 */
 
@@ -32,6 +32,7 @@
 const request = require('request');
 const config = require('../config');
 const logger = require('../core/logger');
+const { parseEthercisError } = require('../errors');
 const { QueryFormat } = require('../shared/enums');
 const { parseJsonFormatter } = require('../shared/utils');
 
@@ -40,6 +41,10 @@ const { parseJsonFormatter } = require('../shared/utils');
  */
 
 function requestAsync(args) {
+  const hasError = ({ headers, body }) =>
+    headers['x-error-message']
+    || body && typeof body === 'string' && body.substring(0, 6) === '<html>';
+
   return new Promise((resolve, reject) => {
     logger.debug('request args: %j', args);
 
@@ -49,12 +54,11 @@ function requestAsync(args) {
         return reject(err);
       }
 
-      if (body && typeof body === 'string' && body.substring(0, 6) === '<html>') {
-        logger.error('services/ehrRestService|err:', body);
-        return reject(body);
+      if (hasError(response)) {
+        const error = parseEthercisError(response);
+        logger.error('services/ehrRestService|err:', error);
+        return reject(error);
       }
-
-      // TODO: log headers, there is error x-error-message  / x-error-code
 
       return resolve(parseJsonFormatter(body));
     });
