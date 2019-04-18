@@ -161,6 +161,14 @@ class RespectFormsService {
     const output = transform(headingMap.transformTemplate, data, helpers);
     const postData = flatten(output);
 
+    Object.keys(postData).forEach(x => {
+    if (Array.isArray(postData[x])) {
+      if (postData[x].length === 0) {
+        delete postData[x];
+      }
+    }
+  });
+
     const ehrRestService = this.ctx.rest[host];
     const responseObj = await ehrRestService.putComposition(sessionId, compositionId, headingMap.templateId, postData);
     logger.debug('response: %j', responseObj);
