@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  17 April 2019
+  18 April 2019
 
 */
 
@@ -207,12 +207,13 @@ class RespectFormsService {
 
     const heading = Heading.RESPECT_FORMS;
     const { headingCache } = this.ctx.cache;
-    const { headingService, queryService } = this.ctx.services;
+    const { headingService, patientService, queryService } = this.ctx.services;
 
     const exists = headingCache.byHost.exists(patientId, heading, host);
     if (exists) return null;
 
     try {
+      await patientService.check(host, patientId);
       const data = await headingService.query(host, patientId, heading);
 
       await P.each(data || [], async (result) => {

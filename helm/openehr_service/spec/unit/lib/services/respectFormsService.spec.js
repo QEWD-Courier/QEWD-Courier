@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  17 April 2019
+  18 April 2019
 
 */
 
@@ -38,6 +38,8 @@ describe('lib/services/respectFormsService', () => {
   let respectFormsService;
 
   let headingCache;
+
+  let patientService;
   let queryService;
   let headingService;
   let ehrSessionService;
@@ -48,6 +50,8 @@ describe('lib/services/respectFormsService', () => {
     respectFormsService = new RespectFormsService(ctx);
 
     headingCache = ctx.cache.headingCache;
+
+    patientService = ctx.services.patientService;
     queryService = ctx.services.queryService;
     headingService = ctx.services.headingService;
     ehrSessionService = ctx.services.ehrSessionService;
@@ -663,6 +667,8 @@ describe('lib/services/respectFormsService', () => {
       const actual = await respectFormsService.fetch(host, patientId);
 
       expect(headingCache.byHost.exists).toHaveBeenCalledWith(9999999000, 'respectforms', 'ethercis');
+
+      expect(patientService.check).toHaveBeenCalledWith('ethercis', 9999999000);
       expect(headingService.query).toHaveBeenCalledWith('ethercis', 9999999000, 'respectforms');
       expect(queryService.postQuery).toHaveBeenCalledWith(
         'ethercis',
@@ -716,78 +722,6 @@ describe('lib/services/respectFormsService', () => {
 
       expect(actual).toEqual(expected);
     });
-
-    // it('should return ok and cache fetched records (heading = counts)', async () => {
-    //   const expected = {
-    //     ok: true
-    //   };
-
-    //   headingCache.byHost.exists.and.returnValue(false);
-
-    //   const data = [
-    //     {
-    //       ehrId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-    //     }
-    //   ];
-    //   headingService.query.and.resolveValue(data);
-
-    //   const host = 'ethercis';
-    //   const patientId = 9999999000;
-    //   const heading = 'counts';
-    //   const actual = await headingService.fetch(host, patientId, heading);
-
-    //   expect(headingService.query).toHaveBeenCalledWith('ethercis', 9999999000, 'counts');
-
-    //   expect(headingCache.byHost.set).toHaveBeenCalledWith(
-    //     9999999000, 'counts', 'ethercis', 'ethercis-74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-    //   );
-    //   expect(headingCache.byDate.set).toHaveBeenCalledWith(
-    //     9999999000, 'counts', 1546300800000, 'ethercis-74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-    //   );
-    //   expect(headingCache.bySourceId.set).toHaveBeenCalledWith(
-    //     'ethercis-74b6a24b-bd97-47f0-ac6f-a632d0cac60f',
-    //     {
-    //       heading: 'counts',
-    //       host: 'ethercis',
-    //       patientId: 9999999000,
-    //       date: 1546300800000,
-    //       data: {
-    //         ehrId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f',
-    //         uid: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f::',
-    //         dateCreated: 1546300800000
-    //       },
-    //       uid: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f::'
-    //     }
-    //   );
-
-    //   expect(actual).toEqual(expected);
-    // });
-
-    // it('should return ok and do not cache fetched records (no uid)', async () => {
-    //   const expected = {
-    //     ok: true
-    //   };
-
-    //   headingCache.byHost.exists.and.returnValue(false);
-
-    //   const data = [
-    //     {}
-    //   ];
-    //   headingService.query.and.resolveValue(data);
-
-    //   const host = 'ethercis';
-    //   const patientId = 9999999000;
-    //   const heading = 'procedures';
-    //   const actual = await headingService.fetch(host, patientId, heading);
-
-    //   expect(headingService.query).toHaveBeenCalledWith('ethercis', 9999999000, 'procedures');
-
-    //   expect(headingCache.byHost.set).not.toHaveBeenCalled();
-    //   expect(headingCache.byDate.set).not.toHaveBeenCalled();
-    //   expect(headingCache.bySourceId.set).not.toHaveBeenCalled();
-
-    //   expect(actual).toEqual(expected);
-    // });
   });
 
   describe('#getSummary', () => {
