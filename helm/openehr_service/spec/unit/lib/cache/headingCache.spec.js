@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  21 March 2019
+  17 April 2019
 
 */
 
@@ -755,7 +755,7 @@ describe('lib/cache/headingCache', () => {
 
     describe('#getAllVersions', () => {
       it('should return data', async () => {
-        const expected = [1, 2];
+        const expected = [2, 1];
 
         seeds();
 

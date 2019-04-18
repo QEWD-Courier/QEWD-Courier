@@ -24,7 +24,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  15 April 2019
+  17 April 2019
 
 */
 
@@ -92,7 +92,7 @@ module.exports = (adapter) => {
       const qewdSession = adapter.qewdSession;
       const bySourceId = qewdSession.data.$(['headings', 'bySourceId', sourceId, 'versions']);
 
-      bySourceId.forEachChild((version) => {
+      bySourceId.forEachChild({ direction: 'reverse' }, (version) => {
         versions.push(parseInt(version, 10));
       });
 
