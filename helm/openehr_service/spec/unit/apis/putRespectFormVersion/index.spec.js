@@ -82,14 +82,12 @@ describe('apis/putRespectFormVersion', () => {
   });
 
   it('should return response object', async () => {
-    const responseObj = [
-      {
-        ok: true,
-        host: 'ethercis',
-        heading: 'respectforms',
-        compositionUid: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7::vm01.ethercis.org::6'
-      }
-    ];
+    const responseObj = {
+      ok: true,
+      host: 'ethercis',
+      heading: 'respectforms',
+      compositionUid: '2d800bcb-4b17-4cd3-8ad0-e34a786158a7::vm01.ethercis.org::6'
+    };
 
     command.execute.and.resolveValue(responseObj);
 
