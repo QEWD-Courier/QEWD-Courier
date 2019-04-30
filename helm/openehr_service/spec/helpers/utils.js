@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  27 March 2019
 
 */
 
@@ -37,4 +37,33 @@ exports.clone = function (obj) {
 
 exports.isUuidV4 = function (s) {
   return exports.uuidV4Regex.test(s);
+};
+
+exports.getMethods = function (id, dir) {
+  const Target = require(`@lib/${dir}/${id}`);
+
+  return Reflect
+    .ownKeys(Target.prototype)
+    .filter(x => x !== 'constructor');
+};
+
+exports.getMixins = function (id, dir) {
+  try {
+    const name = id.split(/(?=[A-Z])/g).slice(0, -1).join('');
+    const mixins = require(`@lib/${dir}/mixins/${name}`);
+
+    return mixins;
+  } catch (err) {
+    return {};
+  }
+};
+
+exports.createSpyObj = function (baseName, methodNames) {
+  // methodNames must contain at least one method defined
+  // otherwise target be undefined
+  if (methodNames.length === 0) {
+    methodNames.push(Date.now().toString());
+  }
+
+  return jasmine.createSpyObj(baseName, methodNames);
 };

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  16 April 2019
 
 */
 
@@ -36,7 +36,8 @@ const ExtraHeading = Object.freeze({
 const Heading = Object.freeze({
   COUNTS: 'counts',
   FEEDS: 'feeds',
-  TOP_3_THINGS: 'top3Things'
+  TOP_3_THINGS: 'top3Things',
+  RESPECT_FORMS: 'respectforms',
 });
 
 const Top3ThingFormat = Object.freeze({
@@ -47,6 +48,11 @@ const Top3ThingFormat = Object.freeze({
 const PostHeadingFormat = Object.freeze({
   JUMPER: 'openehr-jumper',
   PULSETILE: 'pulsetile'
+});
+
+const QueryFormat = Object.freeze({
+  AQL: 'aql',
+  SQL: 'sql'
 });
 
 const RecordStatus = Object.freeze({
@@ -72,6 +78,7 @@ module.exports = {
   ExtraHeading,
   Heading,
   PostHeadingFormat,
+  QueryFormat,
   RecordStatus,
   ResponseFormat,
   Role,

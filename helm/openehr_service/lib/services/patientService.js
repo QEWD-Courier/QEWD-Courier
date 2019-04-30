@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -31,7 +31,6 @@
 
 const { logger } = require('../core');
 const { EhrIdNotFoundError } = require('../errors');
-const debug = require('debug')('helm:openehr:services:patient');
 
 class PatientService {
   constructor(ctx) {
@@ -58,23 +57,26 @@ class PatientService {
     const { sessionId } = await this.ehrSessionService.start(host);
 
     const ehrRestService = this.ctx.rest[host];
-    data = await ehrRestService.getEhr(sessionId, patientId);
-    debug('get ehr data: %j', data);
 
-    if (data && typeof data !== 'string') {
+    try {
+      data = await ehrRestService.getEhr(sessionId, patientId);
+      logger.debug('get ehr data: %j', data);
+
       return {
         data,
         created: false
       };
+    } catch (err) {
+      logger.error('check error: %j', err);
+
+      data = await ehrRestService.postEhr(sessionId, patientId);
+      logger.debug('post ehr data: %j', data);
+
+      return {
+        data,
+        created: true
+      };
     }
-
-    data = await ehrRestService.postEhr(sessionId, patientId);
-    debug('create ehr data: %j', data);
-
-    return {
-      data,
-      created: true
-    };
   }
 
   /**

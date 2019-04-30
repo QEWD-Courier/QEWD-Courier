@@ -23,14 +23,19 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 April 2019
+  16 April 2019
 
 */
 
 'use strict';
 
 const traverse = require('traverse');
+const objectPath = require('object-path');
 const { isNumeric } = require('./validation');
+
+function buildCompositionId(uuid, host, version) {
+  return `${uuid}::${host}::${version}`;
+}
 
 function buildSourceId(host, compositionId) {
   return `${host}-${compositionId.split('::')[0]}`;
@@ -69,6 +74,10 @@ function flatten(obj) {
   return flatObj;
 }
 
+function flatMap(arr, callback) {
+  return arr.reduce((acc, x, i) => acc.concat(callback(x, i)), []);
+}
+
 function equals(l, r) {
   return l.toString() === r.toString();
 }
@@ -95,10 +104,68 @@ function parseAccessToken(authorization = '') {
   return authorization.split('AccessToken ')[1];
 }
 
+function parseJsonFormatter(result) {
+  let jsonResult;
+
+  try {
+    jsonResult = JSON.parse(result);
+  } catch (err) {
+    jsonResult = {};
+  }
+
+  return jsonResult;
+}
+
+function parseCompositionId(compositionId) {
+  try {
+    const [ uuid, host, version ] = compositionId.split('::');
+
+    return {
+      uuid,
+      host,
+      version
+    };
+  } catch (err) {
+    return {};
+  }
+}
+
+function parseSourceId(sourceId) {
+  try {
+    const [ source, ...others ] = sourceId.split('-');
+
+    return {
+      source,
+      uuid: others.join('-')
+    };
+  } catch (err) {
+    return {};
+  }
+}
+
+function unflatten(flatObj) {
+  return Object.keys(flatObj).reduce((acc, key) => {
+    const paths = key.split(/:|\//).map(x => isNaN(Number(x))
+      ? x
+      : Number(x)
+    );
+
+    objectPath.set(acc, paths, flatObj[key]);
+
+    return acc;
+  }, {});
+}
+
 module.exports = {
+  buildCompositionId,
   buildSourceId,
   flatten,
+  flatMap,
   equals,
   lazyLoadAdapter,
-  parseAccessToken
+  parseAccessToken,
+  parseJsonFormatter,
+  parseCompositionId,
+  parseSourceId,
+  unflatten
 };

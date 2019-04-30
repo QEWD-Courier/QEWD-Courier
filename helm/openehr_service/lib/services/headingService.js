@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 April 2019
+  16 April 2019
 
 */
 
@@ -35,7 +35,7 @@ const { transform } = require('qewd-transform-json');
 const { logger } = require('../core');
 const { NotFoundError, UnprocessableEntityError } = require('../errors');
 const { Heading, ResponseFormat } = require('../shared/enums');
-const { headingHelpers, getHeadingDefinition, getHeadingMap, getHeadingAql } = require('../shared/headings');
+const { headingHelpers, getHeadingDefinition, getHeadingMap, getHeadingQuery } = require('../shared/headings');
 const { buildSourceId, flatten } = require('../shared/utils');
 const debug = require('debug')('helm:openehr:services:heading');
 
@@ -52,6 +52,30 @@ class HeadingService {
   }
 
   /**
+   * Gets a composition record
+   *
+   * @param  {string} host
+   * @param  {string} sourceId
+   * @return {Promise.<Object>}
+   */
+  async get(host, compositionId) {
+    logger.info('services/headingService|get', { host, compositionId });
+
+    const { ehrSessionService } = this.ctx.services;
+    const { sessionId } = await ehrSessionService.start(host);
+
+    const ehrRestService = this.ctx.rest[host];
+    const responseObj = await ehrRestService.getComposition(sessionId, compositionId);
+    logger.debug('responseObj:', { responseObj });
+
+    await ehrSessionService.stop(host, sessionId);
+
+    return responseObj && responseObj.composition
+      ? responseObj.composition
+      : null;
+  }
+
+  /**
    * Creates heading record
    *
    * @param  {string} host
@@ -61,13 +85,11 @@ class HeadingService {
    * @return {Promise.<Object>}
    */
   async post(host, patientId, heading, data) {
-    logger.info('services/headingService|post', { host, patientId, heading, data: typeof data });
-
-    debug('data: %j', data);
+    logger.info('services/headingService|post', { host, patientId, heading, data });
 
     const { jumperService } = this.ctx.services;
     const jumper = jumperService.check(heading, 'post');
-    logger.debug('jumper post status:', { jumper });
+    logger.debug('jumper post status: j', jumper);
 
     if (jumper.ok) {
       return jumperService.post(host, patientId, heading, data);
@@ -85,8 +107,18 @@ class HeadingService {
     const helpers = headingHelpers(host, heading, 'post');
     const output = transform(headingMap.transformTemplate, data.data, helpers);
     const postData = flatten(output);
+
+    // TODO: fix me (hack)
+    Object.keys(postData).forEach(x => {
+      if (Array.isArray(postData[x])) {
+        if (postData[x].length === 0) {
+          delete postData[x];
+        }
+      }
+    });
+
     const ehrRestService = this.ctx.rest[host];
-    const responseObj = await ehrRestService.postHeading(sessionId, ehrId, headingMap.templateId, postData);
+    const responseObj = await ehrRestService.postComposition(sessionId, ehrId, headingMap.templateId, postData);
     debug('response: %j', responseObj);
 
     await ehrSessionService.stop(host, sessionId);
@@ -114,9 +146,7 @@ class HeadingService {
    * @return {Promise.<Object>}
    */
   async put(host, patientId, heading, sourceId, data) {
-    logger.info('services/headingService|put', { host, patientId, heading, sourceId, data: typeof data });
-
-    debug('data: %j', data);
+    logger.info('services/headingService|put', { host, patientId, heading, sourceId, data });
 
     const { headingCache } = this.ctx.cache;
     const dbData = headingCache.bySourceId.get(sourceId);
@@ -142,15 +172,14 @@ class HeadingService {
       throw new UnprocessableEntityError(`heading ${heading} not recognised, or no POST definition available`);
     }
 
-    const { ehrSessionService, patientService } = this.ctx.services;
+    const { ehrSessionService } = this.ctx.services;
     const { sessionId } = await ehrSessionService.start(host);
-    await patientService.getEhrId(host, patientId);
 
     const helpers = headingHelpers(host, heading, 'post');
     const output = transform(headingMap.transformTemplate, data, helpers);
     const postData = flatten(output);
     const ehrRestService = this.ctx.rest[host];
-    const responseObj = await ehrRestService.putHeading(sessionId, compositionId, headingMap.templateId, postData);
+    const responseObj = await ehrRestService.putComposition(sessionId, compositionId, headingMap.templateId, postData);
     debug('response: %j', responseObj);
 
     await ehrSessionService.stop(host, sessionId);
@@ -191,14 +220,16 @@ class HeadingService {
     const { sessionId } = await ehrSessionService.start(host);
     const ehrId = await patientService.getEhrId(host, patientId);
 
-    const aql = getHeadingAql(heading);
+    const headingQuery = getHeadingQuery(heading);
     const subs = {
       ehrId
     };
-    const query = template.replace(aql, subs);
+    const query = template.replace(headingQuery, subs);
+    logger.debug('query:', { query });
 
     const ehrRestService = this.ctx.rest[host];
     const responseObj = await ehrRestService.query(sessionId, query);
+    logger.debug('responseObj:', { responseObj });
 
     await ehrSessionService.stop(host, sessionId);
 
@@ -362,7 +393,7 @@ class HeadingService {
       results
     };
   }
-  
+
   /**
    * Fetch records from OpenEHR servers for multiple headings
    *
@@ -485,7 +516,7 @@ class HeadingService {
     const { sessionId } = await ehrSessionService.start(host);
 
     const ehrRestService = this.ctx.rest[host];
-    await ehrRestService.deleteHeading(sessionId, compositionId);
+    await ehrRestService.deleteComposition(sessionId, compositionId);
 
     headingCache.byHost.delete(patientId, heading, host, sourceId);
     headingCache.byDate.delete(patientId, heading, date, sourceId);

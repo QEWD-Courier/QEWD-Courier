@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -96,31 +96,7 @@ describe('lib/services/patientService', () => {
         }
       };
 
-      ethercisEhrRestService.getEhr.and.resolveValue();
-      ethercisEhrRestService.postEhr.and.resolveValue({
-        ehrId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-      });
-
-      const host = 'ethercis';
-      const patientId = 9999999000;
-      const actual = await patientService.check(host, patientId);
-
-      expect(ehrSessionService.start).toHaveBeenCalledWith('ethercis');
-      expect(ethercisEhrRestService.getEhr).toHaveBeenCalledWith('03134cc0-3741-4d3f-916a-a279a24448e5', 9999999000);
-      expect(ethercisEhrRestService.postEhr).toHaveBeenCalledWith('03134cc0-3741-4d3f-916a-a279a24448e5', 9999999000);
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('should return created patient data (when string response)', async () => {
-      const expected = {
-        created: true,
-        data: {
-          ehrId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
-        }
-      };
-
-      ethercisEhrRestService.getEhr.and.resolveValue('string response');
+      ethercisEhrRestService.getEhr.and.rejectValue({ error: 'some error'});
       ethercisEhrRestService.postEhr.and.resolveValue({
         ehrId: '74b6a24b-bd97-47f0-ac6f-a632d0cac60f'
       });

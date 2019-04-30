@@ -23,42 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  26 March 2019
 
 */
 
 'use strict';
 
 const { lazyLoadAdapter } = require('@lib/shared/utils');
-
-function getMethods(id, dir) {
-  const Target = require(`@lib/${dir}/${id}`);
-
-  return Reflect
-    .ownKeys(Target.prototype)
-    .filter(x => x !== 'constructor');
-}
-
-function getMixins(id, dir) {
-  try {
-    const name = id.split(/(?=[A-Z])/g)[0];
-    const mixins = require(`@lib/${dir}/mixins/${name}`);
-
-    return mixins;
-  } catch (err) {
-    return {};
-  }
-}
-
-function createSpyObj(baseName, methodNames) {
-  // methodNames must contain at least one method defined
-  // otherwise target be undefined
-  if (methodNames.length === 0) {
-    methodNames.push(Date.now().toString());
-  }
-
-  return jasmine.createSpyObj(baseName, methodNames);
-}
+const { getMethods, getMixins, createSpyObj } = require('@tests/helpers/utils');
 
 class CacheRegistryMock {
   constructor() {

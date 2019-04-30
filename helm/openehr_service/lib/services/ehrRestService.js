@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -32,19 +32,38 @@
 const request = require('request');
 const config = require('../config');
 const logger = require('../core/logger');
-const debug = require('debug')('helm:openehr:services:ehr-rest');
+const { parseEthercisError } = require('../errors');
+const { QueryFormat } = require('../shared/enums');
+const { parseJsonFormatter } = require('../shared/utils');
 
-function requestAsync(options) {
+/**
+ * NOTE: Ehr-Session header must capitalized
+ */
+
+function requestAsync(args) {
+  const hasError = ({ headers, body }) =>
+    headers['x-error-message']
+    || body && typeof body === 'string' && body.substring(0, 6) === '<html>';
+
   return new Promise((resolve, reject) => {
-    request(options, (err, response, body) => {
-      if (err) return reject(err);
+    logger.debug('request args: %j', args);
 
-      return resolve(body);
+    request(args, (err, response, body) => {
+      if (err) {
+        logger.error('services/ehrRestService|err:', err);
+        return reject(err);
+      }
+
+      if (hasError(response)) {
+        const error = parseEthercisError(response);
+        logger.error('services/ehrRestService|err:', error);
+        return reject(error);
+      }
+
+      return resolve(parseJsonFormatter(body));
     });
   });
 }
-
-// NOTE: Ehr-Session header must capitalized
 
 class EhrRestService {
   constructor(ctx, host, hostConfig) {
@@ -61,7 +80,7 @@ class EhrRestService {
   async startSession() {
     logger.info(`services/ehrRestService|${this.host}|startSession`);
 
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/session`,
       method: 'POST',
       qs: {
@@ -71,11 +90,10 @@ class EhrRestService {
       headers: {
         'x-max-session': config.openehr.sessionMaxNumber,
         'x-session-timeout': config.openehr.sessionTimeout
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
@@ -87,16 +105,15 @@ class EhrRestService {
   async stopSession(sessionId) {
     logger.info(`services/ehrRestService|${this.host}|stopSession`, { sessionId });
 
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/session`,
       method: 'DELETE',
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
@@ -109,7 +126,7 @@ class EhrRestService {
   async getEhr(sessionId, patientId) {
     logger.info(`services/ehrRestService|${this.host}|getEhr`, { sessionId, patientId });
 
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/ehr`,
       method: 'GET',
       qs: {
@@ -118,11 +135,10 @@ class EhrRestService {
       },
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
@@ -135,30 +151,56 @@ class EhrRestService {
   async postEhr(sessionId, patientId) {
     logger.info(`services/ehrRestService|${this.host}|getEhr`, { sessionId, patientId });
 
-    const options = {
+    const data = {
+      subjectId: patientId,
+      subjectNamespace: 'uk.nhs.nhs_number',
+      queryable: 'true',
+      modifiable: 'true'
+    };
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/ehr`,
       method: 'POST',
       qs: {
         subjectId: patientId,
         subjectNamespace: 'uk.nhs.nhs_number'
       },
-      body: {
-        subjectId: patientId,
-        subjectNamespace: 'uk.nhs.nhs_number',
-        queryable: 'true',
-        modifiable: 'true'
-      },
+      body: JSON.stringify(data),
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
-   * Sends a request to create a new heading record
+   * Sends a request to get an existing composition
+   *
+   * @param  {string} sessionId
+   * @param  {string} compositionId
+   * @param  {string} templateId
+   * @param  {Object} data
+   * @return {Promise.<Object>}
+   */
+  async getComposition(sessionId, compositionId) {
+    logger.info(`services/ehrRestService|${this.host}|getComposition`, { sessionId, compositionId });
+
+    const args = {
+      url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
+      method: 'GET',
+      qs: {
+        format: 'FLAT'
+      },
+      headers: {
+        'Ehr-Session': sessionId
+      }
+    };
+
+    return await requestAsync(args);
+  }
+
+  /**
+   * Sends a request to create a new heading composition
    *
    * @param  {string} sessionId
    * @param  {string} ehrId
@@ -166,12 +208,10 @@ class EhrRestService {
    * @param  {Object} data
    * @return {Promise.<Object>}
    */
-  async postHeading(sessionId, ehrId, templateId, data) {
-    logger.info(`services/ehrRestService|${this.host}|postEhr`, { sessionId, ehrId, templateId, data: typeof data });
+  async postComposition(sessionId, ehrId, templateId, data) {
+    logger.info(`services/ehrRestService|${this.host}|postComposition`, { sessionId, ehrId, templateId, data });
 
-    debug('data: %j', data);
-
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/composition`,
       method: 'POST',
       qs: {
@@ -179,14 +219,13 @@ class EhrRestService {
         ehrId: ehrId,
         format: 'FLAT'
       },
-      body: data,
+      body: JSON.stringify(data),
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
@@ -198,73 +237,98 @@ class EhrRestService {
    * @param  {Object} data
    * @return {Promise.<Object>}
    */
-  async putHeading(sessionId, compositionId, templateId, data) {
-    logger.info(`services/ehrRestService|${this.host}|putHeading`, { sessionId, compositionId, templateId, data: typeof data });
+  async putComposition(sessionId, compositionId, templateId, data) {
+    logger.info(`services/ehrRestService|${this.host}|putComposition`, { sessionId, compositionId, templateId, data });
 
-    debug('data: %j', data);
-
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
       method: 'PUT',
       qs: {
         templateId: templateId,
         format: 'FLAT'
       },
-      body: data,
+      body: JSON.stringify(data),
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
-   * Sends a request to retrieve heading records
+   * Sends a get query request
    *
    * @param  {string} sessionId
    * @param  {string} query
+   * @param  {Object} options
+   * @param  {Object} options.format
    * @return {Promise.<Object[]>}
    */
-  async query(sessionId, query) {
-    logger.info(`services/ehrRestService|${this.host}|query`, { sessionId, query });
+  async query(sessionId, query, { format = QueryFormat.AQL } = {}) {
+    logger.info(`services/ehrRestService|${this.host}|query`, { sessionId, query, format });
 
-    const options = {
+    const qs = {
+      [format]: query
+    };
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/query`,
       method: 'GET',
-      qs: {
-        aql: query
-      },
+      qs: qs,
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 
   /**
-   * Sends a request to delete an existing heading record
+   * Sends a post query request
+   *
+   * @param  {string} sessionId
+   * @param  {string} query
+   * @param  {Object} options
+   * @param  {Object} options.format
+   * @return {Promise.<Object[]>}
+   */
+  async postQuery(sessionId, query, { format = QueryFormat.AQL } = {}) {
+    logger.info(`services/ehrRestService|${this.host}|postQuery`, { sessionId, query, format });
+
+    const data = {
+      [format]: query
+    };
+    const args = {
+      url: `${this.hostConfig.url}/rest/v1/query`,
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Ehr-Session': sessionId
+      }
+    };
+
+    return await requestAsync(args);
+  }
+
+  /**
+   * Sends a request to delete an existing heading composition
    *
    * @param  {string} sessionId
    * @param  {string} compositionId
    * @return {Promise.<Object>}
    */
-  async deleteHeading(sessionId, compositionId) {
-    logger.info(`services/ehrRestService|${this.host}|deleteHeading`, { sessionId, compositionId });
+  async deleteComposition(sessionId, compositionId) {
+    logger.info(`services/ehrRestService|${this.host}|deleteComposition`, { sessionId, compositionId });
 
-    const options = {
+    const args = {
       url: `${this.hostConfig.url}/rest/v1/composition/${compositionId}`,
       method: 'DELETE',
       headers: {
         'Ehr-Session': sessionId
-      },
-      json: true
+      }
     };
 
-    return await requestAsync(options);
+    return await requestAsync(args);
   }
 }
 
