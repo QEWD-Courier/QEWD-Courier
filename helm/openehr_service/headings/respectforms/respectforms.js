@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  30 April 2019
 
 */
 
@@ -60,8 +60,11 @@ module.exports = {
             return 'No';
 
           case 'at0006':
-          default:
             return 'Unknown';
+
+          default:
+            return 'Not known';
+
         }
       },
       getInvolvementValue: (code)=> {
@@ -97,7 +100,7 @@ module.exports = {
       summaryInformation: {
         dateCompleted: '22-Mar-2019',
         summary: '{{nss_respect_form.respect_headings["a2._summary_of_relevant_information"]["a2.0_relevant_information"].respect_summary.narrative_summary}}',
-        details: '...', // details missed?
+        details: '{{nss_respect_form.respect_headings["a2._summary_of_relevant_information"]["a2.3_other_relevant_planning_documents"].advance_planning_documentation.summary}}',
         status: 'Completed'
       },
       personalPreferences: {
@@ -106,10 +109,10 @@ module.exports = {
         preferencesValue: '{{nss_respect_form.respect_headings["a3._personal_preferences"].preferred_priorities_of_care.care_priority_scale}}',
         status: 'Completed'
       },
-      clinicalRecommendation: {
-        clinicalGuidance: '...',
-        clinicalSignature: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_focus}}',
-        focusValue: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_guidance_on_interventions}}',
+      clinicalRecommendations: {
+        clinicalGuidance: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_guidance_on_interventions}}',
+        clinicalSignature: '{{nss_respect_form["composer|name"]}}',
+        focusValue: '{{nss_respect_form.respect_headings["a4._clinical_recommendations"].recommendation.clinical_focus}}',
         cprValue: '=> getCprValue(nss_respect_form.respect_headings["a4._clinical_recommendations"].cpr_decision["cpr_decision|code"])',
         dateDecision: '=> getRippleTime(nss_respect_form.respect_headings["a4._clinical_recommendations"].cpr_decision.date_of_cpr_decision)',
         dateCompleted: '10-Apr-2019',
@@ -125,7 +128,7 @@ module.exports = {
         dateCompleted: '22-Mar-2019',
         notSelectingReason: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.involvement_in_recommendations.reason_for_not_selecting_options_a_or_b_or_c}}',
         involvementValue: '=> getInvolvementValue(nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.involvement_in_recommendations["involvement|code"])',
-        documentExplanation: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].name_and_role_of_those_involved_in_decision_making}}',
+        documentExplanation: '{{nss_respect_form.respect_headings["a6._involvement_in_making_plan"].involvement_respect.name_and_role_of_those_involved_in_decision_making}}',
         status: 'Completed'
       },
       clinicalSignatures: {
@@ -133,7 +136,7 @@ module.exports = {
         signaturesArray: [
           '{{nss_respect_form.respect_headings["a7._clinician_signatures"].clinician_signature}}',
           {
-            clinicalSignature: '...',
+            clinicalSignature: '{{nss_respect_form["composer|name"]}}',
             designation: '{{signing_clinician.practitioner_role.designation}}',
             clinicialName: '{{signing_clinician.name.text}}',
             gmcNumber: '{{signing_clinician.identifier.value}}',
@@ -161,7 +164,7 @@ module.exports = {
         confirmationsArray: [
           '{{nss_respect_form.respect_headings["a9._confirmation_of_validity"].service}}',
           {
-            clinicalSignature: '',
+            clinicalSignature: '{{nss_respect_form["composer|name"]}}',
             designation: '{{responsible_clinician.practitioner_role.designation}}',
             clinicialName: '{{responsible_clinician.name.text}}',
             gmcNumber: '{{responsible_clinician.identifier.value}}',
@@ -196,22 +199,22 @@ module.exports = {
             return 'at0027';
 
           default:
-            return '';
+            return 'Not known';
         }
       },
       getLegalProxyCode: (value) => {
         switch (value) {
-          case 'at0004':
-            return 'Yes';
+          case 'Yes':
+            return 'at0004';
 
-          case 'at0005':
-            return 'No';
+          case 'No':
+            return 'at0005';
 
-          case 'at0006':
-            return 'Unknown';
+          case 'Unknown':
+            return 'at0006';
 
           default:
-            return '';
+            return 'Not known';
         }
       },
       getInvolvementCode: (value) => {
@@ -235,7 +238,7 @@ module.exports = {
             return 'at0013';
 
           default:
-            return '';
+            return 'Not known';
         }
       }
     },
@@ -265,17 +268,16 @@ module.exports = {
         'composer|id':           '=> either(author_id, "12345")',
         'composer|id_scheme':    'NHSScotland',
         'composer|id_namespace': 'NHSScotland',
-      // test: () => {
-      //   return '<!delete>';
-      // },
-      // test2: () => {
-      //   return '123';
-      // },
         respect_headings: {
           'a2._summary_of_relevant_information': {
             'a2.0_relevant_information': {
               respect_summary: {
                 narrative_summary:                '{{summaryInformation.summary}}'
+              }
+            },
+            'a2.3_other_relevant_planning_documents' : {
+              advance_planning_documentation: {
+                summary: '{{summaryInformation.details}}'
               }
             }
           },
@@ -287,12 +289,12 @@ module.exports = {
           },
           'a4._clinical_recommendations': {
             recommendation: {
-              clinical_focus:                     '{{clinicalRecommendation.focusValue}}',
-              clinical_guidance_on_interventions: '{{clinicalRecommendation.clinicalGuidance}}',
+              clinical_focus:                     '{{clinicalRecommendations.focusValue}}',
+              clinical_guidance_on_interventions: '{{clinicalRecommendations.clinicalGuidance}}',
             },
             cpr_decision: {
-              'cpr_decision|code':                '=> getCprCode(clinicalRecommendation.cprValue)',
-              date_of_cpr_decision:               '=> formatDate(clinicalRecommendation.dateDecision)'
+              'cpr_decision|code':                '=> getCprCode(clinicalRecommendations.cprValue)',
+              date_of_cpr_decision:               '=> formatDate(clinicalRecommendations.dateDecision)'
             }
           },
           'a5._capacity_and_representation': {
@@ -304,7 +306,7 @@ module.exports = {
           'a6._involvement_in_making_plan': {
             involvement_respect: {
               involvement_in_recommendations: {
-                'involvement|code':                               '=> getLegalProxyCode(involvement.involvementValue)',
+                'involvement|code':                               '=> getInvolvementCode(involvement.involvementValue)',
                 reason_for_not_selecting_options_a_or_b_or_c:     '{{involvement.notSelectingReason}}',
               },
               name_and_role_of_those_involved_in_decision_making: '{{involvement.documentExplanation}}'
