@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Alexey Kucherenko <alexei.kucherenko@gmail.com>                  |
+ | Author: Rob Tweed, M/Gateway Developments Ltd                            |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,43 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  7 February 2019
 
 */
 
-'use strict';
-
-
-module.exports = {
-
-  logging: {
-
-    /**
-     * Default log level
-     * @type {string}
-     */
-    defaultLevel: 'debug'
-  },
-
-  openehr: {
-
-    /**
-     * OpenEHR Session timeout is 2 minutes in ms
-     * @type {int}
-     */
-    sessionTimeout: 3600 * 1000,
-
-    /**
-     * Max number of OpenEHR Sessions
-     * @type {int}
-     */
-    sessionMaxNumber: 75
-  },
-
-  /**
-   * Timezone
-   * @type {string}
-   */
-  timezone: 'Europe/London'
-
+module.exports = function(args, finished) {
+  args.session.role = 'IDCR';
+  const patient = args.session.role === 'IDCR' ? {ok : true, patientId: args.patientId} : {ok: false};
+  
+ return finished(patient);
 };

@@ -44,56 +44,58 @@ class StatusService {
 
   /**
    * Checks record status and increment request number if exists
-   *
+   * @param  {number} patientId
    * @return {Promise.<Object|null?}
    */
-  async check() {
+  async check(patientId) {
     logger.info('services/statusService|check');
 
-    const state = this.statusCache.get();
+    const state = this.statusCache.get(patientId);
     debug('state: %j', state);
 
     if (!state) return null;
 
     state.requestNo = state.requestNo + 1;
-    this.statusCache.set(state);
+    this.statusCache.set(state, patientId);
 
     return state;
   }
 
   /**
    * Gets status record
-   *
+   * @param  {number} patientId
    * @return {Promise.<Object>}
    */
-  async get() {
+  async get(patientId) {
     logger.info('services/statusService|get');
 
-    return this.statusCache.get();
+    return this.statusCache.get(patientId);
   }
 
   /**
    * Creates a new status record
    *
    * @param  {Object} state
+   * @param  {number} patientId
    * @return {Promise}
    */
-  async create(state) {
+  async create(state, patientId) {
     logger.info('services/statusService|create', { state });
 
-    await this.statusCache.set(state);
+    await this.statusCache.set(state, patientId);
   }
 
   /**
    * Updates existing status record
    *
    * @param  {Object} state
+   * @param  {number} patientId
    * @return {Promise}
    */
-  async update(state) {
+  async update(state, patientId) {
     logger.info('services/statusService|update', { state });
 
-    await this.statusCache.set(state);
+    await this.statusCache.set(state, patientId);
   }
 }
 

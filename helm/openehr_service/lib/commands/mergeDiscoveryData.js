@@ -40,23 +40,24 @@ class MergeDiscoveryDataCommand {
 
   /**
    * @param  {string} heading
+   * @param  {number | string} initPatientId
    * @param  {Object[]} data
    * @return {Promise.<Object>}
    */
-  async execute(heading, data) {
+  async execute(heading, data, initPatientId) {
     debug('heading: %s, data: %j', heading, data);
 
-    const patientId = this.session.nhsNumber;
+    const patientId = initPatientId ? initPatientId : this.session.nhsNumber;
     debug('patientId: %s', patientId);
 
     const { statusService } = this.ctx.services;
 
     if (heading === ExtraHeading.FINISHED) {
-      const state = await statusService.get();
+      const state = await statusService.get(patientId);
       debug('record state: %j', state);
 
       state.status = RecordStatus.READY;
-      await statusService.update(state);
+      await statusService.update(state, patientId);
 
       return {
         refresh: true

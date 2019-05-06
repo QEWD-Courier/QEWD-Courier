@@ -42,7 +42,7 @@ const { getResponseError } = require('../../lib/errors');
 module.exports = async function mergeDiscoveryData(args, finished) {
   try {
     const command = new MergeDiscoveryDataCommand(args.req.ctx, args.req.session);
-    const responseObj = await command.execute(args.heading, args.req.data);
+    const responseObj = await command.execute(args.heading, args.req.data, args.req.patientId);
 
     finished(responseObj);
   } catch (err) {

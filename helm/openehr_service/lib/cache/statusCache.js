@@ -42,13 +42,13 @@ class StatusCache {
 
   /**
    * Gets status
-   *
+   * @param {number} patientId
    * @return {Object|null}
    */
-  get() {
+  get(patientId) {
     logger.info('cache/statusCache|get');
-
-    const key = ['record_status'];
+    
+    const key = [patientId, 'record_status'];
 
     return this.adapter.getObject(key);
   }
@@ -57,12 +57,13 @@ class StatusCache {
    * Sets status
    *
    * @param  {Object} data
+   * @param  {number} patientId
    * @return {void}
    */
-  set(data) {
+  set(data, patientId) {
     logger.info('cache/statusCache|set', { data });
-
-    const key = ['record_status'];
+  
+    const key = [patientId, 'record_status'];
     this.adapter.putObject(key, data);
   }
 }
