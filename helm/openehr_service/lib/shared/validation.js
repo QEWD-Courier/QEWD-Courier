@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -173,16 +173,16 @@ function isSiteValid(sitesConfig, site) {
 }
 
 function isSourceIdValid(sourceId) {
-  if (!sourceId) return false;
+  if (!sourceId) return respondErr(`sourceId ${sourceId} must be defined`);
 
   const pieces = sourceId.split('-');
-  if (pieces.length !== 6) return false;
+  if (pieces.length !== 6) return respondErr(`sourceId ${sourceId} is invalid`);
 
   // remove host name element
   pieces.shift();
 
   const guid = pieces.join('-');
-  if (!isGuid(guid)) return false;
+  if (!isGuid(guid)) return respondErr(`sourceId ${sourceId} is invalid`);
 
   return {
     ok: true
@@ -198,5 +198,6 @@ module.exports = {
   isHeadingValid,
   isGuid,
   isSiteValid,
-  isSourceIdValid
+  isSourceIdValid,
+  respondErr
 };

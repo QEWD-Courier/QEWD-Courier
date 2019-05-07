@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -42,6 +42,23 @@ function qewdifyError(err) {
   };
 }
 
+function parseEthercisError(response) {
+  if (response.headers['x-error-message']) {
+    return {
+      code: response.headers['x-error-code'],
+      message: response.headers['x-error-message']
+    };
+  }
+
+  if (response.body && typeof response.body === 'string' && response.body.substring(0, 6) === '<html>') {
+    return {
+      message: response.body
+    };
+  }
+
+  return null;
+}
+
 function getResponseError(err = new Error('Unknown error')) {
   const resultError = err.error ? err : qewdifyError(err);
 
@@ -56,5 +73,6 @@ module.exports = {
   NotFoundError,
   UnprocessableEntityError,
   getResponseError,
+  parseEthercisError,
   qewdifyError
 };

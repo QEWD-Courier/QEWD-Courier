@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  15 April 2019
 
 */
 
 'use strict';
 
 const { logger } = require('../core');
-const { byDate, byHeading, byHost, bySourceId, fetchCount } = require('./mixins/heading');
+const { byDate, byHeading, byHost, bySourceId, byVersion, fetchCount } = require('./mixins/heading');
 
 class HeadingCache {
   constructor(adapter) {
@@ -39,6 +39,7 @@ class HeadingCache {
     this.byHeading = byHeading(adapter);
     this.byHost = byHost(adapter);
     this.bySourceId = bySourceId(adapter);
+    this.byVersion = byVersion(adapter);
     this.fetchCount = fetchCount(adapter);
   }
 

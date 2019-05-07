@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  21 March 2019
+  17 April 2019
 
 */
 
@@ -617,6 +617,150 @@ describe('lib/cache/headingCache', () => {
         headingCache.bySourceId.delete(sourceId);
 
         const actual = qewdSession.data.$('headings').getDocument();
+
+        expect(actual).toEqual(expected);
+      });
+    });
+  });
+
+  describe('byVersion', () => {
+    function seeds() {
+      [
+        {
+          sourceId: 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12',
+          version: 1,
+          data: {
+            text: 'foo'
+          }
+        },
+        {
+          sourceId: 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12',
+          version: 2,
+          data: {
+            text: 'foo-2'
+          }
+        },
+        {
+          sourceId: 'ethercis-eaf394a9-5e05-49c0-9c69-c710c77eda76',
+          version: 1,
+          data: {
+            text: 'bar'
+          }
+        },
+        {
+          sourceId: 'marand-260a7be5-e00f-4b1e-ad58-27d95604d010',
+          version: 1,
+          data: {
+            text: 'baz'
+          }
+        }
+      ].forEach(x => {
+        const key = ['headings', 'bySourceId', x.sourceId, 'versions', x.version];
+        qewdSession.data.$(key).setDocument(x.data);
+      });
+    }
+
+    describe('#set', () => {
+      it('should set data', async () => {
+        const expected = {
+          bySourceId: {
+            'marand-ce437b97-4f6e-4c96-89bb-0b58b29a79cb': {
+              versions: {
+                '1': {
+                  text: 'quux'
+                }
+              }
+
+            }
+          }
+        };
+
+        const sourceId = 'marand-ce437b97-4f6e-4c96-89bb-0b58b29a79cb';
+        const version = 1;
+        const data = {
+          text: 'quux'
+        };
+        headingCache.byVersion.set(sourceId, version, data);
+
+        const actual = qewdSession.data.$('headings').getDocument();
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('#get', () => {
+      it('should return null', async () => {
+        const expected = null;
+
+        seeds();
+
+        const sourceId = 'ethercis-foo-bar-baz-quux';
+        const version = 1;
+        const actual = headingCache.byVersion.get(sourceId, version);
+
+        expect(actual).toEqual(expected);
+      });
+
+      it('should return data', async () => {
+        const expected = {
+          text: 'bar'
+        };
+
+        seeds();
+
+        const sourceId = 'ethercis-eaf394a9-5e05-49c0-9c69-c710c77eda76';
+        const version = 1;
+        const actual = headingCache.byVersion.get(sourceId, version);
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('#delete', () => {
+      it('should delete value', async () => {
+        const expected = {
+          bySourceId: {
+            'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12': {
+              versions: {
+                '1': {
+                  text: 'foo'
+                },
+                '2': {
+                  text: 'foo-2'
+                }
+              }
+
+            },
+            'marand-260a7be5-e00f-4b1e-ad58-27d95604d010': {
+              versions: {
+                '1': {
+                  text: 'baz'
+                }
+              }
+            }
+          }
+        };
+
+        seeds();
+
+        const sourceId = 'ethercis-eaf394a9-5e05-49c0-9c69-c710c77eda76';
+        const version = 1;
+        headingCache.byVersion.delete(sourceId, version);
+
+        const actual = qewdSession.data.$('headings').getDocument();
+
+        expect(actual).toEqual(expected);
+      });
+    });
+
+    describe('#getAllVersions', () => {
+      it('should return data', async () => {
+        const expected = [2, 1];
+
+        seeds();
+
+        const sourceId = 'ethercis-33a93da2-6677-42a0-8b39-9d1e012dde12';
+        const actual = headingCache.byVersion.getAllVersions(sourceId);
 
         expect(actual).toEqual(expected);
       });

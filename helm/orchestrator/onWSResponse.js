@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  11 February 2019
+  26 March 2019
 
 */
 
@@ -61,7 +61,8 @@
 var returnArrayResponses = {
   getPatientHeadingSummary: true,
   getPatientHeadingDetail: true,
-  getPatientTop3ThingsSummary: true
+  getPatientTop3ThingsSummary: true,
+  getRespectFormVersions: true
 };
 
 module.exports = function(req, res, next) {

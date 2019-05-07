@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  17 April 2019
 
 */
 
@@ -48,7 +48,7 @@ describe('lib/commands/getPatientHeadingSummary', () => {
     ctx = new ExecutionContextMock();
     session = {
       nhsNumber: 9999999000,
-      role: 'admin'
+      role: 'IDCR'
     };
 
     patientId = 9999999111;
