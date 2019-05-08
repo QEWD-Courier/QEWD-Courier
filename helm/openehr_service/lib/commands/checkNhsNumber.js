@@ -42,12 +42,12 @@ class CheckNhsNumberCommand {
   /**
    * @return {Promise.<Object>}
    */
-  async execute() {
+  async execute(initPatientId = null) {
     logger.info('commands/checkNhsNumber');
 
     let state = null;
 
-    const patientId = this.session.nhsNumber;
+    const patientId = initPatientId ? initPatientId : this.session.nhsNumber;
     logger.debug('patientId:', { patientId });
 
     const valid = isPatientIdValid(patientId);
@@ -55,7 +55,8 @@ class CheckNhsNumberCommand {
       throw new BadRequestError(valid.error);
     }
 
-    state = await this.statusService.check();
+    state = await this.statusService.check(patientId);
+    
     logger.debug('state:', { state });
 
     if (state && state.status === RecordStatus.LOADING) {
@@ -83,7 +84,7 @@ class CheckNhsNumberCommand {
       new_patient: 'not_known_yet',
       requestNo: 1
     };
-    await this.statusService.create(initialState);
+    await this.statusService.create(initialState, patientId);
 
     const host = this.ctx.defaultHost;
     const { created } = await this.ctx.services.patientService.check(host, patientId);
@@ -100,10 +101,10 @@ class CheckNhsNumberCommand {
       this.ctx.services.phrFeedService.create(patientId, feed);
     }
 
-    state = await this.statusService.get();
+    state = await this.statusService.get(patientId);
     logger.debug('record state:', { state });
     state.new_patient = created;
-    await this.statusService.update(state);
+    await this.statusService.update(state, patientId);
 
     return {
       status: RecordStatus.LOADING,

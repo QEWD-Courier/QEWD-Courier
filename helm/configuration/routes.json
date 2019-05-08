@@ -7,6 +7,12 @@
     "authenticate": false
   },
   {
+    "uri": "/api/initialisePatient/:patientId",
+    "method": "GET",
+    "handler": "initialisePatient",
+    "on_microservice": "auth_service"
+  },
+  {
     "uri": "/api/application",
     "method": "GET",
     "handler": "getApplication"
@@ -47,6 +53,12 @@
     "uri": "/api/openehr/check",
     "method": "GET",
     "handler": "checkNhsNumber",
+    "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/openehr/checkPatient/:patientId",
+    "method": "GET",
+    "handler": "checkPatientNHSNumber",
     "on_microservice": "openehr_service"
   },
   {
@@ -184,5 +196,29 @@
     "method": "DELETE",
     "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/mpi/Patient/:id",
+    "method": "POST",
+    "handler": "createPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient/:id",
+    "method": "GET",
+    "handler": "getPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient/:id",
+    "method": "PUT",
+    "handler": "editPatient",
+    "on_microservice": "mpi_service"
+  },
+  {
+    "uri": "/mpi/Patient",
+    "method": "GET",
+    "handler": "search",
+    "on_microservice": "mpi_service"
   }
 ]

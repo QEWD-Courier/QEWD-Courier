@@ -93,12 +93,13 @@ class DiscoveryDispatcher {
    *
    * @private
    * @param  {string|int} patientId
+   * @param  {Object} heading
    * @param  {Object} data
    * @param  {string} jwt
    * @return {Promise.<Object>}
    */
-  async mergeDiscoveryData(heading, data, jwt) {
-    logger.info('dispatchers/discoveryDispatcher|mergeDiscoveryData', { heading, data, jwt: typeof jwt  });
+  async mergeDiscoveryData(patientId, heading, data, jwt) {
+    logger.info('dispatchers/discoveryDispatcher|mergeDiscoveryData', { patientId, heading, data, jwt: typeof jwt  });
 
     debug('jwt: %s', jwt);
 
@@ -117,6 +118,7 @@ class DiscoveryDispatcher {
           heading: heading
         },
         data: data,
+        patientId: patientId,
         token: token
       };
 
@@ -148,7 +150,7 @@ class DiscoveryDispatcher {
 
     try {
       const discoveryData = await this.getDiscoveryData(patientId, heading, jwt, forward);
-      await this.mergeDiscoveryData(heading, discoveryData.results, jwt);
+      await this.mergeDiscoveryData(patientId, heading, discoveryData.results, jwt);
     } catch (err) {
       logger.error('dispatchers/discoveryDispatcher|sync|err:', err);
     }
