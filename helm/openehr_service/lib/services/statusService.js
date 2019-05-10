@@ -44,11 +44,11 @@ class StatusService {
 
   /**
    * Checks record status and increment request number if exists
-   * @param  {number} patientId
+   * @param  {int|string} patientId
    * @return {Promise.<Object|null?}
    */
   async check(patientId) {
-    logger.info('services/statusService|check');
+    logger.info('services/statusService|check', {patientId});
 
     const state = this.statusCache.get(patientId);
     debug('state: %j', state);
@@ -63,11 +63,11 @@ class StatusService {
 
   /**
    * Gets status record
-   * @param  {number} patientId
+   * @param  {int|string} patientId
    * @return {Promise.<Object>}
    */
   async get(patientId) {
-    logger.info('services/statusService|get');
+    logger.info('services/statusService|get', {patientId});
 
     return this.statusCache.get(patientId);
   }
@@ -75,12 +75,12 @@ class StatusService {
   /**
    * Creates a new status record
    *
+   * @param  {int|string} patientId
    * @param  {Object} state
-   * @param  {number} patientId
    * @return {Promise}
    */
-  async create(state, patientId) {
-    logger.info('services/statusService|create', { state });
+  async create(patientId, state) {
+    logger.info('services/statusService|create', {patientId, state});
 
     await this.statusCache.set(state, patientId);
   }
@@ -88,12 +88,12 @@ class StatusService {
   /**
    * Updates existing status record
    *
+   * @param  {int|string} patientId
    * @param  {Object} state
-   * @param  {number} patientId
    * @return {Promise}
    */
-  async update(state, patientId) {
-    logger.info('services/statusService|update', { state });
+  async update(patientId, state) {
+    logger.info('services/statusService|update', {patientId, state});
 
     await this.statusCache.set(state, patientId);
   }

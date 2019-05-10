@@ -196,29 +196,5 @@
     "method": "DELETE",
     "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
-  },
-  {
-    "uri": "/mpi/Patient/:id",
-    "method": "POST",
-    "handler": "createPatient",
-    "on_microservice": "mpi_service"
-  },
-  {
-    "uri": "/mpi/Patient/:id",
-    "method": "GET",
-    "handler": "getPatient",
-    "on_microservice": "mpi_service"
-  },
-  {
-    "uri": "/mpi/Patient/:id",
-    "method": "PUT",
-    "handler": "editPatient",
-    "on_microservice": "mpi_service"
-  },
-  {
-    "uri": "/mpi/Patient",
-    "method": "GET",
-    "handler": "search",
-    "on_microservice": "mpi_service"
   }
 ]

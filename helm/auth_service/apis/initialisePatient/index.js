@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Dmitry Solyannik <dmitry.solyannik@gmail.com>                                   |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -23,13 +23,20 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  7 February 2019
+  10 May 2019
 
 */
 
 module.exports = function(args, finished) {
   args.session.role = 'IDCR';
-  const patient = args.session.role === 'IDCR' ? {ok : true, patientId: args.patientId} : {ok: false};
+  const patient = args.session.role === 'IDCR' ?
+    {
+      ok: true,
+      patientId: args.patientId
+    } :
+    {
+      ok: false
+    };
   
  return finished(patient);
 };

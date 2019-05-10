@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 April 2019
+  05 May 2019
 
 */
 
@@ -84,7 +84,7 @@ class CheckNhsNumberCommand {
       new_patient: 'not_known_yet',
       requestNo: 1
     };
-    await this.statusService.create(initialState, patientId);
+    await this.statusService.create(patientId, initialState);
 
     const host = this.ctx.defaultHost;
     const { created } = await this.ctx.services.patientService.check(host, patientId);
@@ -104,7 +104,7 @@ class CheckNhsNumberCommand {
     state = await this.statusService.get(patientId);
     logger.debug('record state:', { state });
     state.new_patient = created;
-    await this.statusService.update(state, patientId);
+    await this.statusService.update(patientId, state);
 
     return {
       status: RecordStatus.LOADING,
