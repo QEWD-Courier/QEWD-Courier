@@ -48,7 +48,7 @@ module.exports = {
             return 'ModifiedCPR';
 
           default:
-            return 'Not known';
+            return '';
         }
       },
       getLegalProxyValue: (code) => {
@@ -63,7 +63,7 @@ module.exports = {
             return 'Unknown';
 
           default:
-            return 'Not known';
+            return '';
 
         }
       },
@@ -88,7 +88,7 @@ module.exports = {
             return 'valueSetD';
 
           default:
-            return 'Not known';
+            return '';
         }
       }
     },
@@ -134,7 +134,7 @@ module.exports = {
       clinicalSignatures: {
         dateCompleted: '22-Mar-2019',
         signaturesArray: [
-          '{{nss_respect_form.respect_headings["a7._clinician_signatures"].clinician_signature}}',
+          '{{nss_respect_form.respect_headings["a7._clinician_signatures"].service}}',
           {
             clinicalSignature: '{{nss_respect_form["composer|name"]}}',
             designation: '{{signing_clinician.practitioner_role.designation}}',
@@ -199,7 +199,7 @@ module.exports = {
             return 'at0027';
 
           default:
-            return 'Not known';
+            return '';
         }
       },
       getLegalProxyCode: (value) => {
@@ -214,7 +214,7 @@ module.exports = {
             return 'at0006';
 
           default:
-            return 'Not known';
+            return '';
         }
       },
       getInvolvementCode: (value) => {
@@ -238,7 +238,7 @@ module.exports = {
             return 'at0013';
 
           default:
-            return 'Not known';
+            return '';
         }
       }
     },
@@ -313,7 +313,7 @@ module.exports = {
             }
           },
           'a7._clinician_signatures': {
-            clinician_signature: [
+            service: [
               '{{clinicalSignatures.signaturesArray}}',
               {
                 ism_transition: {
