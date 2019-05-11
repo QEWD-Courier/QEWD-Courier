@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -58,16 +58,17 @@ describe('lib/services/statusService', () => {
   });
 
   describe('#check', () => {
-    it('should return null', async () => {
+    it('should return null', () => {
       const expected = null;
 
-      const actual = await statusService.check();
+      const patientId = 9999999000;
+      const actual = statusService.check(patientId);
 
-      expect(statusCache.get).toHaveBeenCalled();
+      expect(statusCache.get).toHaveBeenCalledWith(9999999000);
       expect(actual).toEqual(expected);
     });
 
-    it('should increment requestNo and return updated state ', async () => {
+    it('should increment requestNo and return updated state ', () => {
       const expected = {
         requestNo: 4
       };
@@ -76,10 +77,11 @@ describe('lib/services/statusService', () => {
         requestNo: 3
       });
 
-      const actual = await statusService.check();
+      const patientId = 9999999000;
+      const actual = statusService.check(patientId);
 
-      expect(statusCache.get).toHaveBeenCalled();
-      expect(statusCache.set).toHaveBeenCalledWith({
+      expect(statusCache.get).toHaveBeenCalledWith(9999999000);
+      expect(statusCache.set).toHaveBeenCalledWith(9999999000, {
         requestNo: 4
       });
 
@@ -88,7 +90,7 @@ describe('lib/services/statusService', () => {
   });
 
   describe('#get', () => {
-    it('should return record state ', async () => {
+    it('should return record state ', () => {
       const expected = {
         status: 'loading_data',
         new_patient: 'not_known_yet',
@@ -102,23 +104,26 @@ describe('lib/services/statusService', () => {
       };
       statusCache.get.and.returnValue(dbData);
 
-      const actual = await statusService.get();
+      const patientId = 9999999000;
+      const actual = statusService.get(patientId);
 
-      expect(statusCache.get).toHaveBeenCalled();
+      expect(statusCache.get).toHaveBeenCalledWith(9999999000);
       expect(actual).toEqual(expected);
     });
   });
 
   describe('#create', () => {
-    it('should create record state ', async () => {
+    it('should create record state ', () => {
+      const patientId = 9999999000;
       const state = {
         status: 'loading_data',
         new_patient: true,
         requestNo: 5
       };
-      await statusService.create(state);
 
-      expect(statusCache.set).toHaveBeenCalledWith({
+      statusService.create(patientId, state);
+
+      expect(statusCache.set).toHaveBeenCalledWith(9999999000, {
         status: 'loading_data',
         new_patient: true,
         requestNo: 5
@@ -127,15 +132,17 @@ describe('lib/services/statusService', () => {
   });
 
   describe('#update', () => {
-    it('should update record state ', async () => {
+    it('should update record state ', () => {
+      const patientId = 9999999000;
       const state = {
         status: 'ready',
         new_patient: true,
         requestNo: 7
       };
-      await statusService.update(state);
 
-      expect(statusCache.set).toHaveBeenCalledWith({
+      statusService.update(patientId, state);
+
+      expect(statusCache.set).toHaveBeenCalledWith(9999999000, {
         status: 'ready',
         new_patient: true,
         requestNo: 7

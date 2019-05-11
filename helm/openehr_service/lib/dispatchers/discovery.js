@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -32,7 +32,6 @@
 const P = require('bluebird');
 const { logger } = require('../core');
 const { ExtraHeading } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:dispatchers:discovery');
 
 class DiscoveryDispatcher {
   constructor(q) {
@@ -50,9 +49,7 @@ class DiscoveryDispatcher {
    * @return {Promise.<Object>}
    */
   async getDiscoveryData(patientId, heading, jwt, forward) {
-    logger.info('dispatchers/discoveryDispatcher|getDiscoveryData', { patientId, heading, jwt: typeof jwt });
-
-    debug('jwt: %s', jwt);
+    logger.info('dispatchers/discoveryDispatcher|getDiscoveryData', { patientId, heading });
 
     return new Promise((resolve, reject) => {
       if (heading === ExtraHeading.FINISHED) {
@@ -69,10 +66,10 @@ class DiscoveryDispatcher {
         method: 'GET'
       };
 
-      debug('message: %j', message);
+      logger.debug('message: %j', message);
 
       const status = forward(message, jwt, (responseObj) => {
-        debug('handle response from micro service: patientId = %s, heading = %s, responseObj = %j', patientId, heading, responseObj);
+        logger.debug('handle response from micro service: patientId = %s, heading = %s, responseObj = %j', patientId, heading, responseObj);
         if (responseObj.error) return reject(responseObj);
 
         return resolve(responseObj.message);
@@ -99,9 +96,8 @@ class DiscoveryDispatcher {
    * @return {Promise.<Object>}
    */
   async mergeDiscoveryData(patientId, heading, data, jwt) {
-    logger.info('dispatchers/discoveryDispatcher|mergeDiscoveryData', { patientId, heading, data, jwt: typeof jwt  });
+    logger.info('dispatchers/discoveryDispatcher|mergeDiscoveryData', { patientId, heading, data });
 
-    debug('jwt: %s', jwt);
 
     return new Promise((resolve, reject) => {
       const token = this.q.jwt.handlers.getProperty('uid', jwt);
@@ -122,10 +118,10 @@ class DiscoveryDispatcher {
         token: token
       };
 
-      debug('message: %j', messageObj);
+      logger.debug('message: %j', messageObj);
 
       this.q.handleMessage(messageObj, (responseObj) => {
-        debug('heading %s has been merged into EtherCIS', heading);
+        logger.debug('heading %s has been merged into EtherCIS', heading);
         if (responseObj.error) return reject(responseObj);
 
         return resolve(responseObj.message);
@@ -144,9 +140,7 @@ class DiscoveryDispatcher {
    * @return {Promise}
    */
   async sync(patientId, heading, jwt, forward) {
-    logger.info('dispatchers/discoveryDispatcher|sync', { patientId, heading, jwt: typeof jwt });
-
-    debug('jwt: %s', jwt);
+    logger.info('dispatchers/discoveryDispatcher|sync', { patientId, heading });
 
     try {
       const discoveryData = await this.getDiscoveryData(patientId, heading, jwt, forward);
@@ -167,9 +161,7 @@ class DiscoveryDispatcher {
    * @return {Promise}
    */
   async syncAll(patientId, headings, jwt, forward) {
-    logger.info('dispatchers/discoveryDispatcher|syncAll', { patientId, headings, jwt: typeof jwt });
-
-    debug('jwt: %s', jwt);
+    logger.info('dispatchers/discoveryDispatcher|syncAll', { patientId, headings, jwt });
 
     // handle each heading one at a time in sequence - this serialised processing
     // prevents EtherCIS being overwhelmed with API requests

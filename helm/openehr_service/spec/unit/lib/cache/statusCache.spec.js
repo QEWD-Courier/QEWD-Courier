@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -38,7 +38,7 @@ describe('lib/cache/statusCache', () => {
   let qewdSession;
 
   function seeds() {
-    qewdSession.data.$(['record_status']).setDocument({
+    qewdSession.data.$(['record_status', 9999999000]).setDocument({
       new_patient: true,
       requestNo: 1,
       status: 'loading_data'
@@ -58,7 +58,7 @@ describe('lib/cache/statusCache', () => {
   });
 
   describe('#create (static)', () => {
-    it('should initialize a new instance', async () => {
+    it('should initialize a new instance', () => {
       const actual = StatusCache.create(ctx.adapter);
 
       expect(actual).toEqual(jasmine.any(StatusCache));
@@ -67,15 +67,18 @@ describe('lib/cache/statusCache', () => {
   });
 
   describe('#get', () => {
-    it('should return null', async () => {
+    it('should return null', () => {
       const expected = null;
 
-      const actual = await statusCache.get();
+      seeds();
+
+      const patientId = 9999999111;
+      const actual = statusCache.get(patientId);
 
       expect(actual).toEqual(expected);
     });
 
-    it('should return status', async () => {
+    it('should return status', () => {
       const expected = {
         new_patient: true,
         requestNo: 1,
@@ -84,26 +87,30 @@ describe('lib/cache/statusCache', () => {
 
       seeds();
 
-      const actual = await statusCache.get();
+      const patientId = 9999999000;
+      const actual = statusCache.get(patientId);
 
       expect(actual).toEqual(expected);
     });
   });
 
   describe('#set', () => {
-    it('should set status', async () => {
+    it('should set status', () => {
       const expected = {
-        new_patient: false,
-        requestNo: 3,
-        status: 'ready'
+        '9999999000': {
+          new_patient: false,
+          requestNo: 3,
+          status: 'ready'
+        }
       };
 
+      const patientId = 9999999000;
       const data = {
         new_patient: false,
         requestNo: 3,
         status: 'ready'
       };
-      await statusCache.set(data);
+      statusCache.set(patientId, data);
 
       const actual = qewdSession.data.$('record_status').getDocument();
 

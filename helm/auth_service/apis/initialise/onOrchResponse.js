@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  27 March 2019
+  11 May 2019
 
 */
 
@@ -49,7 +49,7 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
     console.log('** no error, but authenticated');
 
     message = {
-      path: '/api/openehr/check',
+      path: '/api/openehr/check/dummy',
       method: 'GET'
     };
 

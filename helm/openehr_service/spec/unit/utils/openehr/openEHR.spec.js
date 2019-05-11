@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -113,7 +113,7 @@ describe('utils/openehr/openEHR', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .reply(200, { sessionId: '03391e86-5085-4b99-89ff-79209f8d1f20' });
 
       openEHR.startSession(host, qewdSession, (actual) => {
@@ -135,7 +135,7 @@ describe('utils/openehr/openEHR', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .reply(200, { sessionId: '03391e86-5085-4b99-89ff-79209f8d1f20' });
 
       openEHR.startSession(host, qewdSession, (actual) => {
@@ -153,7 +153,7 @@ describe('utils/openehr/openEHR', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .replyWithError({
           message: 'custom error',
           code: 500

@@ -23,49 +23,43 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 May 2019
+  11 May 2019
 
 */
 
 module.exports = function(responseObj, request, forwardToMS, sendResponse, getJWTproperty) {
-  
-  
-  
-  
   // Orchestrator checks response from /api/initialise, and if user has been
   //  authenticated, and if DDS is configured for use, it fires off a new
   //  request to the OpenEHR MicroService to see if any data for this user
   //  needs updating from DDS
-  
+
   // If so, then PulseTile must wait and poll repeatedly with the /api/initialise
   // to see if the DDS write-back to EtherCIS has completed
   console.log('onOrchResponse for /api/initialise');
-  
+
   var global_config = require('/opt/qewd/mapped/configuration/global_config.json');
   var response = responseObj.message;
   console.log('** response = ' + JSON.stringify(response, null, 2));
-  
+
   var message;
-  
+
   const patientId = response.patientId;
-  
-  
-  
+
   if (response.ok && patientId) {
     console.log('** no error, but authenticated');
-    
+
     message = {
-      path: `/api/openehr/checkPatient/${patientId}`,
+      path: `/api/openehr/check/${patientId}`,
       method: 'GET'
     };
-    
+
     forwardToMS(message, function(openehrResponse) {
-      
+
       // response from /openehr_service/ddsUpdateCheck/onMSResponse.js
       //  after handler /openehr_service/ddsUpdateCheck/index.js
-      
+
       console.log('openehr response: ' + JSON.stringify(openehrResponse, null, 2));
-      
+
       // is DDS configured for use?
       if (!global_config.DDS || !global_config.DDS.enabled) {
         return sendResponse({
@@ -73,14 +67,14 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
           mode: 'secure'
         });
       }
-      
+
       // DDS is in use
-      
+
       var recordStatus;
       var new_patient;
       var message;
       var response;
-      
+
       if (openehrResponse.message) {
         if (openehrResponse.message.status) {
           recordStatus = openehrResponse.message.status;
@@ -89,69 +83,69 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
           new_patient = openehrResponse.message.new_patient;
         }
       }
-      
+
       if (recordStatus === 'loading_data') {
         // augment the response from /api/initialise with the information
         // that the DDS data is being loaded
         // Pulsetile must therefore poll again later to try to get a ready status
-        
+
         //responseObj.message.status = recordStatus;
         //responseObj.message.new_patient = new_patient;
-        
+
         response = {
           status: 'loading_data',
           new_patient: new_patient
         };
-        
+
         sendResponse(response);
       }
-      
+
       else if (recordStatus === 'ready') {
-        
+
         // pre-fetch the demographics from DDS now
         // to avoid later race conditions and speed up UI later
-        
+
         // note the dummy patient Id - this is because the actual
         // patient Id is picked up in the handler function
         // from the JWT
         //  ie the patientId in the path is ignored
-        
+
         message = {
           path: `/api/demographics/${patientId}`,
           method: 'GET'
         };
-        
+
         forwardToMS(message, function(DDSResponse) {
           // ignore the response from DDS and just return the original
           // response from the /api/initialise API
           console.log('Demographics received from DDS and cached in Discovery MicroService');
-          
+
           //OK - tell PulseTile that everything is ready to go
-          
+
           var response = {
             ok: true,
             mode: 'secure'
           };
-          
+
           console.log('returning /api/initialise response to browser: ' + JSON.stringify(response, null, 2));
-          
+
           sendResponse(response);
         });
       }
-      
+
       else {
         // this shouldn't be needed:
         // only 2 status values returned by /api/openehr/check
         // but we'll add this for now to be on the safe side -
         //  just return the original /api/initialise response
-        
+
         sendResponse(responseObj);
       }
     });
     return true;
   }
-  
+
   // implicitly for errors or unautenticated responses,
   // response will be returned to browser unchanged
-  
+
 };

@@ -7,7 +7,7 @@
     "authenticate": false
   },
   {
-    "uri": "/api/initialisePatient/:patientId",
+    "uri": "/api/initialise/:patientId",
     "method": "GET",
     "handler": "initialisePatient",
     "on_microservice": "auth_service"
@@ -50,15 +50,9 @@
     ]
   },
   {
-    "uri": "/api/openehr/check",
+    "uri": "/api/openehr/check/:patientId",
     "method": "GET",
     "handler": "checkNhsNumber",
-    "on_microservice": "openehr_service"
-  },
-  {
-    "uri": "/api/openehr/checkPatient/:patientId",
-    "method": "GET",
-    "handler": "checkPatientNHSNumber",
     "on_microservice": "openehr_service"
   },
   {

@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 April 2019
+  11 May 2019
 
 */
 
@@ -43,6 +43,10 @@ const Heading = Object.freeze({
 const Top3ThingFormat = Object.freeze({
   LATEST: 'latest',
   HSCN: 'hscn',
+});
+
+const Patient = Object.freeze({
+  DUMMY: 'dummy'
 });
 
 const PostHeadingFormat = Object.freeze({
@@ -77,6 +81,7 @@ const UserMode = Object.freeze({
 module.exports = {
   ExtraHeading,
   Heading,
+  Patient,
   PostHeadingFormat,
   QueryFormat,
   RecordStatus,

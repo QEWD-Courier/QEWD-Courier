@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -42,12 +42,12 @@ class StatusCache {
 
   /**
    * Gets status
-   * @param {number | string} patientId
+   * @param {int|string} patientId
    * @return {Object|null}
    */
   get(patientId) {
-    logger.info('cache/statusCache|get');
-    
+    logger.info('cache/statusCache|get', { patientId });
+
     const key = ['record_status', patientId];
 
     return this.adapter.getObject(key);
@@ -57,12 +57,12 @@ class StatusCache {
    * Sets status
    *
    * @param  {Object} data
-   * @param {number | string} patientId
+   * @param {int|string} patientId
    * @return {void}
    */
-  set(data, patientId) {
-    logger.info('cache/statusCache|set', { data });
-  
+  set(patientId, data) {
+    logger.info('cache/statusCache|set', { patientId, data });
+
     const key = ['record_status', patientId];
     this.adapter.putObject(key, data);
   }

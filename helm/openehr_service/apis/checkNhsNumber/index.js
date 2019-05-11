@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -34,7 +34,7 @@ const { CheckNhsNumberCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
 /**
- * GET /api/openehr/check
+ * GET /api/openehr/check/:patientId
  *
  * @param  {Object} args
  * @param  {Function} finished
@@ -42,7 +42,7 @@ const { getResponseError } = require('../../lib/errors');
 module.exports = async function checkNhsNumber(args, finished) {
   try {
     const command = new CheckNhsNumberCommand(args.req.ctx, args.session);
-    const responseObj = await command.execute();
+    const responseObj = await command.execute(args.patientId);
 
     finished(responseObj);
   } catch (err) {

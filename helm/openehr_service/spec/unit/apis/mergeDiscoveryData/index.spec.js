@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -56,6 +56,7 @@ describe('apis/mergeDiscoveryData', () => {
       heading: 'procedures',
       req: {
         ctx: new ExecutionContextMock(),
+        patientId: 9999999111,
         data: [
           {
             sourceId: 'eaf394a9-5e05-49c0-9c69-c710c77eda76'
@@ -90,7 +91,7 @@ describe('apis/mergeDiscoveryData', () => {
     await handler(args, finished);
 
     expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.req.session);
-    expect(command.execute).toHaveBeenCalledWith(args.heading, args.req.data);
+    expect(command.execute).toHaveBeenCalledWith(args.req.patientId, args.heading, args.req.data);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
   });
@@ -101,7 +102,7 @@ describe('apis/mergeDiscoveryData', () => {
     await handler(args, finished);
 
     expect(MergeDiscoveryDataCommand).toHaveBeenCalledWith(args.req.ctx, args.req.session);
-    expect(command.execute).toHaveBeenCalledWith(args.heading, args.req.data);
+    expect(command.execute).toHaveBeenCalledWith(args.req.patientId, args.heading, args.req.data);
 
     expect(finished).toHaveBeenCalledWith({
       error: 'custom error'
