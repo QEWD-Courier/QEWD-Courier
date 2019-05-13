@@ -23,14 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
 'use strict';
 
+const { logger } = require('../core');
 const { RecordStatus, ExtraHeading } = require('../shared/enums');
-const debug = require('debug')('helm:openehr:commands:merge-discovery-data');
 
 class MergeDiscoveryDataCommand {
   constructor(ctx, session) {
@@ -39,24 +39,22 @@ class MergeDiscoveryDataCommand {
   }
 
   /**
+   * @param  {int|string} patientId
    * @param  {string} heading
    * @param  {Object[]} data
    * @return {Promise.<Object>}
    */
-  async execute(heading, data) {
-    debug('heading: %s, data: %j', heading, data);
-
-    const patientId = this.session.nhsNumber;
-    debug('patientId: %s', patientId);
+  async execute(patientId, heading, data) {
+    logger.info('commands/mergeDiscoveryData', { patientId, heading, data });
 
     const { statusService } = this.ctx.services;
 
     if (heading === ExtraHeading.FINISHED) {
-      const state = await statusService.get();
-      debug('record state: %j', state);
+      const state = statusService.get(patientId);
+      logger.debug('record state: %j', state);
 
       state.status = RecordStatus.READY;
-      await statusService.update(state);
+      statusService.update(patientId, state);
 
       return {
         refresh: true

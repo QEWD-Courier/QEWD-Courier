@@ -23,14 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
 'use strict';
 
 const { logger } = require('../core');
-const debug = require('debug')('helm:openehr:services:status');
 
 class StatusService {
   constructor(ctx) {
@@ -44,56 +43,58 @@ class StatusService {
 
   /**
    * Checks record status and increment request number if exists
-   *
-   * @return {Promise.<Object|null?}
+   * @param  {int|string} patientId
+   * @return {Object|null}
    */
-  async check() {
-    logger.info('services/statusService|check');
+  check(patientId) {
+    logger.info('services/statusService|check', {patientId});
 
-    const state = this.statusCache.get();
-    debug('state: %j', state);
+    const state = this.statusCache.get(patientId);
+    logger.debug('patientId: %s, state: %j', patientId, state);
 
     if (!state) return null;
 
     state.requestNo = state.requestNo + 1;
-    this.statusCache.set(state);
+    this.statusCache.set(patientId, state);
 
     return state;
   }
 
   /**
    * Gets status record
-   *
-   * @return {Promise.<Object>}
+   * @param  {int|string} patientId
+   * @return {Object}
    */
-  async get() {
-    logger.info('services/statusService|get');
+  get(patientId) {
+    logger.info('services/statusService|get', {patientId});
 
-    return this.statusCache.get();
+    return this.statusCache.get(patientId);
   }
 
   /**
    * Creates a new status record
    *
+   * @param  {int|string} patientId
    * @param  {Object} state
-   * @return {Promise}
+   * @return {void}
    */
-  async create(state) {
-    logger.info('services/statusService|create', { state });
+  create(patientId, state) {
+    logger.info('services/statusService|create', {patientId, state});
 
-    await this.statusCache.set(state);
+    this.statusCache.set(patientId, state);
   }
 
   /**
    * Updates existing status record
    *
+   * @param  {int|string} patientId
    * @param  {Object} state
-   * @return {Promise}
+   * @return {void}
    */
-  async update(state) {
-    logger.info('services/statusService|update', { state });
+  update(patientId, state) {
+    logger.info('services/statusService|update', {patientId, state});
 
-    await this.statusCache.set(state);
+    this.statusCache.set(patientId, state);
   }
 }
 

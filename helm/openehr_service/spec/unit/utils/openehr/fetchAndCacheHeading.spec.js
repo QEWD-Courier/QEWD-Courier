@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -72,7 +72,7 @@ describe('utils/openehr/fetchAndCacheHeading', () => {
     nock(url)
       .post(`/rest/v1/session?username=${username}&password=${password}`)
       .matchHeader('x-max-session', 75)
-      .matchHeader('x-session-timeout', 120000)
+      .matchHeader('x-session-timeout', 3600000)
       .reply(200, data || {});
   }
 

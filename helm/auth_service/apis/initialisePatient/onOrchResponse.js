@@ -8,7 +8,7 @@
  | http://rippleosi.org                                                     |
  | Email: code.custodian@rippleosi.org                                      |
  |                                                                          |
- | Author: Rob Tweed, M/Gateway Developments Ltd                            |
+ | Author: Dmitry Solyannik <dmitry.solyannik@gmail.com>                    |
  |                                                                          |
  | Licensed under the Apache License, Version 2.0 (the "License");          |
  | you may not use this file except in compliance with the License.         |
@@ -28,7 +28,6 @@
 */
 
 module.exports = function(responseObj, request, forwardToMS, sendResponse, getJWTproperty) {
-
   // Orchestrator checks response from /api/initialise, and if user has been
   //  authenticated, and if DDS is configured for use, it fires off a new
   //  request to the OpenEHR MicroService to see if any data for this user
@@ -36,7 +35,6 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
 
   // If so, then PulseTile must wait and poll repeatedly with the /api/initialise
   // to see if the DDS write-back to EtherCIS has completed
-
   console.log('onOrchResponse for /api/initialise');
 
   var global_config = require('/opt/qewd/mapped/configuration/global_config.json');
@@ -45,11 +43,13 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
 
   var message;
 
-  if (!response.error && response.authenticated) {
+  const patientId = response.patientId;
+
+  if (response.ok && patientId) {
     console.log('** no error, but authenticated');
 
     message = {
-      path: '/api/openehr/check/dummy',
+      path: `/api/openehr/check/${patientId}`,
       method: 'GET'
     };
 
@@ -111,7 +111,7 @@ module.exports = function(responseObj, request, forwardToMS, sendResponse, getJW
         //  ie the patientId in the path is ignored
 
         message = {
-          path: '/api/demographics/dummy',
+          path: `/api/demographics/${patientId}`,
           method: 'GET'
         };
 

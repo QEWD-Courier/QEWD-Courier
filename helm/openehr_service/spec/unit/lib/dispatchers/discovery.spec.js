@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -140,13 +140,14 @@ describe('lib/dispatchers/discovery', () => {
         cb(responseObj);
       });
 
+      const patientId = 9999999000;
       const heading = 'problems';
       const data = {
         baz: 'quux'
       };
       const jwt = 'foo.bar.baz';
 
-      const actual = await discoveryDispatcher.mergeDiscoveryData(heading, data, jwt);
+      const actual = await discoveryDispatcher.mergeDiscoveryData(patientId, heading, data, jwt);
 
       expect(q.jwt.handlers.getProperty).toHaveBeenCalledWith('uid', 'foo.bar.baz');
       expect(q.handleMessage).toHaveBeenCalledWith(
@@ -162,6 +163,7 @@ describe('lib/dispatchers/discovery', () => {
           args: {
             heading: 'problems'
           },
+          patientId: 9999999000,
           data: {
             baz: 'quux'
           },
@@ -184,6 +186,7 @@ describe('lib/dispatchers/discovery', () => {
         cb(responseObj);
       });
 
+      const patientId = 9999999000;
       const heading = 'problems';
       const data = {
         baz: 'quux'
@@ -191,7 +194,7 @@ describe('lib/dispatchers/discovery', () => {
       const jwt = 'foo.bar.baz';
 
       try {
-        await discoveryDispatcher.mergeDiscoveryData(heading, data, jwt);
+        await discoveryDispatcher.mergeDiscoveryData(patientId, heading, data, jwt);
       } catch (err) {
         expect(err).toEqual(expected);
       }
@@ -220,7 +223,7 @@ describe('lib/dispatchers/discovery', () => {
       await discoveryDispatcher.sync(patientId, heading, jwt, forward);
 
       expect(discoveryDispatcher.getDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', 'foo.bar.baz', forward);
-      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', data.results, 'foo.bar.baz');
+      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', data.results, 'foo.bar.baz');
     });
 
     it('should ignore errors', async () => {
@@ -234,7 +237,7 @@ describe('lib/dispatchers/discovery', () => {
       await discoveryDispatcher.sync(patientId, heading, jwt, forward);
 
       expect(discoveryDispatcher.getDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', 'foo.bar.baz', forward);
-      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith('problems', data.results, 'foo.bar.baz');
+      expect(discoveryDispatcher.mergeDiscoveryData).toHaveBeenCalledWith(9999999000, 'problems', data.results, 'foo.bar.baz');
     });
   });
 

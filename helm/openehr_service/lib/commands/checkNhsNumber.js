@@ -23,13 +23,13 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 April 2019
+  11 May 2019
 
 */
 
 const { logger } = require('../core');
 const { BadRequestError } = require('../errors');
-const { RecordStatus } = require('../shared/enums');
+const { Patient, RecordStatus, Role } = require('../shared/enums');
 const { isPatientIdValid } = require('../shared/validation');
 
 class CheckNhsNumberCommand {
@@ -40,22 +40,31 @@ class CheckNhsNumberCommand {
   }
 
   /**
+   * @param  {int|string} patientId
    * @return {Promise.<Object>}
    */
-  async execute() {
-    logger.info('commands/checkNhsNumber');
+  async execute(patientId) {
+    logger.info('commands/checkNhsNumber', { patientId });
 
     let state = null;
 
-    const patientId = this.session.nhsNumber;
-    logger.debug('patientId:', { patientId });
+    // override dummy patientId
+    if (patientId === Patient.DUMMY) {
+      patientId = this.session.nhsNumber;
+    }
+
+    // override patientId for PHR Users - only allowed to see their own data
+    if (this.session.role === Role.PHR_USER) {
+      patientId = this.session.nhsNumber;
+    }
 
     const valid = isPatientIdValid(patientId);
     if (!valid.ok) {
       throw new BadRequestError(valid.error);
     }
 
-    state = await this.statusService.check();
+    state = this.statusService.check(patientId);
+
     logger.debug('state:', { state });
 
     if (state && state.status === RecordStatus.LOADING) {
@@ -83,7 +92,7 @@ class CheckNhsNumberCommand {
       new_patient: 'not_known_yet',
       requestNo: 1
     };
-    await this.statusService.create(initialState);
+    this.statusService.create(patientId, initialState);
 
     const host = this.ctx.defaultHost;
     const { created } = await this.ctx.services.patientService.check(host, patientId);
@@ -100,10 +109,10 @@ class CheckNhsNumberCommand {
       this.ctx.services.phrFeedService.create(patientId, feed);
     }
 
-    state = await this.statusService.get();
+    state = this.statusService.get(patientId);
     logger.debug('record state:', { state });
     state.new_patient = created;
-    await this.statusService.update(state);
+    this.statusService.update(patientId, state);
 
     return {
       status: RecordStatus.LOADING,
