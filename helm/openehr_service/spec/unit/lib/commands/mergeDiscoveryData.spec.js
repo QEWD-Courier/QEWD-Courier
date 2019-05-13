@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -36,6 +36,7 @@ describe('lib/commands/mergeDiscoveryData', () => {
   let ctx;
   let session;
 
+  let patientId;
   let heading;
   let data;
 
@@ -50,6 +51,7 @@ describe('lib/commands/mergeDiscoveryData', () => {
       email: 'john.doe@example.org'
     };
 
+    patientId = 9999999111;
     heading = 'procedures';
     data = [
       {
@@ -73,17 +75,17 @@ describe('lib/commands/mergeDiscoveryData', () => {
 
     heading = 'finished';
 
-    statusService.get.and.resolveValue({
+    statusService.get.and.returnValue({
       status: 'loading_data',
       new_patient: true,
       requestNo: 2
     });
 
     const command = new MergeDiscoveryDataCommand(ctx, session);
-    const actual = await command.execute(heading, data);
+    const actual = await command.execute(patientId, heading, data);
 
     expect(statusService.get).toHaveBeenCalled();
-    expect(statusService.update).toHaveBeenCalledWith({
+    expect(statusService.update).toHaveBeenCalledWith(9999999111, {
       status: 'ready',
       new_patient: true,
       requestNo: 2
@@ -100,7 +102,7 @@ describe('lib/commands/mergeDiscoveryData', () => {
     data = [];
 
     const command = new MergeDiscoveryDataCommand(ctx, session);
-    const actual = await command.execute(heading, data);
+    const actual = await command.execute(patientId, heading, data);
 
     expect(actual).toEqual(expected);
   });
@@ -111,9 +113,9 @@ describe('lib/commands/mergeDiscoveryData', () => {
     };
 
     const command = new MergeDiscoveryDataCommand(ctx, session);
-    const actual = await command.execute(heading, data);
+    const actual = await command.execute(patientId, heading, data);
 
-    expect(discoveryService.mergeAll).toHaveBeenCalledWith('ethercis', 9999999000, 'procedures', data);
+    expect(discoveryService.mergeAll).toHaveBeenCalledWith('ethercis', 9999999111, 'procedures', data);
     expect(actual).toEqual(expected);
   });
 
@@ -125,10 +127,10 @@ describe('lib/commands/mergeDiscoveryData', () => {
     discoveryService.mergeAll.and.resolveValue(true);
 
     const command = new MergeDiscoveryDataCommand(ctx, session);
-    const actual = await command.execute(heading, data);
+    const actual = await command.execute(patientId, heading, data);
 
-    expect(discoveryService.mergeAll).toHaveBeenCalledWith('ethercis', 9999999000, 'procedures', data);
-    expect(cacheService.delete).toHaveBeenCalledWith('ethercis', 9999999000, 'procedures');
+    expect(discoveryService.mergeAll).toHaveBeenCalledWith('ethercis', 9999999111, 'procedures', data);
+    expect(cacheService.delete).toHaveBeenCalledWith('ethercis', 9999999111, 'procedures');
 
     expect(actual).toEqual(expected);
   });

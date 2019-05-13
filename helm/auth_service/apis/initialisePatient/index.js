@@ -23,12 +23,14 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  10 May 2019
+  11 May 2019
 
 */
 
 module.exports = function(args, finished) {
+  //TODO: AK don't forget to remove it
   args.session.role = 'IDCR';
+
   const patient = args.session.role === 'IDCR' ?
     {
       ok: true,
@@ -37,6 +39,6 @@ module.exports = function(args, finished) {
     {
       ok: false
     };
-  
+
  return finished(patient);
 };

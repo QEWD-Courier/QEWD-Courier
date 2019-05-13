@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  17 April 2019
+  11 May 2019
 
 */
 
@@ -62,7 +62,7 @@ describe('lib/services/ehrRestService', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .reply(200, { foo: 'bar' });
 
       const actual = await ehrRestService.startSession();
@@ -80,7 +80,7 @@ describe('lib/services/ehrRestService', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .replyWithError({
           'message': 'something awful',
           'code': 'AWFUL_ERROR'
@@ -101,7 +101,7 @@ describe('lib/services/ehrRestService', () => {
       nock('http://178.62.71.220:8080')
         .post('/rest/v1/session?username=bar&password=quux')
         .matchHeader('x-max-session', 75)
-        .matchHeader('x-session-timeout', 120000)
+        .matchHeader('x-session-timeout', 3600000)
         .reply(403, '<html>some text</html>');
 
        try {

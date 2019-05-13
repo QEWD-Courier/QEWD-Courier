@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -53,11 +53,12 @@ describe('apis/checkNhsNumber', () => {
 
   beforeEach(() => {
     args = {
+      patientId: 9999999000,
       req: {
         ctx: new ExecutionContextMock()
       },
       session: {
-        nhsNumber: 9999999000,
+        nhsNumber: 9999999111,
         email: 'john.doe@example.org'
       }
     };
@@ -87,7 +88,7 @@ describe('apis/checkNhsNumber', () => {
     await handler(args, finished);
 
     expect(CheckNhsNumberCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
-    expect(command.execute).toHaveBeenCalled();
+    expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith(responseObj);
   });
@@ -98,7 +99,7 @@ describe('apis/checkNhsNumber', () => {
     await handler(args, finished);
 
     expect(CheckNhsNumberCommand).toHaveBeenCalledWith(args.req.ctx, args.session);
-    expect(command.execute).toHaveBeenCalled();
+    expect(command.execute).toHaveBeenCalledWith(args.patientId);
 
     expect(finished).toHaveBeenCalledWith({
       error: 'custom error'

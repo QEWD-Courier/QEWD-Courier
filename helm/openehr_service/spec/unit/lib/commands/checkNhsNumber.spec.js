@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  12 April 2019
+  11 May 2019
 
 */
 
@@ -31,6 +31,7 @@
 
 const { ExecutionContextMock } = require('@tests/mocks');
 const { BadRequestError } = require('@lib/errors');
+const { Role } = require('@lib/shared/enums');
 const CheckNhsNumberCommand = require('@lib/commands/checkNhsNumber');
 
 describe('lib/commands/checkNhsNumber', () => {
@@ -44,7 +45,7 @@ describe('lib/commands/checkNhsNumber', () => {
   beforeEach(() => {
     ctx = new ExecutionContextMock();
     session = {
-      nhsNumber: 9999999000,
+      nhsNumber: 9999999111,
       email: 'john.doe@example.org'
     };
 
@@ -56,10 +57,10 @@ describe('lib/commands/checkNhsNumber', () => {
   });
 
   it('should throw invalid or missing patientId error', async () => {
-    session.nhsNumber = 'foo';
+    const patientId = 'foo';
 
     const command = new CheckNhsNumberCommand(ctx, session);
-    const actual = command.execute();
+    const actual = command.execute(patientId);
 
     await expectAsync(actual).toBeRejectedWith(new BadRequestError('patientId foo is invalid'));
   });
@@ -77,12 +78,13 @@ describe('lib/commands/checkNhsNumber', () => {
       requestNo: 2,
       status: 'loading_data'
     };
-    statusService.check.and.resolveValue(state);
+    statusService.check.and.returnValue(state);
 
+    const patientId = 9999999000;
     const command = new CheckNhsNumberCommand(ctx, session);
-    const actual = await command.execute();
+    const actual = await command.execute(patientId);
 
-    expect(statusService.check).toHaveBeenCalled();
+    expect(statusService.check).toHaveBeenCalledWith(9999999000);
     expect(actual).toEqual(expected);
   });
 
@@ -97,12 +99,13 @@ describe('lib/commands/checkNhsNumber', () => {
       requestNo: 2,
       status: 'ready'
     };
-    statusService.check.and.resolveValue(state);
+    statusService.check.and.returnValue(state);
 
+    const patientId = 9999999000;
     const command = new CheckNhsNumberCommand(ctx, session);
-    const actual = await command.execute();
+    const actual = await command.execute(patientId);
 
-    expect(statusService.check).toHaveBeenCalledWith();
+    expect(statusService.check).toHaveBeenCalledWith(9999999000);
     expect(actual).toEqual(expected);
   });
 
@@ -114,28 +117,29 @@ describe('lib/commands/checkNhsNumber', () => {
       nhsNumber: 9999999000
     };
 
-    statusService.check.and.resolveValue();
-    statusService.create.and.resolveValue();
-    patientService.check.and.resolveValue({
+    statusService.check.and.returnValue();
+    statusService.create.and.returnValue();
+    patientService.check.and.returnValue({
       created: false
     });
-    statusService.get.and.resolveValue({
+    statusService.get.and.returnValue({
       status: 'loading_data',
       new_patient: 'not_known_yet',
       requestNo: 2
     });
 
+    const patientId = 9999999000;
     const command = new CheckNhsNumberCommand(ctx, session);
-    const actual = await command.execute();
+    const actual = await command.execute(patientId);
 
-    expect(statusService.check).toHaveBeenCalledWith();
-    expect(statusService.create).toHaveBeenCalledWith({
+    expect(statusService.check).toHaveBeenCalledWith(9999999000);
+    expect(statusService.create).toHaveBeenCalledWith(9999999000, {
       status: 'loading_data',
       new_patient: 'not_known_yet',
       requestNo: 1
     });
     expect(patientService.check).toHaveBeenCalledWith('ethercis', 9999999000);
-    expect(statusService.update).toHaveBeenCalledWith({
+    expect(statusService.update).toHaveBeenCalledWith(9999999000, {
       status: 'loading_data',
       new_patient: false,
       requestNo: 2
@@ -152,22 +156,23 @@ describe('lib/commands/checkNhsNumber', () => {
       nhsNumber: 9999999000
     };
 
-    statusService.check.and.resolveValue();
-    statusService.create.and.resolveValue();
-    patientService.check.and.resolveValue({
+    statusService.check.and.returnValue();
+    statusService.create.and.returnValue();
+    patientService.check.and.returnValue({
       created: true
     });
-    statusService.get.and.resolveValue({
+    statusService.get.and.returnValue({
       status: 'loading_data',
       new_patient: 'not_known_yet',
       requestNo: 2
     });
 
+    const patientId = 9999999000;
     const command = new CheckNhsNumberCommand(ctx, session);
-    const actual = await command.execute();
+    const actual = await command.execute(patientId);
 
-    expect(statusService.check).toHaveBeenCalledWith();
-    expect(statusService.create).toHaveBeenCalledWith({
+    expect(statusService.check).toHaveBeenCalledWith(9999999000);
+    expect(statusService.create).toHaveBeenCalledWith(9999999000, {
       status: 'loading_data',
       new_patient: 'not_known_yet',
       requestNo: 1
@@ -179,7 +184,99 @@ describe('lib/commands/checkNhsNumber', () => {
       landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
       rssFeedUrl: 'https://www.leeds-live.co.uk/news/?service=rss'
     });
-    expect(statusService.update).toHaveBeenCalledWith({
+    expect(statusService.update).toHaveBeenCalledWith(9999999000, {
+      status: 'loading_data',
+      new_patient: true,
+      requestNo: 2
+    });
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should create standard feed when new patient (dummy)', async () => {
+    const expected = {
+      status: 'loading_data',
+      new_patient: true,
+      responseNo: 2,
+      nhsNumber: 9999999111
+    };
+
+    statusService.check.and.returnValue();
+    statusService.create.and.returnValue();
+    patientService.check.and.returnValue({
+      created: true
+    });
+    statusService.get.and.returnValue({
+      status: 'loading_data',
+      new_patient: 'not_known_yet',
+      requestNo: 2
+    });
+
+    const patientId = 'dummy';
+    const command = new CheckNhsNumberCommand(ctx, session);
+    const actual = await command.execute(patientId);
+
+    expect(statusService.check).toHaveBeenCalledWith(9999999111);
+    expect(statusService.create).toHaveBeenCalledWith(9999999111, {
+      status: 'loading_data',
+      new_patient: 'not_known_yet',
+      requestNo: 1
+    });
+    expect(patientService.check).toHaveBeenCalledWith('ethercis', 9999999111);
+    expect(phrFeedService.create).toHaveBeenCalledWith(9999999111, {
+      author: 'Helm PHR service',
+      name: 'Leeds Live - Whats On',
+      landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
+      rssFeedUrl: 'https://www.leeds-live.co.uk/news/?service=rss'
+    });
+    expect(statusService.update).toHaveBeenCalledWith(9999999111, {
+      status: 'loading_data',
+      new_patient: true,
+      requestNo: 2
+    });
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('should create standard feed when new patient (phr user)', async () => {
+    const expected = {
+      status: 'loading_data',
+      new_patient: true,
+      responseNo: 2,
+      nhsNumber: 9999999111
+    };
+
+    statusService.check.and.returnValue();
+    statusService.create.and.returnValue();
+    patientService.check.and.returnValue({
+      created: true
+    });
+    statusService.get.and.returnValue({
+      status: 'loading_data',
+      new_patient: 'not_known_yet',
+      requestNo: 2
+    });
+
+    session.role = Role.PHR_USER;
+
+    const patientId = 9999999111;
+    const command = new CheckNhsNumberCommand(ctx, session);
+    const actual = await command.execute(patientId);
+
+    expect(statusService.check).toHaveBeenCalledWith(9999999111);
+    expect(statusService.create).toHaveBeenCalledWith(9999999111, {
+      status: 'loading_data',
+      new_patient: 'not_known_yet',
+      requestNo: 1
+    });
+    expect(patientService.check).toHaveBeenCalledWith('ethercis', 9999999111);
+    expect(phrFeedService.create).toHaveBeenCalledWith(9999999111, {
+      author: 'Helm PHR service',
+      name: 'Leeds Live - Whats On',
+      landingPageUrl: 'https://www.leeds-live.co.uk/best-in-leeds/whats-on-news/',
+      rssFeedUrl: 'https://www.leeds-live.co.uk/news/?service=rss'
+    });
+    expect(statusService.update).toHaveBeenCalledWith(9999999111, {
       status: 'loading_data',
       new_patient: true,
       requestNo: 2

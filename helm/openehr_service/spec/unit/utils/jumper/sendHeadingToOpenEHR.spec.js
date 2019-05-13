@@ -23,7 +23,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  16 March 2019
+  11 May 2019
 
 */
 
@@ -59,7 +59,7 @@ describe('utils/jumper/lib/sendHeadingToOpenEHR', () => {
     nock('http://178.62.71.220:8080')
       .post('/rest/v1/session?username=bar&password=quux')
       .matchHeader('x-max-session', 75)
-      .matchHeader('x-session-timeout', 120000)
+      .matchHeader('x-session-timeout', 3600000)
       //.times(2)
       .reply(200, data || {});
   }
