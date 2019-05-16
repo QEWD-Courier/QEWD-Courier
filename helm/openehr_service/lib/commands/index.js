@@ -53,6 +53,7 @@ const PutRespectFormVersionCommand = require('./putRespectFormVersion');
 const RevertAllDiscoveryDataCommand = require('./revertAllDiscoveryData');
 const RevertDiscoveryDataCommand = require('./revertDiscoveryData');
 const GetPatientTop3ThingsLatestCommand = require('./getPatientTop3ThingsLatest');
+const SeedDiscoveryDataCommand = require('./seedDiscoveryData');
 
 module.exports = {
   CheckNhsNumberCommand,
@@ -78,5 +79,6 @@ module.exports = {
   PutRespectFormVersionCommand,
   RevertAllDiscoveryDataCommand,
   RevertDiscoveryDataCommand,
-  GetPatientTop3ThingsLatestCommand
+  GetPatientTop3ThingsLatestCommand,
+  SeedDiscoveryDataCommand
 };

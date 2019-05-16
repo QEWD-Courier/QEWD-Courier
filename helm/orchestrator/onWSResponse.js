@@ -62,7 +62,8 @@ var returnArrayResponses = {
   getPatientHeadingSummary: true,
   getPatientHeadingDetail: true,
   getPatientTop3ThingsSummary: true,
-  getRespectFormVersions: true
+  getRespectFormVersions: true,
+  seedDiscoveryData: true
 };
 
 module.exports = function(req, res, next) {

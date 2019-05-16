@@ -1,0 +1,110 @@
+[
+  {
+    "cause": "Adverse reaction caused by lysergide (disorder)",
+    "causeCode": "218792001",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Adverse reaction caused by lysergide (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_0de75f45-7e40-430d-9f62-9fe3e8fd6d1d",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Allergy to strawberries (disorder)",
+    "causeCode": "91938006",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Allergy to strawberries (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_1d9ca7e8-b6f0-46d1-8d28-628a2c3122d4",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Allergy to eggs (disorder)",
+    "causeCode": "91930004",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Allergy to eggs (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_5a815e34-08c9-4d38-89ca-8127803041da",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Adverse reaction caused by lysergide (disorder)",
+    "causeCode": "218792001",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Adverse reaction caused by lysergide (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_6139e3bf-fe03-4bb0-8d85-c64a13d3b35e",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Allergy to nut (disorder)",
+    "causeCode": "91934008",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Allergy to nut (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_7041c263-7aa7-45f5-99f0-316db82173f2",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Adverse reaction caused by drug (disorder)",
+    "causeCode": "62014003",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Adverse reaction caused by drug (disorder)",
+    "author": "HAWLEY, Richard (Mr)",
+    "dateCreated": "2013-12-05T11:56:23+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_83122620-1d06-43d4-9cc9-befe8426f2d5",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Adverse reaction caused by lysergide (disorder)",
+    "causeCode": "218792001",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Adverse reaction caused by lysergide (disorder)",
+    "author": "ROBERTS, Christopher (Mr)",
+    "dateCreated": "2014-06-27T09:36:44+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_9721c8e1-d582-4598-8e63-a3a21d0c8b0e",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Adverse reaction caused by drug (disorder)",
+    "causeCode": "62014003",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Adverse reaction caused by drug (disorder)",
+    "author": "MARSHALL SEAS, Andy (Mr)",
+    "dateCreated": "2013-12-04T10:22:23+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_a6dcf721-12a6-4dfc-b38a-a607268809c3",
+    "patientId": 5558526785
+  },
+  {
+    "cause": "Aspirin adverse reaction (disorder)",
+    "causeCode": "292044008",
+    "causeTerminology": "http://snomed.info/sct",
+    "terminologyCode": "",
+    "reaction": "Aspirin adverse reaction (disorder)",
+    "author": "MARSHALL SEAS, Andy (Mr)",
+    "dateCreated": "2013-12-04T10:48:19+00:00",
+    "source": "Discovery",
+    "sourceId": "Discovery-AllergyIntolerance_ffaf36ce-0b54-4dd0-b695-e8698178e7d9",
+    "patientId": 5558526785
+  }
+]
