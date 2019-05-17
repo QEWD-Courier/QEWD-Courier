@@ -310,7 +310,8 @@ class HeadingService {
       return {
         sourceId: sourceId,
         source: responseObj.source,
-        text: responseObj[synopsisField] || ''
+        text: responseObj[synopsisField] || '',
+        dateCreated: responseObj.dateCreated
       };
     }
 
@@ -387,7 +388,8 @@ class HeadingService {
     const { headingCache } = this.ctx.cache;
     const sourceIds = headingCache.byDate.getAllSourceIds(patientId, heading, { limit });
 
-    const results = await P.mapSeries(sourceIds, x => this.getBySourceId(x, ResponseFormat.SYNOPSIS));
+    let results = await P.mapSeries(sourceIds, x => this.getBySourceId(x, ResponseFormat.SYNOPSIS));
+    results =  results.sort((n, p) => new Date(n.dateCreated) - new Date(p.dateCreated));
 
     return {
       results

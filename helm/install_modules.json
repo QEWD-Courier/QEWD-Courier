@@ -6,7 +6,7 @@
   "moment-timezone",
   "traverse",
   "object-path",
-  "openid-client",
+  "openid-client@2.5.0",
   "qewd-template",
   "valid-url",
   "winston"
