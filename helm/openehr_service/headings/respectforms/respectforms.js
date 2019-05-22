@@ -90,6 +90,9 @@ module.exports = {
           default:
             return '';
         }
+      },
+      getSeniorClinician: (value) => {
+        return value === 'ReSPECT Senior Responsible Clinician signature'
       }
     },
 
@@ -140,7 +143,7 @@ module.exports = {
             designation: '{{signing_clinician.practitioner_role.designation}}',
             clinicialName: '{{signing_clinician.name.text}}',
             gmcNumber: '{{signing_clinician.identifier.value}}',
-            isSrc: '',
+            isSrc: '=> getSeniorClinician(service_name)',
             dateSigned: '=> getRippleTime(time)'
           }
         ],
@@ -240,6 +243,9 @@ module.exports = {
           default:
             return '';
         }
+      },
+      getSeniorClinician: (value) => {
+        return value ? 'ReSPECT Senior Responsible Clinician signature' : 'ReSPECT clinician signature'
       }
     },
 
@@ -319,7 +325,7 @@ module.exports = {
                 ism_transition: {
                   'current_state|value': 'completed'
                 },
-                service_name: 'ReSPECT clinician signature',
+                service_name: '=> getSeniorClinician(isSrc)',
                 signing_clinician: {
                   practitioner_role: {
                     designation: '{{designation}}'
