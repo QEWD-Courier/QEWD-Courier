@@ -1,0 +1,13 @@
+[
+  {
+    "vaccinationName": "Seasonal influenza vaccination (procedure)",
+    "comment": "None",
+    "series": "1",
+    "vaccinationDateTime": 1415059200000,
+    "author": "System User",
+    "dateCreated": 1415059200000,
+    "source": "Discovery",
+    "sourceId": "Discovery-Immunization_4a976c90-1c51-4440-a8d8-d806cbc127f5",
+    "patientId": 5558526785
+  }
+]
