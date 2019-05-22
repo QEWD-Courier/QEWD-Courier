@@ -29,9 +29,8 @@
 
 'use strict';
 
-const P = require('bluebird');
 const { logger } = require('../../lib/core');
-const { SeedDiscoveryDataCommand } = require('../../lib/commands');
+const { SeedTestDataCommand } = require('../../lib/commands');
 const { getResponseError } = require('../../lib/errors');
 
 /**
@@ -40,11 +39,11 @@ const { getResponseError } = require('../../lib/errors');
  * @param  {Object} args
  * @param  {Function} finished
  */
-module.exports = async function seedDiscoveryData(args, finished) {
+module.exports = async function seedTestData(args, finished) {
   try {
     
     const nhsNumbers = JSON.parse(args.req.query.nhsNumbers);
-    const command = new SeedDiscoveryDataCommand(args.req.ctx, args.session);
+    const command = new SeedTestDataCommand(args.req.ctx, args.session);
     const results =  await command.execute(nhsNumbers);
   
     finished(results);

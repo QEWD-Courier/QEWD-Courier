@@ -15,7 +15,7 @@
   {
     "uri": "/api/seedData",
     "method": "GET",
-    "handler": "seedDiscoveryData",
+    "handler": "seedTestData",
     "on_microservice": "openehr_service"
   },
   {

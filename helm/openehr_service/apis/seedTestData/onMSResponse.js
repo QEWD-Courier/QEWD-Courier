@@ -42,15 +42,6 @@ const { ExtraHeading, Heading, RecordStatus } = require('../../lib/shared/enums'
  */
 module.exports = function (message, jwt, forward, sendBack) { // eslint-disable-line no-unused-vars
   
-  
-  
-  console.log('======================================================');
-  
-  console.log('HEERERERE');
-  
-  console.log('======================================================');
-  
-  
   const globalConfig = this.userDefined.globalConfig;
 
   // is DDS configured for use?

@@ -33,7 +33,7 @@ const { BadRequestError } = require('../errors');
 const { Patient, RecordStatus, Role } = require('../shared/enums');
 const { isPatientIdValid } = require('../shared/validation');
 
-class SeedDiscoveryDataCommand {
+class SeedTestDataCommand {
   constructor(ctx, session) {
     this.ctx = ctx;
     this.session = session;
@@ -47,7 +47,7 @@ class SeedDiscoveryDataCommand {
     logger.info('commands/checkNhsNumber', {nhsNumbers});
     const results = await P.mapSeries(nhsNumbers, async (nhsNumber) => await this.getHeadingDataByNHSNumber(nhsNumber));
     return {
-      api: 'seedDiscoveryData',
+      api: 'seedTestData',
       use: 'results',
       results: results
     };
@@ -136,4 +136,4 @@ class SeedDiscoveryDataCommand {
   }
 }
 
-module.exports = SeedDiscoveryDataCommand;
+module.exports = SeedTestDataCommand;
