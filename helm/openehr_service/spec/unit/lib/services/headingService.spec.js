@@ -669,7 +669,7 @@ describe('lib/services/headingService', () => {
             sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
             procedure_name: 'quux',
             name: 'John Doe',
-            date: '2019-01-01',
+            dateCreated: '1406246400000',
             time: '15:00'
           }
         };
@@ -681,7 +681,7 @@ describe('lib/services/headingService', () => {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           procedure_name: 'quux',
           name: 'John Doe',
-          date: '2019-01-01',
+          dateCreated: '1406246400000',
           time: '15:00'
         };
 
@@ -705,7 +705,7 @@ describe('lib/services/headingService', () => {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           procedure_name: 'quux',
           name: 'John Doe',
-          date: '2019-01-01',
+          dateCreated: '1406246400000',
           time: '15:00'
         };
 
@@ -723,11 +723,12 @@ describe('lib/services/headingService', () => {
         expect(actual).toEqual(expected);
       });
 
-      it('should return synopsis', async () => {
+     it('should return synopsis', async () => {
         const expected = {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           source: 'ethercis',
-          text: 'quux'
+          text: 'quux',
+          dateCreated: '1406246400000'
         };
 
         headingCache.bySourceId.get.and.returnValue(dbData);
@@ -748,7 +749,8 @@ describe('lib/services/headingService', () => {
         const expected = {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           source: 'GP',
-          text: 'quux'
+          text: 'quux',
+          dateCreated: '1406246400000'
         };
 
         headingCache.bySourceId.get.and.returnValue(dbData);
@@ -769,7 +771,8 @@ describe('lib/services/headingService', () => {
         const expected = {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           source: 'ethercis',
-          text: ''
+          text: '',
+          dateCreated: '1406246400000'
         };
 
         delete dbData.pulsetile.procedure_name;
@@ -793,7 +796,7 @@ describe('lib/services/headingService', () => {
           sourceId: 'ethercis-0f7192e9-168e-4dea-812a-3e1d236ae46d',
           source: 'ethercis',
           name: 'John Doe',
-          date: '2019-01-01',
+          dateCreated: '1406246400000',
           time: '15:00'
         };
 

@@ -114,11 +114,11 @@ describe('lib/commands/getPatientHeadingSummary', () => {
     const expected = {
       responseFrom: 'phr_service',
       api: 'getPatientHeadingSummary',
-      use: 'results',
+      use: 'headingsResult',
       patientId: 9999999111,
       heading: 'procedures',
       fetch_count: 8,
-      results: [
+      headingsResult: [
         {
           desc: 'foo',
           source: 'ethercis',
@@ -145,11 +145,11 @@ describe('lib/commands/getPatientHeadingSummary', () => {
     const expected = {
       responseFrom: 'phr_service',
       api: 'getPatientHeadingSummary',
-      use: 'results',
+      use: 'headingsResult',
       patientId: 9999999000,
       heading: 'procedures',
       fetch_count: 8,
-      results: [
+      headingsResult: [
         {
           desc: 'foo',
           source: 'ethercis',
