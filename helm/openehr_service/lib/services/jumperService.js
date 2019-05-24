@@ -168,7 +168,9 @@ class JumperService {
         patientId,
         heading,
         compositionId,
-        data,
+        data: {
+          data
+        },
         method: 'put',
         qewdSession: this.ctx.qewdSession
       };
