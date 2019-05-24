@@ -154,7 +154,8 @@
         "synopsisField": "vaccinationName",
         "summaryTableFields": ["vaccinationName", "dateCreated"]
       },
-      "vitalsigns": true
+      "vitalsigns": true,
+      "clinicalnotes": true
     },
     "documentNames": {
       "jumperTemplateFields": "OpenEHRJumper"
