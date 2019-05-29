@@ -1,8 +1,8 @@
 {
   "oidc_client": {
     "hosts": {
-      "oidc_server": "https://onelondon.ripple.foundation:443",
-      "orchestrator": "https://onelondon.ripple.foundation:443"
+      "oidc_server": "",
+      "orchestrator": ""
     },
     "type": "OpenID Connect",
     "client_id": "foo",
