@@ -66,10 +66,10 @@ module.exports = function(req, res, next) {
     if (!req.headers) {
       return sendError('Invalid request: headers missing');
     }
-    if (!req.headers['x-requested-with']) {
+    if (!req.headers['x-requested-with'] && req.method !== 'OPTIONS') {
       return sendError('Invalid request: x-requested-with header missing');
     }
-    if (req.headers['x-requested-with'] !== 'XMLHttpRequest') {
+    if (req.headers['x-requested-with'] !== 'XMLHttpRequest' && req.method !== 'OPTIONS') {
       return sendError('Invalid request: x-requested-with header invalid');
     }
   }

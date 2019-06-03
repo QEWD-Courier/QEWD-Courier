@@ -157,13 +157,26 @@ You can use the OIDC-Admin application to amend this configuration information. 
         username: rob.tweed@gmail.com
         password: password
 
-
-A single Helm / QEWD-Courier user has been pre-defined, again with the credentials:
-
-        username: rob.tweed@gmail.com
-        password: password
-
-
 Note: this version of QEWD-Courier has Two Factor Authentication disabled.  All users you create will automatically have a password of *password*.
+
+## QEWD as REST API
+
+If you want to use QEWD as REST API.
+For example, you are developing frontend (client) side and you need data from QEWD. For this you need to add your Private IP address to global_config.json.
+ 
+        "index_url": "http://192.168.1.78:3000",
+ 
+Also, you should add parameter cors with value true to config.json
+
+        "qewd": {
+              "serverName": "Helm Orchestrator",
+              "poolSize": 4,
+              "cors": true
+            }
+
+Also you should add parameter cookie_path with value "/" in global_config.json
+
+        "cookie_path": "/"
+ 
 
 
