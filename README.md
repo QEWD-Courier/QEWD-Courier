@@ -17,7 +17,7 @@ Although probably about 90% of the original Helm/QEWD-Courier functionality has 
 
 You'll see three main folders:
 
-- **helm**: The QEWD-Up Version of the original Helm QEWD-Courier Middle Tier
+- **main**: The QEWD-Up Version of the original Helm QEWD-Courier Middle Tier
 - **oidc_provider**: A standalone version of the OpenId Connect Server used by Helm for user authentication.  This is no longer treated as a QEWD-Courier MicroService, but should be considered as a separate piece of functionality.
 - **yottaDB**: Pre-initialised YottaDB files for use by each of the QEWD-Courier MicroServices.  These reside on your host machine and therefore allow persistence of data between restarts of your MicroServices
 
@@ -72,7 +72,7 @@ You'll see three main folders:
               "password": "yyyyyy",
 
 
-4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the *conductor* and *openid_connect* host and ports to match your *helm global_config.json* file's *oidc_client* settings for *orchestrator* and *oidc_server* respectively, ie edit this section:
+4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the *conductor* and *openid_connect* host and ports to match your *main global_config.json* file's *oidc_client* settings for *orchestrator* and *oidc_server* respectively, ie edit this section:
 
         "phr": {
           "microservices": {
@@ -119,21 +119,21 @@ You'll see three main folders:
 
 ## Orchestrator
 
-      sudo docker run -it --name orchestrator --rm --net qewd-net -p 8080:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -v ~/qewd-courier/yottadb/orchestrator:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+      sudo docker run -it --name orchestrator --rm --net qewd-net -p 8080:8080 -v ~/qewd-courier/main:/opt/qewd/mapped -v ~/qewd-courier/yottadb/orchestrator:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
 ## auth_service
 
-        sudo docker run -it --name auth_service --rm --net qewd-net -p 8081:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="auth_service" -v ~/qewd-courier/yottaDB/auth_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name auth_service --rm --net qewd-net -p 8081:8080 -v ~/qewd-courier/main:/opt/qewd/mapped -e microservice="auth_service" -v ~/qewd-courier/yottaDB/auth_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
 ## openehr_service
 
-        sudo docker run -it --name openehr_service --rm --net qewd-net -p 8082:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="openehr_service" -v ~/qewd-courier/yottaDB/openehr_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name openehr_service --rm --net qewd-net -p 8082:8080 -v ~/qewd-courier/main:/opt/qewd/mapped -e microservice="openehr_service" -v ~/qewd-courier/yottaDB/openehr_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
@@ -141,7 +141,7 @@ You'll see three main folders:
 
 ## discovery_service
 
-        sudo docker run -it --name discovery_service --rm --net qewd-net -p 8083:8080 -v ~/qewd-courier/helm:/opt/qewd/mapped -e microservice="discovery_service" -v ~/qewd-courier/yottaDB/discovery_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
+        sudo docker run -it --name discovery_service --rm --net qewd-net -p 8083:8080 -v ~/qewd-courier/main:/opt/qewd/mapped -e microservice="discovery_service" -v ~/qewd-courier/yottaDB/discovery_service:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
 
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
