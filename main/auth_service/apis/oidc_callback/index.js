@@ -79,8 +79,8 @@ module.exports = function(args, finished) {
       else {
         session.timeout = verify_jwt.exp - verify_jwt.iat;
       }
-
-      session.role = 'phrUser';
+  
+      session.role = 'IDCR'; // interim solution pending oidc upgrade, please amend to phrUser, if using for phr purposes only
       session.uid = tokenSet.session_state;
       session.openid = verify_jwt;
       session.openid.id_token = tokenSet.id_token;
