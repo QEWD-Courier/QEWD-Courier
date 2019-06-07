@@ -166,4 +166,11 @@ A single Helm / QEWD-Courier user has been pre-defined, again with the credentia
 
 Note: this version of QEWD-Courier has Two Factor Authentication disabled.  All users you create will automatically have a password of *password*.
 
+## Nb re Roles Based Access Control 
 
+In this release we have set the default user role to 'IDCR' (aka Integrated Digital Care Record access/aka Professional users).
+This is an interim solution pending an OIDC upgrade due shortly, which will allow several user roles, PHR/IDCR etc
+
+Please amend the role to 'phrUser' if using this middleware for PHR (Personal Health Record) purposes
+
+Please check /main/auth_service/apis/oidc_callback/index.js where the *session.role* can be amended for now
