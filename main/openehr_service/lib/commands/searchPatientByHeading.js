@@ -1,0 +1,58 @@
+/*
+
+ ----------------------------------------------------------------------------
+ |                                                                          |
+ | Copyright (c) 2018-19 Ripple Foundation Community Interest Company       |
+ | All rights reserved.                                                     |
+ |                                                                          |
+ | http://rippleosi.org                                                     |
+ | Email: code.custodian@rippleosi.org                                      |
+ |                                                                          |
+ | Author: Dmitry Solyannik <dmitry.solyannik@gmail.com>                    |
+ |                                                                          |
+ | Licensed under the Apache License, Version 2.0 (the "License");          |
+ | you may not use this file except in compliance with the License.         |
+ | You may obtain a copy of the License at                                  |
+ |                                                                          |
+ |     http://www.apache.org/licenses/LICENSE-2.0                           |
+ |                                                                          |
+ | Unless required by applicable law or agreed to in writing, software      |
+ | distributed under the License is distributed on an "AS IS" BASIS,        |
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. |
+ | See the License for the specific language governing permissions and      |
+ |  limitations under the License.                                          |
+ ----------------------------------------------------------------------------
+
+  11 May 2019
+
+*/
+
+'use strict';
+
+const P = require('bluebird');
+const { logger } = require('../core');
+
+class SearchPatientByHeadingCommand {
+  constructor(ctx, session) {
+    this.ctx = ctx;
+    this.session = session;
+  }
+  
+  /**
+   * @param  {string} heading
+   * @param  {string} queryText
+   * @return {Promise.<Object>}
+   */
+  async execute(heading, queryText) {
+    logger.info('commands/SearchPatientByHeading', { heading, queryText });
+    
+    const { searchService } = this.ctx.services;
+    const host = this.ctx.defaultHost;
+    return await searchService.query(host, heading, queryText);
+    //@TODO Need to discuss about multiple data from ethercis/marand
+    // const hosts = Object.keys(this.ctx.serversConfig);
+    // return await P.mapSeries(hosts, async (host) => searchService.query(host, heading, queryText));
+  }
+}
+
+module.exports = SearchPatientByHeadingCommand;
