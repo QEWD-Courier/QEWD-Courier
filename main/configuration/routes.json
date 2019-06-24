@@ -196,5 +196,14 @@
     "method": "DELETE",
     "handler": "revertDiscoveryData",
     "on_microservice": "openehr_service"
+  },
+  {
+    "uri": "/api/patient/clinicalSearch/:heading",
+    "method": "POST",
+    "handler": "searchPatientByHeading",
+    "on_microservice": "openehr_service",
+    "from_microservices": [
+      "orchestrator"
+    ]
   }
 ]

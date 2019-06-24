@@ -54,6 +54,7 @@ const RevertAllDiscoveryDataCommand = require('./revertAllDiscoveryData');
 const RevertDiscoveryDataCommand = require('./revertDiscoveryData');
 const GetPatientTop3ThingsLatestCommand = require('./getPatientTop3ThingsLatest');
 const SeedTestDataCommand = require('./seedTestData');
+const SearchPatientByHeadingCommand = require('./searchPatientByHeading');
 
 module.exports = {
   CheckNhsNumberCommand,
@@ -80,5 +81,6 @@ module.exports = {
   RevertAllDiscoveryDataCommand,
   RevertDiscoveryDataCommand,
   GetPatientTop3ThingsLatestCommand,
-  SeedTestDataCommand
+  SeedTestDataCommand,
+  SearchPatientByHeadingCommand
 };
