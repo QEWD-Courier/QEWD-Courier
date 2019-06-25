@@ -71,7 +71,9 @@
         "url": "http://ethercis1.3-test.ripple.foundation:8080",
         "username": "xxxxxx",
         "password": "yyyyyyy",
-        "platform": "ethercis"
+        "platform": "ethercis",
+        "wildcard": "%",
+        "like": "like"
       }
     },
     "defaultPostHost": "ethercis",
