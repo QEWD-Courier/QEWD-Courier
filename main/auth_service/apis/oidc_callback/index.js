@@ -92,9 +92,10 @@ module.exports = function(args, finished) {
       //  could use session and give it the same timeout as jwt
       if(verify_jwt.email === 'ivor.cox@gmail.com') {
           session.role = 'phrUser';
+          session.openid.role = 'phrUser';
+          session.openid.nhsNumber = 9999990000;
           session.nhsNumber = 9999990000;
       }
-
       finished({
         ok: true,
         oidc_redirect: auth.index_url,
