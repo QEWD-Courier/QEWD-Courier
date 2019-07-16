@@ -73,7 +73,7 @@
         "password": "yyyyyyy",
         "platform": "ethercis",
         "wildcard": "%",
-        "like": "like"
+        "like": "ilike"
       }
     },
     "defaultPostHost": "ethercis",
