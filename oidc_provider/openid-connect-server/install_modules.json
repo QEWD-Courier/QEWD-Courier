@@ -1,5 +1,5 @@
 [
-  "oidc-provider",
+  "oidc-provider@5",
   "bcrypt",
   "email-validator",
   "randomstring",
