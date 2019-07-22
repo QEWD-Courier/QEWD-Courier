@@ -37,6 +37,7 @@ const { NotFoundError, UnprocessableEntityError } = require('../errors');
 const { Heading, ResponseFormat } = require('../shared/enums');
 const { headingHelpers, getHeadingDefinition, getHeadingMap, getHeadingQuery } = require('../shared/headings');
 const { buildSourceId, flatten } = require('../shared/utils');
+const uuidv4 = require('uuid/v4');
 const debug = require('debug')('helm:openehr:services:heading');
 
 const ok = () => ({ ok: true });
@@ -103,9 +104,12 @@ class HeadingService {
     const { ehrSessionService, patientService } = this.ctx.services;
     const { sessionId } = await ehrSessionService.start(host);
     const ehrId = await patientService.getEhrId(host, patientId);
-
+  
+    const headingData = data.data;
+    headingData.guid = uuidv4();
+  
     const helpers = headingHelpers(host, heading, 'post');
-    const output = transform(headingMap.transformTemplate, data.data, helpers);
+    const output = transform(headingMap.transformTemplate, headingData, helpers);
     const postData = flatten(output);
 
     // TODO: fix me (hack)

@@ -74,7 +74,7 @@ module.exports = {
           mdt_referral: {
             request: [
               {
-                _uid:           '{{sourceId}}',
+                _uid:           '{{guid}}',
                 'service_name': 'MDT referral',
                 'timing':       'R2/2016-12-19T18:00:00Z/P2M'
               }
