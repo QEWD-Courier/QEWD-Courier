@@ -32,7 +32,7 @@
   {
     "uri": "/api/auth/token",
     "method": "GET",
-    "handler": "oidc_callback",
+    "handler": "auth0_callback",
     "on_microservice": "auth_service",
     "authenticate": false
   },
