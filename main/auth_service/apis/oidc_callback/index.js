@@ -54,10 +54,13 @@ module.exports = function(args, finished) {
   var auth = this.oidc_client.config;
 
   var indexUrl = auth.index_url || '/index.html';
-  var pieces = indexUrl.split('/');
-  pieces.pop();
-  var cookiePath = pieces.join('/');
-  if (cookiePath === '') cookiePath = '/';
+  var cookiePath = auth.cookie_path;
+  if (!cookiePath) {
+    var pieces = indexUrl.split('/');
+    pieces.pop();
+    cookiePath = pieces.join('/');
+    if (cookiePath === '') cookiePath = '/';
+  }
 
   var callbackURL = auth.callback_url;
 
