@@ -34,6 +34,7 @@
       }
     },
     "index_url": "/index.html",
+    "cookie_path": "/",
     "cookie_name": "JSESSIONID",
     "logout_approach": "client"
   },
