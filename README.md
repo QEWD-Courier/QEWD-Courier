@@ -174,3 +174,18 @@ This is an interim solution pending an OIDC upgrade due shortly, which will allo
 Please amend the role to 'phrUser' if using this middleware for PHR (Personal Health Record) purposes
 
 Please check /main/auth_service/apis/oidc_callback/index.js where the *session.role* can be amended for now
+
+## QEWD as REST API
+If you want to use QEWD as REST API. For example, you are developing frontend (client) side and you need data from QEWD. For this you need to add your Private IP address to global_config.json.
+
+    "index_url": "http://192.168.1.78:3000",
+Also, you should add parameter cors with value true to config.json
+
+    "qewd": {
+          "serverName": "Helm Orchestrator",
+          "poolSize": 4,
+          "cors": true
+        }
+Also you should add parameter cookie_path with value "/" in global_config.json
+
+    "cookie_path": "/"

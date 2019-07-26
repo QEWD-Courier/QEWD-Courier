@@ -3,7 +3,8 @@
   "orchestrator": {
     "qewd": {
       "serverName": "Helm Orchestrator",
-      "poolSize": 4
+      "poolSize": 4,
+      "cors": true
     }
   },
   "microservices": [
