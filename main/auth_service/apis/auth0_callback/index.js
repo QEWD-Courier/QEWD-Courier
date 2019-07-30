@@ -50,7 +50,7 @@ module.exports = function(args, finished) {
     }
     return finished({error: error});
   }
-
+  
   const auth = this.oidc_client.config;
   const indexUrl = auth.index_url || '/index.html';
   const pieces = indexUrl.split('/');
@@ -59,11 +59,11 @@ module.exports = function(args, finished) {
   if (cookiePath === '') cookiePath = '/';
   
   const data = {
-      client_id: credentials.client_id,
-      client_secret: credentials.client_secret,
-      code: query.code,
-      grant_type: credentials.grant_type,
-      redirect_uri: credentials.redirect_uri
+    client_id: credentials.client_id,
+    client_secret: credentials.client_secret,
+    code: query.code,
+    grant_type: credentials.grant_type,
+    redirect_uri: credentials.redirect_uri
   };
   
   request.post({
@@ -75,6 +75,11 @@ module.exports = function(args, finished) {
     method: 'POST'
   }, function (e, r, body) {
     const response = JSON.parse(body);
+    
+    if (response.error) {
+      return finished({error: response.error})
+    }
+    
     const verify_jwt = jwt.decode(response.id_token, null, true);
     const session = args.session;
     session.email = verify_jwt.email;
@@ -82,12 +87,12 @@ module.exports = function(args, finished) {
     session.timeout = response.expires_in;
     session.nhsNumber = verify_jwt['https://showcase-auth0.ripple.foundation_nhs_number'];
     session.uid = uuidv4();
-    // session.role = 'phrUser'; // interim solution pending oidc upgrade, please amend to phrUser, if using for phr purposes only
     session.openid = verify_jwt;
-    session.openid.firstName = verify_jwt.nickname;
+    session.openid.firstName = verify_jwt['https://showcase-auth0.ripple.foundation_given_name'];
+    session.openid.lastName = verify_jwt['https://showcase-auth0.ripple.foundation_family_name'];
     session.openid.role = verify_jwt['https://showcase-auth0.ripple.foundation_role']; // we are using this key because custom claims in auth0 allowed only http prefix structure, please check auth0 custom rules for more details
     session.openid.id_token = response.id_token;
-  
+    
     finished({
       ok: true,
       oidc_redirect: auth.index_url,

@@ -13,7 +13,7 @@
     "urls": {
       "oidc_server": {
         "issuer": "/openid",
-        "authorization_endpoint": "",
+        "authorization_endpoint": "/openid/auth",
         "token_endpoint": "/openid/token",
         "userinfo_endpoint": "/openid/me",
         "introspection_endpoint": "/openid/token/introspect",

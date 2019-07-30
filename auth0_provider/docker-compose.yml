@@ -1,0 +1,10 @@
+version: '3'
+services:
+
+ auth0:
+  build: .
+  container_name: auth0
+  volumes:
+   - ~/showcase-auth0:/opt/qewd/mapped
+  ports:
+   - 8000:8000
