@@ -231,3 +231,6 @@ In your Auth0 management panel, go to **Rules** tab and add 3 empty rules.
 You can change namespace value to another, but it should be like url. If you changed namespace you also should change this parameter in `main/auth_service/apis/auth0_callback/index.js` where we retrieving this data from **verify_jwt** variable.
 
 **Important notice !!!** Make sure that you are using correct order of rules, last rule must be `Rule for adding role, nhsNumber and user name into JWT token` 
+
+
+(PS This approach to authentication services allows us to offer a choice between providers, but we wish to refactor this further in due course, towards an even tidier codebase.. see related discussion here.. https://github.com/QEWD-Courier/QEWD-Courier/pull/91 )
