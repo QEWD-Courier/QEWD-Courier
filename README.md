@@ -41,77 +41,8 @@ You'll see three main folders:
 - Clone a copy of the repository into a folder on your host machine.  For the purposes of this document, it will be assumed you've cloned it into *~/qewd-courier* but you can use any folder name you want - adjust the commands with which you start the QEWD-Courier MicroServices appropriately.
 
 
-- Customise the Global Configuration file: */configuration/global_config.json*
-
-1) Change the host names/IP addresses that are used by the OIDC Client within QEWD-Courier (*auth_service*), ie these lines:
-
-
-          "oidc_client": {
-            "hosts": {
-              "oidc_server": "http://192.168.1.78:8000",
-              "orchestrator": "http://192.168.1.78:8080"
-            },
-
-2) Replace the Discovery Data Service (DDS) test account username and password:
-
-        "DDS": {
-          "auth": {
-            "host": "https://devauth.discoverydataservice.net",
-            "path": "/auth/realms/endeavour/protocol/openid-connect/token",
-            "username": "xxxxxxxx",
-            "password": "yyyyyyyyyyy",
-
-
-3) Replace the EtherCIS username/passwords with correct ones.  You might also want to use an EtherCIS server at a different domain name/IP address.
-
-        "openehr": {
-          "servers": {
-            "ethercis": {
-              "url": "http://46.101.81.30:8080",
-              "username": "xxxxxx",
-              "password": "yyyyyy",
-
-
-4) You'll also need to amend the OIDC Configuration file: *~/qewd-courier/oidc_provider/settings/configuration.json*.  You'll need to set the *conductor* and *openid_connect* host and ports to match your *main global_config.json* file's *oidc_client* settings for *orchestrator* and *oidc_server* respectively, ie edit this section:
-
-        "phr": {
-          "microservices": {
-            "conductor": {
-              "host": "http://mango-cookie.ripple.foundation",
-              "port": 8080
-            },
-            "openid_connect": {
-              "host": "http://mango-cookie.ripple.foundation",
-              "port": 8000,
-
-  eg:
-
-            "conductor": {
-              "host": "http://192.168.1.78",
-              "port": 8080
-            },
-            "openid_connect": {
-              "host": "http://192.168.1.78",
-              "port": 8000,
-
-
-  to match the global_config.json's settings:
-
-          "oidc_client": {
-            "hosts": {
-              "oidc_server": "http://192.168.1.78:8000",
-              "orchestrator": "http://192.168.1.78:8080"
-
-
-
-  You'll notice in this file that Two-Factor Authentication is disabled:
-
-        "use2FA": false,
-
-  Which means that the settings for *twilio* and the *email_server* are ignored, so just leave them alone for now.  
-
-  If, later on, you set *use2FA* to *true*, you'll need to set valid credentials for *twilio* and the *email_server*
-
+## Authorization and Authentication
+Documentation about OIDC Provider and Auth0 mechanism, please check link [Authorization Services](auth_services.md) 
 
 # Starting the QEWD-Courier MicroServices
 
@@ -146,35 +77,6 @@ You'll see three main folders:
 **Note:** replace *-it* with *-d* to run it as a background daemon process.
 
 
-## OIDC Provider / Server
-
-        sudo docker run -it --rm --name oidc -p 8000:8080 -v ~/qewd-courier/oidc_provider/openid-connect-server:/opt/qewd/mapped -v ~/qewd-courier/oidc_provider/openid-connect-server/www:/opt/qewd/www -v ~/qewd-courier/oidc_provider/settings:/opt/qewd/mapped/settings -v ~/qewd-courier/yottaDB/oidc_provider:/root/.yottadb/r1.22_x86_64/g rtweed/qewd-server
-
-The first time you start the OIDC Provider container, it will configure the OIDC service using data held in the file *~/qewd-courier/oidc_provider/openid-connect-server/documents.json*.  This file is automatically deleted after it loads first time.
-
-You can use the OIDC-Admin application to amend this configuration information.  Login using:
-
-        username: rob.tweed@gmail.com
-        password: password
-
-
-A single Helm / QEWD-Courier user has been pre-defined, again with the credentials:
-
-        username: rob.tweed@gmail.com
-        password: password
-
-
-Note: this version of QEWD-Courier has Two Factor Authentication disabled.  All users you create will automatically have a password of *password*.
-
-## Nb re Roles Based Access Control 
-
-In this release we have set the default user role to 'IDCR' (aka Integrated Digital Care Record access/aka Professional users).
-This is an interim solution pending an OIDC upgrade due shortly, which will allow several user roles, PHR/IDCR etc
-
-Please amend the role to 'phrUser' if using this middleware for PHR (Personal Health Record) purposes
-
-Please check /main/auth_service/apis/oidc_callback/index.js where the *session.role* can be amended for now
-
 ## QEWD as REST API
 If you want to use QEWD as REST API. For example, you are developing frontend (client) side and you need data from QEWD. For this you need to add your Private IP address to global_config.json.
 
@@ -189,3 +91,4 @@ Also, you should add parameter cors with value true to config.json
 Also you should add parameter cookie_path with value "/" in global_config.json
 
     "cookie_path": "/"
+
