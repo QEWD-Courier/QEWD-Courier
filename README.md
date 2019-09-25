@@ -92,3 +92,7 @@ Also you should add parameter cookie_path with value "/" in global_config.json
 
     "cookie_path": "/"
 
+
+
+## Towards Qewd HIT Platform
+Some of this functionality has been migrated towards a refactored version known as the Qewd HIT platform, where further refinements to the openEHR MS in particular are the subject of the latest R&D on integration to/from openEHR systems - consider as R&D for now
